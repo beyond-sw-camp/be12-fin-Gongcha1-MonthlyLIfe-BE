@@ -49,6 +49,9 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
 
+    //예외 및 유효성 검사
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     //테스트 코드 관련
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
