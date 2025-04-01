@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/")
 @RequiredArgsConstructor
-@Log4j2
+ 
 
 public class ChatController {
 
