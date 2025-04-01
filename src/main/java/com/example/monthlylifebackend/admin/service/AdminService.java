@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.admin.service;
 
 
+import com.example.monthlylifebackend.admin.repository.AdminRepository;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -9,9 +10,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class UserService {
+public class AdminService {
 
 
 
-    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
 }
