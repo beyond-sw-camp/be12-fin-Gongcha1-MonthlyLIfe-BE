@@ -3,6 +3,7 @@ package com.example.monthlylifebackend.common;
 
 
 import com.example.monthlylifebackend.common.code.BaseCode;
+import com.example.monthlylifebackend.common.code.BaseErrorCode;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.code.status.SuccessStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,14 +30,15 @@ public class BaseResponse<T> {
                 SuccessStatus._OK.getMessage(), result);
     }
 
-    public static <T> BaseResponse<T> of(BaseCode code, T result) {
+    public static <T> BaseResponse<T> onSuccess(BaseCode code, T result) {
         return new BaseResponse<>(true, code.getReasonHttpStatus().getCode() ,
                 code.getReasonHttpStatus().getMessage(), result);
     }
 
     // 실패한 경우 응답 생성
-    public static <T> BaseResponse<T> onFailure(String code, String message, T data) {
-        return new BaseResponse<>(false, code, message, data);
+    public static <T> BaseResponse<T> onFailure(BaseErrorCode code, T data) {
+        return new BaseResponse<>(false, code.getReasonHttpStatus().getCode(),
+                code.getReasonHttpStatus().getMessage(), data);
     }
 
     public static <T> BaseResponse<T> onFailure(T result) {

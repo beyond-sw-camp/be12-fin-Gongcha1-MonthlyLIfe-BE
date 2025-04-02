@@ -2,7 +2,7 @@ package com.example.monthlylifebackend.common.exception;
 
 
 import com.example.monthlylifebackend.common.BaseResponse;
-import com.example.monthlylifebackend.common.code.ErrorReasonDTO;
+import com.example.monthlylifebackend.common.code.BaseErrorCode;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -61,19 +61,19 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> exception(Exception e, WebRequest request) {
         e.printStackTrace();
 
-        return handleExceptionInternalFalse(e, ErrorStatus._INTERNAL_SERVER_ERROR, HttpHeaders.EMPTY, ErrorStatus._INTERNAL_SERVER_ERROR.getHttpStatus(),request, e.getMessage());
+        return handleExceptionInternalFalse(e, HttpHeaders.EMPTY, ErrorStatus._INTERNAL_SERVER_ERROR.getHttpStatus(),request, e.getMessage());
     }
 
     @ExceptionHandler(value = GeneralException.class)
     public ResponseEntity onThrowException(GeneralException generalException, HttpServletRequest request) {
-        ErrorReasonDTO errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
-        return handleExceptionInternal(generalException,errorReasonHttpStatus,null,request);
+        BaseErrorCode errorCode = generalException.getCode();
+        return handleExceptionInternal(generalException,errorCode,null,request);
     }
 
-    private ResponseEntity<Object> handleExceptionInternal(Exception e, ErrorReasonDTO reason,
+    private ResponseEntity<Object> handleExceptionInternal(Exception e, BaseErrorCode code,
                                                            HttpHeaders headers, HttpServletRequest request) {
 
-        BaseResponse<Object> body = BaseResponse.onFailure(reason.getCode(),reason.getMessage(),null);
+        BaseResponse<Object> body = BaseResponse.onFailure(code,null);
 //        e.printStackTrace();
 
         WebRequest webRequest = new ServletWebRequest(request);
@@ -81,14 +81,14 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 e,
                 body,
                 headers,
-                reason.getHttpStatus(),
+                code.getReason().getHttpStatus(),
                 webRequest
         );
     }
 
-    private ResponseEntity<Object> handleExceptionInternalFalse(Exception e, ErrorStatus errorCommonStatus,
+    private ResponseEntity<Object> handleExceptionInternalFalse(Exception e,
                                                                 HttpHeaders headers, HttpStatus status, WebRequest request, String errorPoint) {
-        BaseResponse<Object> body = BaseResponse.onFailure(errorCommonStatus.getCode(),errorCommonStatus.getMessage(),errorPoint);
+        BaseResponse<Object> body = BaseResponse.onFailure(ErrorStatus._INTERNAL_SERVER_ERROR,errorPoint);
         return super.handleExceptionInternal(
                 e,
                 body,
@@ -100,7 +100,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> handleExceptionInternalArgs(Exception e, HttpHeaders headers, ErrorStatus errorCommonStatus,
                                                                WebRequest request, Map<String, String> errorArgs) {
-        BaseResponse<Object> body = BaseResponse.onFailure(errorCommonStatus.getCode(),errorCommonStatus.getMessage(),errorArgs);
+        BaseResponse<Object> body = BaseResponse.onFailure(errorCommonStatus,errorArgs);
         return super.handleExceptionInternal(
                 e,
                 body,
@@ -112,7 +112,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> handleExceptionInternalConstraint(Exception e, ErrorStatus errorCommonStatus,
                                                                      HttpHeaders headers, WebRequest request) {
-        BaseResponse<Object> body = BaseResponse.onFailure(errorCommonStatus.getCode(), errorCommonStatus.getMessage(), null);
+        BaseResponse<Object> body = BaseResponse.onFailure(errorCommonStatus, null);
         return super.handleExceptionInternal(
                 e,
                 body,
