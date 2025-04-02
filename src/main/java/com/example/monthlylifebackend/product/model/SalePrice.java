@@ -21,7 +21,7 @@ public class SalePrice extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToMany(mappedBy = "sale_price")
+    @OneToMany(mappedBy = "salePrice")
     private List<Cart> cartList = new ArrayList<>();
 
     @ManyToOne

@@ -21,10 +21,10 @@ public class UserTag extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToMany(mappedBy = "user_tag")
+    @OneToMany(mappedBy = "userTag")
     private List<SaleHasUserTag> saleHasUserTagList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user_tag")
+    @OneToMany(mappedBy = "userTag")
     private List<UserHasUserTag> userHasUserTagList = new ArrayList<>();
 
 

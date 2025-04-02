@@ -26,6 +26,6 @@ public class Condition extends BaseEntity {
     private List<Item> itemList = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "sale_has_production_idx")
+    @JoinColumn(name = "saleHasProduction_idx")
     private SaleHasProduct saleHasProduct;
 }

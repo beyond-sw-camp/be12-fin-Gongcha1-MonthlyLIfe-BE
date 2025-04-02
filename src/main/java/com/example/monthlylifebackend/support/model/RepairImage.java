@@ -19,6 +19,6 @@ public class RepairImage {
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "repair_record_idx")
+    @JoinColumn(name = "repairRecord_idx")
     private RepairRecord repairRecord;
 }

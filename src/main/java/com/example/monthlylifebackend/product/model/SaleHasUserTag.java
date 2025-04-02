@@ -23,6 +23,6 @@ public class SaleHasUserTag extends BaseEntity {
     private Sale sale;
 
     @ManyToOne
-    @JoinColumn(name = "user_tag_idx")
+    @JoinColumn(name = "userTag_idx")
     private UserTag userTag;
 }
