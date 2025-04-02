@@ -29,10 +29,10 @@ public class RepairRequest extends BaseEntity {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "subscribe_detail_idx")
+    @JoinColumn(name = "subscribeDetail_idx")
     private SubscribeDetail subscribeDetail;
 
-    @OneToMany(mappedBy = "repair_request")
+    @OneToMany(mappedBy = "repairRequest")
     private List<RepairImage> repairImageList = new ArrayList<>();
 
 }

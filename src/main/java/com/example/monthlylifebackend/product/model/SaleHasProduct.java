@@ -20,7 +20,7 @@ public class SaleHasProduct extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToMany(mappedBy = "sale_has_product_idx")
+    @OneToMany(mappedBy = "saleHasProduct")
     private List<Condition> conditionList = new ArrayList<>();
 
     @ManyToOne

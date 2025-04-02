@@ -18,7 +18,7 @@ public class UserHasUserTag extends BaseEntity {
     private Long idx;
 
     @ManyToOne
-    @JoinColumn(name = "user_tag_idx")
+    @JoinColumn(name = "userTag_idx")
     private UserTag userTag;
 
     @ManyToOne

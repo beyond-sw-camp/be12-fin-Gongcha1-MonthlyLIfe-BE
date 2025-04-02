@@ -20,8 +20,9 @@ public class Cart extends BaseEntity {
     private Long idx;
 
     @ManyToOne
-    @JoinColumn(name = "sale_price_idx")
+    @JoinColumn(name = "salePrice_idx")
     private SalePrice salePrice;
+
 
     @ManyToOne
     @JoinColumn(name = "user_idx")

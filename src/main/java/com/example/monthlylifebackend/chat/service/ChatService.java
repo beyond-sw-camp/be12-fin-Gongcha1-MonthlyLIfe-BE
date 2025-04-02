@@ -1,7 +1,7 @@
 package com.example.monthlylifebackend.chat.service;
 
 
-import com.example.monthlylifebackend.chat.repository.ChatRepository;
+//import com.example.monthlylifebackend.chat.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -13,5 +13,5 @@ public class ChatService {
 
 
 
-    private final ChatRepository chatRepository;
+//    private final ChatRepository chatRepository;
 }
