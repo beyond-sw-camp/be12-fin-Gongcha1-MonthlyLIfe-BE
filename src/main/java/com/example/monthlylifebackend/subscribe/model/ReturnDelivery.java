@@ -49,6 +49,6 @@ public class ReturnDelivery extends BaseEntity {
     private LocalDateTime updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "subscribe_idx")
-    private Subscribe subscribe;
+    @JoinColumn(name = "subscribeDetail_idx")
+    private SubscribeDetail subscribeDetail;
 }

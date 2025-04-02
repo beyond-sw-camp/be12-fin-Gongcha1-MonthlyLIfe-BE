@@ -27,16 +27,16 @@ public class SubscribeDetail extends BaseEntity {
     private Sale sale;
 
     @ManyToOne
-    @JoinColumn(name = "saleHasProduction_idx")
-    private SaleHasProduct saleHasProduct;
+    @JoinColumn(name = "subscribe_idx")
+    private Subscribe subscribe;
 
-    @OneToMany(mappedBy = "subscribeDetail_idx")
+    @OneToMany(mappedBy = "subscribeDetail")
     private List<RepairRequest> repairRequestList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "subscribeDetail_idx")
+    @OneToMany(mappedBy = "subscribeDetail")
     private List<RentalDelivery> rentalDeliveryList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "subscribeDetail_idx")
+    @OneToMany(mappedBy = "subscribeDetail")
     private List<ReturnDelivery> returnDeliveryList = new ArrayList<>();
 
 

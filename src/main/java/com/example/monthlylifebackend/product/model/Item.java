@@ -1,9 +1,6 @@
 package com.example.monthlylifebackend.product.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
-import com.example.monthlylifebackend.subscribe.model.Subscribe;
-import com.example.monthlylifebackend.support.model.RepairImage;
-import com.example.monthlylifebackend.support.model.RepairRecord;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,8 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 @Getter

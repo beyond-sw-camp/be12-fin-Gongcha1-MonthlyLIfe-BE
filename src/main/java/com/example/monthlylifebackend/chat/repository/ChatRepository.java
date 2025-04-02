@@ -3,7 +3,7 @@ package com.example.monthlylifebackend.chat.repository;
 
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface ChatRepository {
-
-}
+//@Repository
+//public interface ChatRepository {
+//
+//}
