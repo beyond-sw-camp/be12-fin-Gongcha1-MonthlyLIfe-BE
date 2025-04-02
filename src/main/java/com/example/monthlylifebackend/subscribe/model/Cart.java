@@ -23,6 +23,7 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = "salePrice_idx")
     private SalePrice salePrice;
 
+
     @ManyToOne
     @JoinColumn(name = "user_idx")
     private User user;
