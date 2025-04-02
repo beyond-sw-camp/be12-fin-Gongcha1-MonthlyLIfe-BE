@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Schema(description = "상품 상태")
+@Entity 
+// 상품 상태
 public class Condition extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,10 @@ public class Condition extends BaseEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "condition", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Condition> conditionList = new ArrayList<>();
+    @OneToMany(mappedBy = "condition")
+    private List<Item> itemList = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "sale_has_production_idx")
+    private SaleHasProduct saleHasProduct;
 }

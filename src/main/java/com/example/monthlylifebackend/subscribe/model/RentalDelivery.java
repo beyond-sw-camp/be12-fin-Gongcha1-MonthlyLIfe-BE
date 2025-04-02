@@ -15,12 +15,10 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Schema(description = "상품 배송")
 public class RentalDelivery extends BaseEntity {
 
     @Id
@@ -59,7 +57,7 @@ public class RentalDelivery extends BaseEntity {
 
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subscribe_idx")
-    private Subscribe subscribe;
+    @ManyToOne
+    @JoinColumn(name = "subscribe_detail_idx")
+    private SubscribeDetail subscribeDetail;
 }

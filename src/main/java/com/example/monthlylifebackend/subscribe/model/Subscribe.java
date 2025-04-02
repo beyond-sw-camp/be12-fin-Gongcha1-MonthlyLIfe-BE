@@ -3,6 +3,7 @@ package com.example.monthlylifebackend.subscribe.model;
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.product.model.Item;
 import com.example.monthlylifebackend.support.model.RepairImage;
+import com.example.monthlylifebackend.user.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,12 +12,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Schema(description = "상품 구독")
 public class Subscribe extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,20 +33,18 @@ public class Subscribe extends BaseEntity {
 
     private LocalDateTime endAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_idx")
-    private Item item;
+    @ManyToOne
+    @JoinColumn(name = "payment_idx")
+    private Payment payment;
 
-    @OneToMany(mappedBy = "subscribe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Payment> paymentList;
+    @ManyToOne
+    @JoinColumn(name = "user_idx")
+    private User user;
 
-    @OneToMany(mappedBy = "subscribe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReturnDelivery> returnDeliveryList;
+    @OneToMany(mappedBy = "subscribe")
+    private List<SubscribeDetail> subscribeDetailList;
 
-    @OneToMany(mappedBy = "subscribe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RepairRequest> repairRequestList;
 
-    @OneToMany(mappedBy = "subscribe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RentalDelivery> rentalDeliveryListl;
+
 }
 

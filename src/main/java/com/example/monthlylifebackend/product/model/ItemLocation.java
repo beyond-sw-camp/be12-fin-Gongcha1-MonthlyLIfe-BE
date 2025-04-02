@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class ItemLocation extends BaseEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "itemLocation", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "itemLocation")
     private List<Item> itemList = new ArrayList<>();
 
 }

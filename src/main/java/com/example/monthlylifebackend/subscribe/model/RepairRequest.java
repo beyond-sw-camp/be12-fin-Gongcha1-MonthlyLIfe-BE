@@ -1,19 +1,20 @@
 package com.example.monthlylifebackend.subscribe.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
+import com.example.monthlylifebackend.support.model.RepairImage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Schema(description = "수리 요청")
 public class RepairRequest extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +24,15 @@ public class RepairRequest extends BaseEntity {
 
     private LocalDateTime updatedAt;
 
-    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "subscribe_idx")
-    private Subscribe subscribe;
+    @ManyToOne
+    @JoinColumn(name = "subscribe_detail_idx")
+    private SubscribeDetail subscribeDetail;
+
+    @OneToMany(mappedBy = "repair_request")
+    private List<RepairImage> repairImageList = new ArrayList<>();
+
 }

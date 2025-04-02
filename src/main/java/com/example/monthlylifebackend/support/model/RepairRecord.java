@@ -10,12 +10,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Setter
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Schema(description = "상품 수리 기록")
 public class RepairRecord extends BaseEntity {
 
     @Id
@@ -26,17 +25,16 @@ public class RepairRecord extends BaseEntity {
 
     private LocalDateTime repairedAt;
 
-    @Column(columnDefinition = "TEXT")
     private String repairDescription;
 
     private Long beforeConditionIdx;
 
     private Long afterConditionIdx;
 
-    @OneToMany(mappedBy = "repairRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "repairRecord")
     private List<RepairImage> repairImages;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "condition_idx")
     private Condition condition;
 }

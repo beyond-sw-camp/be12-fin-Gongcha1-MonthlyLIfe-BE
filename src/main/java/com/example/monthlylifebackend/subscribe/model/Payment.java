@@ -7,14 +7,14 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Schema(description = "결제")
 public class Payment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,10 @@ public class Payment extends BaseEntity {
 
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "payment")
+    private List<Subscribe> subscribeList = new ArrayList<>();
+
+    @ManyToOne
     @JoinColumn(name = "subscribe_idx")
     private Subscribe subscribe;
 }

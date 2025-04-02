@@ -8,12 +8,10 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Schema(description = "반납 배송")
 public class ReturnDelivery extends BaseEntity {
 
     @Id
@@ -50,7 +48,7 @@ public class ReturnDelivery extends BaseEntity {
 
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "subscribe_idx")
     private Subscribe subscribe;
 }
