@@ -1,72 +1,58 @@
 package com.example.monthlylifebackend.subscribe.controller;
 
-
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
-import com.example.monthlylifebackend.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/subscribe")
 @RequiredArgsConstructor
- 
-
+@Tag(name = "구독 서비스", description = "구독 생성, 취소, 연장, 결제 관리 등 API")
 public class SubscribeController {
-
 
     private final SubscribeService subscribeService;
 
-
-
-    //todo 상품 구독 (구독 생성 및 계약 시작) 우선순위 1
+    @Operation(summary = "상품 구독 생성", description = "상품을 구독하고 계약을 시작합니다.")
     @PostMapping("/create")
     public void createSubscription() {
-        // 구독 생성 및 계약 시작 로직 구현
+        // 구독 생성 및 계약 시작 로직
     }
 
-    //todo 구독 취소 신청 우선순위 2
+    @Operation(summary = "구독 취소 신청", description = "현재 구독을 취소 신청합니다.")
     @PostMapping("/cancel")
     public void cancelSubscription() {
-        // 구독 취소 신청 로직 구현
+        // 구독 취소 신청 로직
     }
 
-    //todo 구독 취소 신청 취소 우선순위 4
+    @Operation(summary = "구독 취소 철회", description = "취소된 구독을 다시 활성화합니다.")
     @PostMapping("/cancel/undo")
     public void undoCancelSubscription() {
-        // 구독 취소 신청 취소 로직 구현
+        // 구독 취소 신청 취소 로직
     }
 
-    //todo 반납 신청 우선순위 1
+    @Operation(summary = "반납 신청", description = "구독한 상품의 반납 및 회수 요청을 보냅니다.")
     @PostMapping("/return")
     public void requestReturn() {
-        // 반납 신청 및 회수 요청 로직 구현
+        // 반납 신청 로직
     }
 
-    //todo 자동 결제 설정/결제 수단 변경 우선순위 1
+    @Operation(summary = "자동 결제 설정 변경", description = "자동 결제 여부 설정 및 결제 수단 변경을 처리합니다.")
     @PostMapping("/payment/update")
     public void updateAutoPayment() {
-        // 자동 결제 설정 및 결제 수단 변경 로직 구현
+        // 자동 결제 설정/변경 로직
     }
 
-    //todo 상품 구독 연장 우선순위 3
+    @Operation(summary = "구독 연장", description = "구독 기간을 연장하고 계약을 갱신합니다.")
     @PostMapping("/extend")
     public void extendSubscription() {
-        // 구독 연장 및 계약 기간 갱신 로직 구현
+        // 구독 연장 로직
     }
 
-    //todo 구독 정보 확인 우선순위 1
+    @Operation(summary = "구독 정보 조회", description = "현재 구독 중인 상품의 정보를 확인합니다.")
     @GetMapping("/info")
     public void getSubscriptionInfo() {
-        // 현재 구독 중인 상품 정보 및 상태 조회 로직 구현
+        // 구독 정보 조회 로직
     }
-
-
-
-
-
-
 }
