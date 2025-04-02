@@ -1,58 +1,52 @@
 package com.example.monthlylifebackend.user.controller;
 
-
 import com.example.monthlylifebackend.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/user")
 @RequiredArgsConstructor
- 
-
+@Tag(name = "회원", description = "회원 가입, 정보 수정, 탈퇴 등 사용자 관련 API")
 public class UserController {
-
 
     private final UserService userService;
 
-
-    //Todo 회원가입 우선순위 1
-    @PostMapping("/")
-    public void 회원가입(){
-
-    }
-    //Todo 아이피/비밀번호 찾기 회원가입 우선순위 3
-    @PostMapping("/")
-    public void 아이피_비밀번호_찾기(){
-
-    }//Todo 비밀번호 변경 회원가입 우선순위 3
-    @PostMapping("/")
-    public void 비번_변경(){
-
-    }//Todo 회원 탈퇴 우선순위 3
-    @GetMapping("/")
-    public void 회원탈퇴(){
-
-    }//Todo 회원 정보 수정 우선순위 2
-    @PostMapping("/")
-    public void 회원정보수정(){
-
+    @Operation(summary = "회원가입", description = "신규 회원을 등록합니다.")
+    @PostMapping("/register")
+    public void registerUser() {
+        // 회원가입 로직
     }
 
-    //Todo 회원 상세 페이지 우선순위 3
-    @GetMapping("/")
-    public void 회원_상세_페이지(){
-
+    @Operation(summary = "아이디/비밀번호 찾기", description = "아이디 또는 비밀번호를 찾습니다.")
+    @PostMapping("/find-account")
+    public void findIdOrPassword() {
+        // 아이디/비밀번호 찾기 로직
     }
 
+    @Operation(summary = "비밀번호 변경", description = "회원의 비밀번호를 변경합니다.")
+    @PostMapping("/change-password")
+    public void changePassword() {
+        // 비밀번호 변경 로직
+    }
 
+    @Operation(summary = "회원 탈퇴", description = "현재 로그인한 회원을 탈퇴 처리합니다.")
+    @GetMapping("/withdraw")
+    public void withdrawUser() {
+        // 회원 탈퇴 로직
+    }
 
+    @Operation(summary = "회원 정보 수정", description = "회원의 개인정보를 수정합니다.")
+    @PostMapping("/update")
+    public void updateUserInfo() {
+        // 회원 정보 수정 로직
+    }
 
-
-
+    @Operation(summary = "회원 상세 정보 조회", description = "회원의 상세 정보를 조회합니다.")
+    @GetMapping("/detail")
+    public void getUserDetail() {
+        // 상세 조회 로직
+    }
 }
