@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-@Setter
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,11 +21,11 @@ public class ProductPrice extends BaseEntity {
     private String product_code;
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_idx")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "condition_idx")
     private Condition condition;
 }

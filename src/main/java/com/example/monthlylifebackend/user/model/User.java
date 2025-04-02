@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.user.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
+import com.example.monthlylifebackend.subscribe.model.Cart;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -12,12 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Schema(description = "사용자")
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +45,15 @@ public class User extends BaseEntity {
 
     private LocalDate birth;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Subscribe> subscribeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Cart> cartList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<UserHasUserTag> userHasUserTagList = new ArrayList<>();
+
+
 
 }

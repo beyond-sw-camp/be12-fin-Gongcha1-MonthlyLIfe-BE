@@ -30,23 +30,19 @@ public class Item extends BaseEntity {
 
     private String isAvailable;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_idx")
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "itemLocation_idx")
     private ItemLocation itemLocation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "condition_idx")
     private Condition condition;
 
-    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Subscribe> subscribeList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RepairRecord> repairRecordList;
 
 }
 
