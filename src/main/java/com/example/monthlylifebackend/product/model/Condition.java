@@ -13,7 +13,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity 
+@Entity
+@Table(name = "`condition`")
 // 상품 상태
 public class Condition extends BaseEntity {
     @Id
