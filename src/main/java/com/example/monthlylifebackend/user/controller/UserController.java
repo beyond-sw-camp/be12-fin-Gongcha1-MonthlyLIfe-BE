@@ -21,7 +21,7 @@ public class UserController {
     }
 
     @Operation(summary = "아이디/비밀번호 찾기", description = "아이디 또는 비밀번호를 찾습니다.")
-    @PostMapping("/find-account")
+    @PostMapping ("/find-account")
     public void findIdOrPassword() {
         // 아이디/비밀번호 찾기 로직
     }
