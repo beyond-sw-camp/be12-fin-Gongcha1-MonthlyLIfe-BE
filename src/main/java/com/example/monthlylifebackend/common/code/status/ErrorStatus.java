@@ -18,8 +18,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
 
     // User 에러
-    _NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER400", "사용자가 존재하지 않습니다.");
-
+    _NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER4000", "사용자가 존재하지 않습니다."),
+    _DUPLICATED_USER(HttpStatus.BAD_REQUEST, "USER4001", "중복된 ID 입니다.");
 
 
     private final HttpStatus httpStatus;
