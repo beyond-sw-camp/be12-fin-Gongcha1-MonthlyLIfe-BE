@@ -38,7 +38,7 @@ public class PostSignupReq {
     @Schema(description = "이메일(이메일양식)", example = "test@test.com")
     @Email
     @NotNull
-    private String eamil;
+    private String email;
 
     @Schema(description = "유저 기본 주소(100자 이내)", example = "서울시 동작구 보라매로 87")
     @Size(max=100)

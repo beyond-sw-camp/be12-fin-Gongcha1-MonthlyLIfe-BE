@@ -6,6 +6,7 @@ import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,8 +38,9 @@ public class User extends BaseEntity   {
     private String name;
 
     @Column(length = 50, nullable = false)
-    private String eamil;
+    private String email;
 
+    @ColumnDefault("true")
     private boolean isDelayed;
 
 
