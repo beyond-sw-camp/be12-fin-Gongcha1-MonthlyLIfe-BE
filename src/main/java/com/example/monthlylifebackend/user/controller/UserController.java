@@ -1,9 +1,13 @@
 package com.example.monthlylifebackend.user.controller;
 
+import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
 import com.example.monthlylifebackend.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,8 +20,10 @@ public class UserController {
 
     @Operation(summary = "회원가입", description = "신규 회원을 등록합니다.")
     @PostMapping("/register")
-    public void registerUser() {
-        // 회원가입 로직
+    public ResponseEntity<BaseResponse<Boolean>> registerUser(@RequestBody @Valid PostSignupReq dto) {
+        // 회원가입
+        BaseResponse<Boolean> result = BaseResponse.created(userService.signup(dto));
+        return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "아이디/비밀번호 찾기", description = "아이디 또는 비밀번호를 찾습니다.")
