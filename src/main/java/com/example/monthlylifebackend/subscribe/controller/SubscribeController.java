@@ -1,5 +1,7 @@
 package com.example.monthlylifebackend.subscribe.controller;
 
+import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,11 +16,43 @@ public class SubscribeController {
 
     private final SubscribeService subscribeService;
 
+
+    @Operation(summary = "상품 구독 신청서", description = "상품을 구독하고 계약을 시작합니다.")
+    @GetMapping("/subscribe")
+    public GetSubscribePageResDto GetSubscription(@RequestParam("saleIdx") Long saleIdx,
+                                                  @RequestParam("period") int period, @RequestParam("id") String id) {
+
+
+
+
+        return subscribeService.getSubscription(id,saleIdx , period);
+    }
+
+
+
+
     @Operation(summary = "상품 구독 생성", description = "상품을 구독하고 계약을 시작합니다.")
-    @PostMapping("/create")
-    public void createSubscription() {
+    @PostMapping("/subscribe")
+    public void createSubscription(@RequestBody PostRentalDeliveryReqDto reqDto) {
+
+
+        String id ="1";
+
+        subscribeService.createSubcription(reqDto ,id);
+
+
+
+
+
+
+    }
+
+    @Operation(summary = "카트 상품 구독 생성", description = "상품을 구독하고 계약을 시작합니다.")
+    @PostMapping("/subscribe/cart")
+    public void createCartSubscription() {
         // 구독 생성 및 계약 시작 로직
     }
+
 
     @Operation(summary = "구독 취소 신청", description = "현재 구독을 취소 신청합니다.")
     @PostMapping("/cancel")

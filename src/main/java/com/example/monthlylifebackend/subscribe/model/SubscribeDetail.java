@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,11 @@ public class SubscribeDetail extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
+
+    private LocalDateTime start_at;
+
+    private LocalDateTime endAt;
+
     @ManyToOne
     @JoinColumn(name = "sale_idx")
     private Sale sale;
@@ -29,6 +35,12 @@ public class SubscribeDetail extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "subscribe_idx")
     private Subscribe subscribe;
+
+
+
+
+
+
 
     @OneToMany(mappedBy = "subscribeDetail")
     private List<RepairRequest> repairRequestList = new ArrayList<>();

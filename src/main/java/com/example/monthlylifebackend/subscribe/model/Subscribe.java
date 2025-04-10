@@ -21,17 +21,9 @@ public class Subscribe extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    private int price;
 
-    private String period;
 
-    private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
-
-    private LocalDateTime startAt;
-
-    private LocalDateTime endAt;
 
     @ManyToOne
     @JoinColumn(name = "payment_idx")
