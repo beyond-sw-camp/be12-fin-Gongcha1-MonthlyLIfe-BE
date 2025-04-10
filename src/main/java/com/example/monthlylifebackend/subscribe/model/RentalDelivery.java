@@ -23,7 +23,7 @@ public class RentalDelivery extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idx;
+    private Long idx;
 
     private String recipientName;
 

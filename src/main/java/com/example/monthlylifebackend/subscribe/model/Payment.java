@@ -19,6 +19,10 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
+
+    private int cardNumber;
+
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
