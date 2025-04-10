@@ -20,6 +20,7 @@ import com.example.monthlylifebackend.support.repository.PaymentRepository;
 import com.example.monthlylifebackend.support.repository.RentalDeliveryRepository;
 import com.example.monthlylifebackend.user.model.User;
 import com.example.monthlylifebackend.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +43,8 @@ public class SubscribeService {
     private final RentalDeliveryRepository rentalDeliveryRepository;
     private final SubscribeDetailRepository subscribeDetailRepository;
 
+
+    @Transactional
     public void createSubcription(PostRentalDeliveryReqDto reqDto , String id) {
 
 
@@ -67,8 +70,6 @@ public class SubscribeService {
         RentalDelivery rs = subscribeMapper.toRentalDelivery(reqDto, subscribeDetail);
 
         rentalDeliveryRepository.save(rs);
-
-
 
 
     }

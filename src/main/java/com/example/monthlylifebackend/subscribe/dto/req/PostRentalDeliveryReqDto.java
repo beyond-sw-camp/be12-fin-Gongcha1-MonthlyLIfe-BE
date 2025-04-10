@@ -19,7 +19,6 @@ public class PostRentalDeliveryReqDto {
     // 구독 디테일부분 받을거
 
     private Long sale_idx;
-    private LocalDateTime start_at;
     private int period;
     private int price;
 

@@ -14,12 +14,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
-
 @Mapper(componentModel = "spring") // Spring Bean으로 등록
 public interface SubscribeMapper {
-
-
-
 
     @Mapping(source = "sale.name", target = "saleName")
     @Mapping(source = "salePrice.period", target = "period")
@@ -28,27 +24,20 @@ public interface SubscribeMapper {
     @Mapping(source = "user.email", target = "email")
     GetSubscribePageResDto getSubscriptionResDto(Sale sale, SalePrice salePrice, User user);
 
-
     @Mapping(source = "user", target = "user")
     @Mapping(source = "payment", target = "payment")
     Subscribe tosubscribe(User user , Payment payment);
 
-
-
     @Mapping(source = "dto.sale_idx", target = "sale.idx")  // sale_idx를 Sale 객체의 idx로 매핑
-    @Mapping(source = "dto.start_at", target = "start_at")
+    @Mapping(target = "start_at", expression = "java(java.time.LocalDateTime.now())")  // start_at에 현재 시간 적용
     @Mapping(source = "subscribe", target = "subscribe")
-    @Mapping(target = "endAt", expression = "java(calculateEndAt(dto.getStart_at(), dto.getPeriod()))")  // endAt 계산
-    SubscribeDetail tosubscribedetail(Subscribe subscribe ,PostRentalDeliveryReqDto dto);
+    @Mapping(target = "endAt", expression = "java(calculateEndAt(java.time.LocalDateTime.now(), dto.getPeriod()))")  // endAt 계산
+    SubscribeDetail tosubscribedetail(Subscribe subscribe, PostRentalDeliveryReqDto dto);
 
     // 개월 수 더하는 로직
     default LocalDateTime calculateEndAt(LocalDateTime start_at, int period) {
         return start_at.plusMonths(period);  // period만큼 월을 더해 계산
     }
-
-
-
-
 
     @Mapping(source = "dto.recipientName", target = "recipientName")
     @Mapping(source = "dto.recipientPhone", target = "recipientPhone")
@@ -65,6 +54,4 @@ public interface SubscribeMapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())") // 생성시간 자동 설정
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())") // 업데이트 시간 자동 설정
     RentalDelivery toRentalDelivery(PostRentalDeliveryReqDto dto ,SubscribeDetail subscribeDetail);
-
-
 }
