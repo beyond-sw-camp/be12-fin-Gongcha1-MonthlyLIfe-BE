@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class PostProductRegisterReq {
 
@@ -23,5 +25,8 @@ public class PostProductRegisterReq {
     private String description;
 
     @Schema(description = "제조사", example = "삼성전자")
-    private String ManuFacturer;
+    private String manufacturer;
+
+//    @Schema(description = "상품 이미지 리스트")
+//    private List<PostProductImageReq> productImages;
 }

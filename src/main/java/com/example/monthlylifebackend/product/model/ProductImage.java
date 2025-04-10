@@ -6,12 +6,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Schema(description = "상품 이미지")
 public class ProductImage extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +20,5 @@ public class ProductImage extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "product_idx")
     private Product product;
+
 }
