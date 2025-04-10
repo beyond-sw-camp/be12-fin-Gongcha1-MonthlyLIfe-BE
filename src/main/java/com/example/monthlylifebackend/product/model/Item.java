@@ -26,12 +26,14 @@ public class Item extends BaseEntity {
 
     private String isAvailable;
 
+    private int count;
+
     @ManyToOne
     @JoinColumn(name = "product_idx")
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "itemLocation_idx")
+    @JoinColumn(name = "itemlocation_idx")
     private ItemLocation itemLocation;
 
     @ManyToOne

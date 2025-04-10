@@ -21,6 +21,7 @@ public class Subscribe extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
+    //주문 시 총 가격
     private int price;
 
     private String period;
@@ -38,7 +39,7 @@ public class Subscribe extends BaseEntity {
     private Payment payment;
 
     @ManyToOne
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "subscribe")
