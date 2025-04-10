@@ -50,6 +50,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
 
+    // Mapper
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor
+    implementation("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
     //테스트 코드 관련
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
