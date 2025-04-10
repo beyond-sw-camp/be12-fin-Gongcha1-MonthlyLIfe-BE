@@ -22,6 +22,9 @@ public class SubscribeDetail extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
+    //한 판매 상품당 가격
+    private int price;
+
     @ManyToOne
     @JoinColumn(name = "sale_idx")
     private Sale sale;
