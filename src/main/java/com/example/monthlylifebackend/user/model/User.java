@@ -39,11 +39,14 @@ public class User extends BaseEntity   {
     @Column(length = 50, nullable = false)
     private String eamil;
 
-    private Enum isDelayed;
+    private boolean isDelayed;
 
 
     @Column(length = 100)
     private String address1;
+
+    @Column(length = 100)
+    private String address2;
     
     private LocalDate birth;
 
