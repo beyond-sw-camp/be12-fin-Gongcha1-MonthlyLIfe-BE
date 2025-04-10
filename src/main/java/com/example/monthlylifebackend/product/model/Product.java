@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,8 +22,9 @@ public class Product extends BaseEntity {
     private String description;
     private String code;
     private String name;
+    private String manufacturer;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",  cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> productImageList = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
