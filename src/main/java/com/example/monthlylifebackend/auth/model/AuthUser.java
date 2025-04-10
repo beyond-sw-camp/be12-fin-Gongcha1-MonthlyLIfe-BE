@@ -3,7 +3,6 @@ package com.example.monthlylifebackend.auth.model;
 import com.example.monthlylifebackend.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

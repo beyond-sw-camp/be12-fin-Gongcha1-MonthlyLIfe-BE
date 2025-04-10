@@ -2,6 +2,7 @@ package com.example.monthlylifebackend.config;
 
 import com.example.monthlylifebackend.config.filter.JwtFilter;
 import com.example.monthlylifebackend.config.filter.LoginFilter;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authConfiguration;
+    private final Validator validator;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,7 +41,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll() // 모든 요청 허용
                 );
 
-        http.addFilterAt(new LoginFilter(authConfiguration.getAuthenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new LoginFilter(authConfiguration.getAuthenticationManager(), validator), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

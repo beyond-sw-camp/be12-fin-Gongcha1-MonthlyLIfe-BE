@@ -28,9 +28,6 @@ public class User extends BaseEntity   {
     @Column(length = 20, nullable = false)
     private String phoneNumber;
 
-    @Column(length = 20, nullable = false)
-    private String nickName;
-
     @Column(length = 256)
     private String password;
 
@@ -60,6 +57,10 @@ public class User extends BaseEntity   {
 
     @OneToMany(mappedBy = "user")
     private List<UserHasUserTag> userHasUserTagList = new ArrayList<>();
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
 
 
