@@ -22,11 +22,12 @@ public class UserService {
     private final UserMapper userMapper;
 
     @Transactional
-    public boolean signup(PostSignupReq dto) {
+    public String signup(PostSignupReq dto) {
+        // TODO : 동시에 유저를 회원가입시키면 충돌나서 락을 걸거나 다른 로직을 도입해야 한다.
         Optional<User> check = userRepository.findById(dto.getId());
         if(check.isPresent()) throw new UserHandler(_DUPLICATED_USER);
 
         userRepository.save(userMapper.toEntity(dto));
-        return true;
+        return dto.getId();
     }
 }

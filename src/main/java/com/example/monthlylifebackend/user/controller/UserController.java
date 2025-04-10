@@ -20,9 +20,9 @@ public class UserController {
 
     @Operation(summary = "회원가입", description = "신규 회원을 등록합니다.")
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<Boolean>> registerUser(@RequestBody @Valid PostSignupReq dto) {
+    public ResponseEntity<BaseResponse<String>> registerUser(@RequestBody @Valid PostSignupReq dto) {
         // 회원가입
-        BaseResponse<Boolean> result = BaseResponse.created(userService.signup(dto));
+        BaseResponse<String> result = BaseResponse.created(userService.signup(dto));
         return ResponseEntity.ok(result);
     }
 

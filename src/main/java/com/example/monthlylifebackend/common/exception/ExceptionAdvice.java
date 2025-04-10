@@ -81,7 +81,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 e,
                 body,
                 headers,
-                code.getReason().getHttpStatus(),
+                code.getReasonHttpStatus().getHttpStatus(),
                 webRequest
         );
     }
