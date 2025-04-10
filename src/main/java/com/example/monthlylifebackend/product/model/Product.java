@@ -23,6 +23,7 @@ public class Product extends BaseEntity {
     private String description;
     private String code;
     private String name;
+    private String Manufacturer;
 
     @OneToMany(mappedBy = "product")
     private List<ProductImage> productImageList = new ArrayList<>();
