@@ -51,6 +51,6 @@ public class ProductQueryController {
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<GetProductDetailRes>> getProductDetail(@PathVariable("id") Long productId) {
         GetProductDetailRes detail = productService.getProductDetail(productId);
-        return ResponseEntity.ok(BaseResponse.onSuccess(detail));
+        return ResponseEntity.ok(BaseResponse.created(detail));
     }
 }
