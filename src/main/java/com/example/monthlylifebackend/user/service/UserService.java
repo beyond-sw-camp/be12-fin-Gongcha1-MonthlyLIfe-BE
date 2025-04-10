@@ -7,19 +7,27 @@ import com.example.monthlylifebackend.user.mapper.UserMapper;
 import com.example.monthlylifebackend.user.model.User;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._DUPLICATED_USER;
+import static com.example.monthlylifebackend.common.code.status.ErrorStatus._NOT_FOUND_USER;
 
 @Service
 @RequiredArgsConstructor
  
 public class UserService {
     private final UserRepository userRepository;
+
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+
+    public User getUser(String id) {
+        return userRepository.findById(id).orElseThrow( () -> new UserHandler(_NOT_FOUND_USER) );
+    }
 
     @Transactional
     public String signup(PostSignupReq dto) {
@@ -27,7 +35,9 @@ public class UserService {
         Optional<User> check = userRepository.findById(dto.getId());
         if(check.isPresent()) throw new UserHandler(_DUPLICATED_USER);
 
-        userRepository.save(userMapper.toEntity(dto));
-        return dto.getId();
+        User user = userMapper.toEntity(dto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return user.getId();
     }
 }
