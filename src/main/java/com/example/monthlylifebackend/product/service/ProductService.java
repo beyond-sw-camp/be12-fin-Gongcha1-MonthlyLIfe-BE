@@ -16,13 +16,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
- 
+
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
     public Long registerProduct(PostProductRegisterReq dto) {
-         return productRepository.save(productMapper.toEntity(dto)).getIdx();
+//        return productRepository.save(productMapper.toEntity(dto)).getIdx();
+        Product product = productMapper.toEntityWithImages(dto);
+        Product savedProduct = productRepository.save(product);
+        return savedProduct.getIdx();
     }
 
     // 상품 목록 조회

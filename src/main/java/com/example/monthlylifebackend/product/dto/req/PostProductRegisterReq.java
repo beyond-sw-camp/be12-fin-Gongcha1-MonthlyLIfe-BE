@@ -27,6 +27,6 @@ public class PostProductRegisterReq {
     @Schema(description = "제조사", example = "삼성전자")
     private String manufacturer;
 
-//    @Schema(description = "상품 이미지 리스트")
-//    private List<PostProductImageReq> productImages;
+    @Schema(description = "상품 이미지 리스트")
+    private List<PostProductImageReq> productImages;
 }
