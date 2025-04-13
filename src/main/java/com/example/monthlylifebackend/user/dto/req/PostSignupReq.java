@@ -11,7 +11,7 @@ import java.time.LocalDate;
 
 @Getter
 public class PostSignupReq {
-    @Schema(description = "유저 아이디(영문자,숫자 6 ~ 20자)",  example = "test")
+    @Schema(description = "유저 아이디(영문자,숫자 6 ~ 20자)",  example = "test01")
     @Pattern(regexp = "^[a-zA-Z0-9]{6,20}$")
     @NotNull
     private String id;
@@ -20,11 +20,6 @@ public class PostSignupReq {
     @Pattern(regexp = "^\\d{9,11}$")
     @NotNull
     private String phoneNumber;
-
-    @Schema(description = "유저 닉네임(영문자, 숫자 6 ~ 20자)",  example = "testNick")
-    @Pattern(regexp = "^[a-zA-Z0-9]{6,20}$")
-    @NotNull
-    private String nickName;
 
     @Schema(description = "비밀번호(영문자, 숫자, 특수문자 8~20자, 영어 숫자 1개씩 포함",  example = "qwer1234")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d!@#$%^&*()_+{}|:;<>,.?/~`]{8,20}$")
