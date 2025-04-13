@@ -39,3 +39,4 @@ out/
 ##각자 개발 환경
 src/main/resources/application-dev.yml
 Dockerfile
+docker-compose.yml
