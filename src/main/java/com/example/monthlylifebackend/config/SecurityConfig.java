@@ -1,7 +1,9 @@
 package com.example.monthlylifebackend.config;
 
+import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.config.filter.JwtFilter;
 import com.example.monthlylifebackend.config.filter.LoginFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +51,9 @@ public class SecurityConfig {
                 .logoutSuccessHandler((request, response, authentication) -> {
                     // 로그아웃 후 추가 작업 (예: JWT 쿠키 삭제 등)
                     response.setStatus(HttpServletResponse.SC_OK);
-//                    response.getWriter().write("Successfully logged out");
+                    //BaseResponse에 담아 보내기
+                    BaseResponse<String> dto = BaseResponse.onSuccess("Successfully logged out");
+                    response.getWriter().write(new ObjectMapper().writeValueAsString(dto));
                 })
         );
         

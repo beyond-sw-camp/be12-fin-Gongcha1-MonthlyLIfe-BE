@@ -78,8 +78,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType("application/json");
 
         // 만약 로그인 시 정보가 필요하다면 반환
-//        BaseResponse<LoginResp> dto = BaseResponse.success(LoginResp.of(user));
-//        response.getWriter().write(new ObjectMapper().writeValueAsString(dto));
+        BaseResponse<String> dto = BaseResponse.onSuccess(aUser.getUser().getId());
+        response.getWriter().write(new ObjectMapper().writeValueAsString(dto));
     }
 
     private void sendErrorResponse(HttpServletResponse response, BaseErrorCode errorCode, String details) {
