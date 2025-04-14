@@ -4,6 +4,7 @@ package com.example.monthlylifebackend.product.controller;
 import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.product.dto.res.GetProductDetailRes;
 import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
+import com.example.monthlylifebackend.product.facade.ProductFacade;
 import com.example.monthlylifebackend.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,13 +23,13 @@ import java.util.List;
 @Tag(name = "상품 조회", description = "사용자용 상품 조회 API (목록, 검색, 상세 등)")
 public class ProductQueryController {
 
-    private final ProductService productService;
+    private final ProductFacade productFacade;
 
 
     @Operation(summary = "상품 목록 조회", description = "상품 목록을 조회합니다.")
     @GetMapping("/list")
     public ResponseEntity<BaseResponse<List<GetProductListRes>>> getProductList() {
-        List<GetProductListRes> productList = productService.getProductList();
+        List<GetProductListRes> productList = productFacade.getProductList();
         return ResponseEntity.ok(BaseResponse.created(productList));
     }
 
@@ -49,7 +50,7 @@ public class ProductQueryController {
     @Operation(summary = "상품 상세 조회", description = "상품 ID로 상세 정보를 조회합니다.")
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<GetProductDetailRes>> getProductDetail(@PathVariable("id") Long productId) {
-        GetProductDetailRes detail = productService.getProductDetail(productId);
+        GetProductDetailRes detail = productFacade.getProductDetail(productId);
         return ResponseEntity.ok(BaseResponse.created(detail));
     }
 }

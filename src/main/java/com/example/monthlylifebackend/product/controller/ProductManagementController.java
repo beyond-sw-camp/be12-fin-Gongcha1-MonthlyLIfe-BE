@@ -2,6 +2,7 @@ package com.example.monthlylifebackend.product.controller;
 
 import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.product.dto.req.PostProductRegisterReq;
+import com.example.monthlylifebackend.product.facade.ProductFacade;
 import com.example.monthlylifebackend.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Tag(name = "상품/재고 관리", description = "관리자용 상품 등록, 수정, 재고 처리 API")
 public class ProductManagementController {
-    private final ProductService productService;
+    private final ProductFacade productFacade;
 
     @Operation(summary = "상품 등록", description = "신규 상품을 등록합니다.")
     @PostMapping("/create")
     public ResponseEntity<BaseResponse<String>> registerProduct(@RequestBody @Valid PostProductRegisterReq dto) {
         // 상품 등록 처리
-        BaseResponse<String> result = BaseResponse.created(productService.registerProduct(dto));
+        BaseResponse<String> result = BaseResponse.created(productFacade.registerProduct(dto));
         return ResponseEntity.ok(result);
     }
 
