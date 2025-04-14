@@ -28,6 +28,9 @@ public class SubscribeDetail extends BaseEntity {
 
     private LocalDateTime endAt;
 
+    //한 판매 상품당 가격
+    private int price;
+
     @ManyToOne
     @JoinColumn(name = "sale_idx")
     private Sale sale;

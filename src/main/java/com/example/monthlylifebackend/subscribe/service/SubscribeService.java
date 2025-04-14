@@ -1,21 +1,12 @@
 package com.example.monthlylifebackend.subscribe.service;
 
 
-import com.example.monthlylifebackend.product.model.Sale;
-import com.example.monthlylifebackend.product.model.SalePrice;
-import com.example.monthlylifebackend.product.repository.ProductRepository;
-import com.example.monthlylifebackend.product.repository.SaleHasProductRepository;
-import com.example.monthlylifebackend.product.repository.SalePriceRepository;
-import com.example.monthlylifebackend.product.repository.SaleRepository;
-import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
-import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
-import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
-import com.example.monthlylifebackend.subscribe.model.Payment;
-import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
-import com.example.monthlylifebackend.subscribe.model.Subscribe;
-import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
-import com.example.monthlylifebackend.subscribe.repository.SubscribeDetailRepository;
+import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.repository.SubscribeRepository;
+ import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import com.example.monthlylifebackend.support.repository.PaymentRepository;
 import com.example.monthlylifebackend.support.repository.RentalDeliveryRepository;
 import com.example.monthlylifebackend.user.model.User;
@@ -33,6 +24,11 @@ public class SubscribeService {
 
 
     private final SubscribeRepository subscribeRepository;
+
+    public Page<GetDeliveryListRes> findDeliveryListByPage(int page, int size) {
+        Page<GetDeliveryListRes> pagedto = (Page<GetDeliveryListRes>) subscribeRepository.findDeliveryList(PageRequest.of(page,size));
+        return pagedto;
+    }
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final SaleHasProductRepository saleHasProductRepository;

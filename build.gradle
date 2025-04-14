@@ -37,8 +37,8 @@ dependencies {
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 
     //security 설정
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    testImplementation 'org.springframework.security:spring-security-test'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    testImplementation 'org.springframework.security:spring-security-test'
 
     //Swagger-ui
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
@@ -55,6 +55,11 @@ dependencies {
     // https://mvnrepository.com/artifact/org.mapstruct/mapstruct-processor
     annotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
 
+    //jwt 토큰 생성
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    
     //예외 및 유효성 검사
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
