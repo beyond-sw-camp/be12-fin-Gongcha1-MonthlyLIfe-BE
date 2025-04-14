@@ -1,12 +1,12 @@
 package com.example.monthlylifebackend.subscribe.dto.req;
 
-import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Getter
@@ -18,9 +18,7 @@ public class PostRentalDeliveryReqDto {
 
     // 구독 디테일부분 받을거
 
-    private Long sale_idx;
-    private int period;
-    private int price;
+    private List<ProductRequestDto> products;
 
 
 

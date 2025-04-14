@@ -4,6 +4,7 @@ package com.example.monthlylifebackend.subscribe.mapper;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
+import com.example.monthlylifebackend.subscribe.dto.req.ProductRequestDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.model.Payment;
 import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
@@ -28,9 +29,9 @@ public interface SubscribeMapper {
     @Mapping(target = "idx", ignore = true)  // idx는 자동 생성되므로 매핑에서 제외
     @Mapping(source = "user", target = "user")
     @Mapping(source = "payment", target = "payment")
-    @Mapping(source = "reqDto.price", target = "price")
-    @Mapping(source = "reqDto.period", target = "period")
-    Subscribe tosubscribe(User user , Payment payment,PostRentalDeliveryReqDto reqDto);
+    Subscribe tosubscribe(User user , Payment payment , ProductRequestDto productRequestDto);
+
+
 
 
     @Mapping(target = "idx", ignore = true)  // idx는 자동 생성되므로 매핑에서 제외
@@ -39,12 +40,13 @@ public interface SubscribeMapper {
     @Mapping(target = "start_at", expression = "java(java.time.LocalDateTime.now())")  // start_at에 현재 시간 적용
     @Mapping(source = "subscribe", target = "subscribe")
     @Mapping(target = "endAt", expression = "java(calculateEndAt(java.time.LocalDateTime.now(), dto.getPeriod()))")  // endAt 계산
-    SubscribeDetail tosubscribedetail(Subscribe subscribe, PostRentalDeliveryReqDto dto ,Sale sale);
+    SubscribeDetail tosubscribedetail(Subscribe subscribe, ProductRequestDto dto, Sale sale);
 
     // 개월 수 더하는 로직
     default LocalDateTime calculateEndAt(LocalDateTime start_at, int period) {
         return start_at.plusMonths(period);  // period만큼 월을 더해 계산
     }
+
 
     @Mapping(target = "idx", ignore = true)
     @Mapping(source = "dto.recipientName", target = "recipientName")

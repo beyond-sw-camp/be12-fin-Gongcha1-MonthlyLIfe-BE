@@ -8,6 +8,7 @@ import com.example.monthlylifebackend.product.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
+import com.example.monthlylifebackend.subscribe.dto.req.ProductRequestDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
@@ -34,7 +35,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-
 public class SubscribeService {
 
 
@@ -58,32 +58,46 @@ public class SubscribeService {
 
     //구독 할때 결제 할때
     @Transactional
-    public void createSubcription(PostRentalDeliveryReqDto reqDto, String id) {
+    public void createSubscription(PostRentalDeliveryReqDto reqDto, String id) {
+
+
+        // Todo list -> 나중에 생각해야하는거 일단 단일 여러개의 제품을 받아서 상품 구매 까지는
+        //  가능은한데 패키지? 는 나중에 생각해야할수도있음 .
+
+
+        // 임시 유저 and 페이먼트 임시 생성이라 지워도됌 ***********************
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("유저 없음"));
 
-        // Payment 저장
         Payment payment = Payment.builder().cardNumber(123123).build();
         paymentRepository.save(payment);
+        // *************************
 
-        // Sale 조회
-        Sale sale = saleRepository.findByIdx(reqDto.getSale_idx())
-                .orElseThrow(() -> new RuntimeException("해당 세일 없음"));
 
-        // Subscribe 생성
-        Subscribe subscribe = subscribeMapper.tosubscribe(user, payment, reqDto);
 
-        // SubscribeDetail 생성 및 Subscribe에 연결
-        SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, reqDto, sale);
 
-        subscribe.getSubscribeDetailList().add(subscribeDetail);
 
-        // Subscribe 저장 (Cascade ALL에 의해 subscribeDetail도 함께 persist됨)
+
+
+        Subscribe subscribe = subscribeMapper.tosubscribe(user, payment, reqDto.getProducts().get(0));
         subscribeRepository.save(subscribe);
 
-        // RentalDelivery 생성
-        RentalDelivery rs = subscribeMapper.toRentalDelivery(reqDto, subscribeDetail);
-        rentalDeliveryRepository.save(rs);
+
+        for (ProductRequestDto product : reqDto.getProducts()) {
+            // Sale 조회
+            Sale sale = saleRepository.findByIdx(product.getSale_idx())
+                    .orElseThrow(() -> new RuntimeException("해당 세일 없음"));
+
+            SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, product, sale);
+            subscribeDetail.setSubscribe(subscribe);
+
+
+            subscribe.getSubscribeDetailList().add(subscribeDetail);
+
+
+            RentalDelivery delivery = subscribeMapper.toRentalDelivery(reqDto, subscribeDetail);
+            rentalDeliveryRepository.save(delivery);
+        }
     }
 
 

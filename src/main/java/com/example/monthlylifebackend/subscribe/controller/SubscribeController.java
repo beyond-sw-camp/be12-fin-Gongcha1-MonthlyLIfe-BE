@@ -38,7 +38,7 @@ public class SubscribeController {
 
         String id ="1";
 
-        subscribeService.createSubcription(reqDto ,id);
+        subscribeService.createSubscription(reqDto ,id);
 
 
 
