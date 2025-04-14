@@ -1,7 +1,7 @@
 package com.example.monthlylifebackend.admin.mapper;
 
 import com.example.monthlylifebackend.admin.dto.request.PatchItemCountReq;
-import com.example.monthlylifebackend.product.model.Item;
+import com.example.monthlylifebackend.item.model.Item;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

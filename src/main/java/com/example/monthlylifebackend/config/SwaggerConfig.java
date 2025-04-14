@@ -57,12 +57,12 @@ public class SwaggerConfig {
                             .addProperty("password", new StringSchema().example("qwer1234"));
 
                     // 로그인 API 추가
-                    addApiPath(openApi, "/login", "POST", "로그인", loginSchema);
+                    addApiPath(openApi, "/auth/login", "POST", "로그인", loginSchema);
                 }
 
                 // 로그아웃 API 추가 (입력값 없음)
             }
-            addApiPath(openApi, "/logout", "GET", "로그아웃", null);
+            addApiPath(openApi, "/auth/logout", "GET", "로그아웃", null);
 
         };
     }

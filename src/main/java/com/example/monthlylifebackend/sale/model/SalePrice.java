@@ -1,28 +1,35 @@
-package com.example.monthlylifebackend.product.model;
+package com.example.monthlylifebackend.sale.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
-import com.example.monthlylifebackend.user.model.UserTag;
+import com.example.monthlylifebackend.subscribe.model.Cart;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class SaleHasUserTag extends BaseEntity {
+public class SalePrice extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
+
+
+    private int price;
+    private int period;
+
+    @OneToMany(mappedBy = "salePrice")
+    private List<Cart> cartList = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "sale_idx")
     private Sale sale;
-
-    @ManyToOne
-    @JoinColumn(name = "userTag_idx")
-    private UserTag userTag;
 }
