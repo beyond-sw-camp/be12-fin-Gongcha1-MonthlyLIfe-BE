@@ -30,19 +30,19 @@ public class ProductService {
     private final ItemRepository itemRepository;
 
     public String registerProduct(PostProductRegisterReq dto) {
-        // 1. Product 생성
+        // Product 생성
         Product product = productMapper.toEntityWithImages(dto);
         productRepository.save(product);
 
-        // 2. Condition 조회
+        // Condition 조회
         Condition condition = conditionRepository.findByName(dto.getCondition())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 상태 등급입니다: " + dto.getCondition()));
 
-        // 3. ItemLocation 조회
+        // ItemLocation 조회
         ItemLocation location = itemLocationRepository.findByName(dto.getLocation())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 위치입니다: " + dto.getLocation()));
 
-        // 4. Item 생성
+        // Item 생성
         Item item = Item.builder()
                 .product(product)
                 .condition(condition)
@@ -50,7 +50,7 @@ public class ProductService {
                 .count(1)         // 기본 재고 수량 1개로 설정 (필요 시 수정)
                 .build();
 
-        itemRepository.save(item); // cascade 안 걸려있다면 명시적으로 저장
+        itemRepository.save(item);
 
         return product.getCode();
     }
