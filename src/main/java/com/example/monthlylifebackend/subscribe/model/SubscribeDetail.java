@@ -3,14 +3,12 @@ package com.example.monthlylifebackend.subscribe.model;
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.sale.model.Sale;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+@Setter
 @Getter
 @Builder
 @AllArgsConstructor
@@ -20,6 +18,11 @@ public class SubscribeDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
+
+
+    private LocalDateTime start_at;
+
+    private LocalDateTime endAt;
 
     //한 판매 상품당 가격
     private int price;
@@ -32,10 +35,18 @@ public class SubscribeDetail extends BaseEntity {
     @JoinColumn(name = "subscribe_idx")
     private Subscribe subscribe;
 
+
+    @Version
+    private Long version;
+
+
+
+
+
     @OneToMany(mappedBy = "subscribeDetail")
     private List<RepairRequest> repairRequestList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "subscribeDetail")
+    @OneToMany(mappedBy = "subscribeDetail", cascade = CascadeType.ALL)
     private List<RentalDelivery> rentalDeliveryList = new ArrayList<>();
 
     @OneToMany(mappedBy = "subscribeDetail")

@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+@Setter
 @Getter
 @Builder
 @AllArgsConstructor
@@ -23,24 +25,24 @@ public class Subscribe extends BaseEntity {
 
     private String period;
 
-    private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
-
-    private LocalDateTime startAt;
-
-    private LocalDateTime endAt;
 
     @ManyToOne
+    @JoinColumn(name = "user_idx")
+    private User user;
+
+
+    @ManyToOne(cascade = CascadeType.PERSIST)  // CascadeType.PERSIST 설정
     @JoinColumn(name = "payment_idx")
     private Payment payment;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
-    @OneToMany(mappedBy = "subscribe")
-    private List<SubscribeDetail> subscribeDetailList;
+    @Builder.Default
+    @OneToMany(mappedBy = "subscribe", cascade = CascadeType.ALL)  // CascadeType.ALL로 설정
+    private List<SubscribeDetail> subscribeDetailList = new ArrayList<>();
+
+    @Version
+    private Long version;
 
 
 
