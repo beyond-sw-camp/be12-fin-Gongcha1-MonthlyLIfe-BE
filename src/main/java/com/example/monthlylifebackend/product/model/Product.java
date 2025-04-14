@@ -1,7 +1,8 @@
 package com.example.monthlylifebackend.product.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.example.monthlylifebackend.item.model.Item;
+import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,8 +23,10 @@ public class Product extends BaseEntity {
     private String description;
     private String code;
     private String name;
+    private String manufacturer;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product",  cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default //Builder가 productImageList를 null로 생성했기 때문이며, @Builder.Default 애노테이션을 사용하면 해결됩니다.
     private List<ProductImage> productImageList = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")

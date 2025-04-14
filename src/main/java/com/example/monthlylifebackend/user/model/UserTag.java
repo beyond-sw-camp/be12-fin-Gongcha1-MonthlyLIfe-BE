@@ -1,7 +1,7 @@
 package com.example.monthlylifebackend.user.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
-import com.example.monthlylifebackend.product.model.SaleHasUserTag;
+import com.example.monthlylifebackend.sale.model.SaleHasUserTag;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

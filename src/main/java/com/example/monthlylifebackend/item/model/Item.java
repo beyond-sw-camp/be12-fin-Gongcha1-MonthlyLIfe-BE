@@ -1,6 +1,8 @@
-package com.example.monthlylifebackend.product.model;
+package com.example.monthlylifebackend.item.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
+import com.example.monthlylifebackend.product.model.Condition;
+import com.example.monthlylifebackend.product.model.Product;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
