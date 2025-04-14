@@ -74,11 +74,6 @@ public class SubscribeService {
         // *************************
 
 
-
-
-
-
-
         Subscribe subscribe = subscribeMapper.tosubscribe(user, payment, reqDto.getProducts().get(0));
         subscribeRepository.save(subscribe);
 
@@ -98,6 +93,7 @@ public class SubscribeService {
             RentalDelivery delivery = subscribeMapper.toRentalDelivery(reqDto, subscribeDetail);
             rentalDeliveryRepository.save(delivery);
         }
+
     }
 
 
