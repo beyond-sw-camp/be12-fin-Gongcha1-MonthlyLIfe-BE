@@ -17,6 +17,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -28,29 +29,38 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
-    private final AuthenticationManager authenticationManager;
-
     private final Validator validator;
 
+    public LoginFilter(AuthenticationManager authenticationManager, Validator validator) {
+        super(authenticationManager);
+        this.validator=validator;
+        setFilterProcessesUrl("/auth/login");
+    }
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-       UsernamePasswordAuthenticationToken token;
-        try {
-            PostLoginReq dto = new ObjectMapper().readValue(request.getInputStream(), PostLoginReq.class);
+        if (!request.getMethod().equals("POST")) {
+            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+        } else {
+            UsernamePasswordAuthenticationToken token;
+            try {
+                PostLoginReq dto = new ObjectMapper().readValue(request.getInputStream(), PostLoginReq.class);
 
-            Set<ConstraintViolation<PostLoginReq>> violations = validator.validate(dto);
+                Set<ConstraintViolation<PostLoginReq>> violations = validator.validate(dto);
 
-            if (!violations.isEmpty()) {
-                // 예: 첫 번째 에러만 뽑아서 메시지 던지기
-                String message = violations.iterator().next().getMessage();
-                sendErrorResponse(response, ErrorStatus._BAD_REQUEST, message);
+                if (!violations.isEmpty()) {
+                    // 예: 첫 번째 에러만 뽑아서 메시지 던지기
+                    String message = violations.iterator().next().getMessage();
+                    sendErrorResponse(response, ErrorStatus._BAD_REQUEST, message);
+                    throw new AuthenticationServiceException(message);
+                }
+
+                token = new UsernamePasswordAuthenticationToken(dto.getId(), dto.getPassword(), null);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-
-            token = new UsernamePasswordAuthenticationToken(dto.getId(), dto.getPassword(), null);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            return this.getAuthenticationManager().authenticate(token);
         }
-        return authenticationManager.authenticate(token);
+
     }
 
     @Override
@@ -68,8 +78,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType("application/json");
 
         // 만약 로그인 시 정보가 필요하다면 반환
-//        BaseResponse<LoginResp> dto = BaseResponse.success(LoginResp.of(user));
-//        response.getWriter().write(new ObjectMapper().writeValueAsString(dto));
+        BaseResponse<String> dto = BaseResponse.onSuccess(aUser.getUser().getId());
+        response.getWriter().write(new ObjectMapper().writeValueAsString(dto));
     }
 
     private void sendErrorResponse(HttpServletResponse response, BaseErrorCode errorCode, String details) {

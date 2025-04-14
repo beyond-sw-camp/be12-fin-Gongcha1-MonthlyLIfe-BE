@@ -1,7 +1,10 @@
 package com.example.monthlylifebackend.config;
 
+import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.config.filter.JwtFilter;
 import com.example.monthlylifebackend.config.filter.LoginFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +36,6 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.formLogin(AbstractHttpConfigurer::disable);
         http.sessionManagement(AbstractHttpConfigurer::disable);
-
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/**" // 전체 허용
@@ -41,6 +43,21 @@ public class SecurityConfig {
                         .anyRequest().permitAll() // 모든 요청 허용
                 );
 
+        //로그아웃 기능 설정
+        http.logout(logout -> logout
+                .logoutUrl("/auth/logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("ATOKEN")
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    // 로그아웃 후 추가 작업 (예: JWT 쿠키 삭제 등)
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    //BaseResponse에 담아 보내기
+                    BaseResponse<String> dto = BaseResponse.onSuccess("Successfully logged out");
+                    response.getWriter().write(new ObjectMapper().writeValueAsString(dto));
+                })
+        );
+        
+        //로그인 커스텀 필터 등록
         http.addFilterAt(new LoginFilter(authConfiguration.getAuthenticationManager(), validator), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
