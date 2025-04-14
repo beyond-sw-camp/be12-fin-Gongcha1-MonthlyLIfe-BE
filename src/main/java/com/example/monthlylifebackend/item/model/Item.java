@@ -43,6 +43,10 @@ public class Item extends BaseEntity {
     private Condition condition;
 
 
+    public void updateCount(int count) {
+        this.count = count;
+    }
+
 
 }
 

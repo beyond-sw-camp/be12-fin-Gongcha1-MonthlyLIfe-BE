@@ -30,7 +30,7 @@ public class AdminFacade {
 
     @Transactional
     public void modifyItemCount(PatchItemCountReq dto) {
-        itemService.modifyItemCount(itemMapper.toEntity(dto));
+        itemService.modifyItemCount(dto);
     }
 
     @Transactional(readOnly = true)
