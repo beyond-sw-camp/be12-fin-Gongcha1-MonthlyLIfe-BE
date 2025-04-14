@@ -1,13 +1,11 @@
 package com.example.monthlylifebackend.admin.repository;
 
 import com.example.monthlylifebackend.admin.dto.response.GetItemListRes;
-import com.example.monthlylifebackend.product.model.Item;
+import com.example.monthlylifebackend.item.model.Item;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 

@@ -1,7 +1,8 @@
-package com.example.monthlylifebackend.product.model;
+package com.example.monthlylifebackend.sale.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
-import com.example.monthlylifebackend.subscribe.model.Cart;
+import com.example.monthlylifebackend.product.model.Condition;
+import com.example.monthlylifebackend.product.model.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,13 +17,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class SalePrice extends BaseEntity {
+public class SaleHasProduct extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToMany(mappedBy = "salePrice")
-    private List<Cart> cartList = new ArrayList<>();
+    @OneToMany(mappedBy = "saleHasProduct")
+    private List<Condition> conditionList = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "product_code")
+    private Product product;
 
     @ManyToOne
     @JoinColumn(name = "sale_idx")
