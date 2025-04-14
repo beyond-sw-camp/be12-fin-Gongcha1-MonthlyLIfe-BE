@@ -1,6 +1,5 @@
-package com.example.monthlylifebackend.product.dto.req;
+package com.example.monthlylifebackend.sale.dto.req;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

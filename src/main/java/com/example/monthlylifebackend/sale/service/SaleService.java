@@ -1,12 +1,17 @@
-package com.example.monthlylifebackend.product.service;
+package com.example.monthlylifebackend.sale.service;
 
 
-import com.example.monthlylifebackend.product.dto.req.PostProductRegisterReq;
-import com.example.monthlylifebackend.product.dto.req.PostSaleRegisterReq;
-import com.example.monthlylifebackend.product.mapper.ProductMapper;
-import com.example.monthlylifebackend.product.mapper.SaleMapper;
+import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
+import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
+import com.example.monthlylifebackend.sale.mapper.SaleMapper;
 import com.example.monthlylifebackend.product.model.*;
 import com.example.monthlylifebackend.product.repository.*;
+import com.example.monthlylifebackend.sale.model.Sale;
+import com.example.monthlylifebackend.sale.model.SaleHasProduct;
+import com.example.monthlylifebackend.sale.model.SalePrice;
+import com.example.monthlylifebackend.sale.repository.SaleHasProductRepository;
+import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
+import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +61,26 @@ public class SaleService {
         salePriceRepository.saveAll(prices);
 
         return sale.getIdx();
+    }
+
+
+    public List<GetSaleListRes> getSalesByCategory(Long categoryIdx) {
+        List<Sale> sales = saleRepository.findByCategoryIdx(categoryIdx);
+
+        return sales.stream().map(sale ->
+                GetSaleListRes.builder()
+                        .name(sale.getName())
+                        .description(sale.getDescription())
+                        .productList(
+                                sale.getSaleHasProductList().stream().map(shp ->
+                                        GetSaleListRes.ProductInfo.builder()
+                                                .productCode(shp.getProduct().getCode())
+                                                .conditionName(shp.getCondition().getName())
+                                                .build()
+                                ).toList()
+                        )
+                        .build()
+        ).toList();
     }
 }
 

@@ -1,17 +1,18 @@
-package com.example.monthlylifebackend.product.controller;
+package com.example.monthlylifebackend.sale.controller;
 
 import com.example.monthlylifebackend.common.BaseResponse;
-import com.example.monthlylifebackend.product.dto.req.PostSaleRegisterReq;
-import com.example.monthlylifebackend.product.service.SaleService;
+import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
+import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
+import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
+import com.example.monthlylifebackend.sale.service.SaleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/sale")
@@ -27,4 +28,15 @@ public class SaleController {
         Long saleIdx = saleService.registerSale(dto);
         return ResponseEntity.ok(BaseResponse.created(saleIdx));
     }
+
+    @Operation(summary = "카테고리별 판매상품 목록 조회")
+    // GET /sale/category/1
+    @GetMapping("/category/{categoryIdx}")
+    public ResponseEntity<BaseResponse<List<GetSaleListRes>>> getSalesByCategory(
+            @PathVariable Long categoryIdx) {
+        List<GetSaleListRes> salesByCategory = saleService.getSalesByCategory(categoryIdx);
+        return ResponseEntity.ok(BaseResponse.created(salesByCategory));
+    }
+
+
 }
