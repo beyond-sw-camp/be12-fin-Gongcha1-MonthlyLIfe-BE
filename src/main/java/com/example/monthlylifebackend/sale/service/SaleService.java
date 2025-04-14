@@ -2,6 +2,7 @@ package com.example.monthlylifebackend.sale.service;
 
 
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
+import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.mapper.SaleMapper;
 import com.example.monthlylifebackend.product.model.*;
@@ -82,6 +83,35 @@ public class SaleService {
                         .build()
         ).toList();
     }
+
+    public GetSaleDetailRes getSaleDetailInCategory(Long categoryIdx, Long saleIdx) {
+        Sale sale = saleRepository.findByIdxAndCategoryIdx(saleIdx, categoryIdx)
+                .orElseThrow(() -> new RuntimeException("해당 카테고리에 판매상품이 없음"));
+
+        return GetSaleDetailRes.builder()
+                .name(sale.getName())
+                .description(sale.getDescription())
+                .categoryIdx(categoryIdx)
+                .productList(
+                        sale.getSaleHasProductList().stream().map(shp ->
+                                GetSaleDetailRes.ProductInfo.builder()
+                                        .productCode(shp.getProduct().getCode())
+                                        .conditionName(shp.getCondition().getName())
+                                        .build()
+                        ).toList()
+                )
+                .priceList(
+                        sale.getSalePriceList().stream().map(price ->
+                                GetSaleDetailRes.PriceInfo.builder()
+                                        .period(price.getPeriod())
+                                        .price(price.getPrice())
+                                        .build()
+                        ).toList()
+                )
+                .build();
+    }
+
+
 }
 
 

@@ -4,6 +4,7 @@ import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.sale.Facade.SaleFacade;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
+import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.service.SaleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,14 +31,24 @@ public class SaleController {
         return ResponseEntity.ok(BaseResponse.created(saleIdx));
     }
 
-    @Operation(summary = "카테고리별 판매상품 목록 조회")
-    // GET /sale/category/1
+    @Operation(summary = "카테고리별 판매상품 목록 조회", description = "카테고리별 판매 상품 목록을 조회합니다.")
     @GetMapping("/category/{categoryIdx}")
     public ResponseEntity<BaseResponse<List<GetSaleListRes>>> getSalesByCategory(
             @PathVariable Long categoryIdx) {
         List<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx);
         return ResponseEntity.ok(BaseResponse.created(salesByCategory));
     }
+
+    @Operation(summary = "카테고리 내 판매상품 상세 조회", description = "카테고리별로 조회된 판매상품 중 하나를 상세 조회합니다.")
+    @GetMapping("/category/{categoryIdx}/{saleIdx}")
+    public ResponseEntity<BaseResponse<GetSaleDetailRes>> getSaleDetailInCategory(
+            @PathVariable Long categoryIdx,
+            @PathVariable Long saleIdx) {
+
+        GetSaleDetailRes saleDetailInCategory = saleFacade.getSaleDetailInCategory(categoryIdx, saleIdx);
+        return ResponseEntity.ok(BaseResponse.created(saleDetailInCategory));
+    }
+
 
 
 }
