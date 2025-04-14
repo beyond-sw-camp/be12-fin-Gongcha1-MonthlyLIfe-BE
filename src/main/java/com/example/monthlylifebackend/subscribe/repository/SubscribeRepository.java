@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SubscribeRepository extends JpaRepository<Subscribe, Integer> {
+public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     @Query("""
     SELECT new com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes(
         s.idx,

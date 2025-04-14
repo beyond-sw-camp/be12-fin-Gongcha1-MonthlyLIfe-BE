@@ -39,6 +39,8 @@ public class SubscribeDetail extends BaseEntity {
     private Subscribe subscribe;
 
 
+    @Version
+    private Long version;
 
 
 

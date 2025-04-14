@@ -1,4 +1,5 @@
-package com.example.monthlylifebackend.subscribe.dto.res;
+package com.example.monthlylifebackend.subscribe.dto.req;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,18 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetSubscribePageResDto {
-
-    private String saleName;
-
+public class ProductRequestDto {
+    private Long sale_idx;
     private int period;
     private int price;
-
-
-    private String name;
-    private String email;
-
-
-
-
 }

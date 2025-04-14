@@ -1,6 +1,6 @@
 package com.example.monthlylifebackend.product.repository;
 
-import com.example.monthlylifebackend.product.model.SalePrice;
+import com.example.monthlylifebackend.sale.model.SalePrice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

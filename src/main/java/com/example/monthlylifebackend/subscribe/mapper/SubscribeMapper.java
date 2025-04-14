@@ -1,8 +1,8 @@
 package com.example.monthlylifebackend.subscribe.mapper;
 
 
-import com.example.monthlylifebackend.product.model.Sale;
-import com.example.monthlylifebackend.product.model.SalePrice;
+import com.example.monthlylifebackend.sale.model.Sale;
+import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.model.Payment;
@@ -24,21 +24,29 @@ public interface SubscribeMapper {
     @Mapping(source = "user.email", target = "email")
     GetSubscribePageResDto getSubscriptionResDto(Sale sale, SalePrice salePrice, User user);
 
+
+    @Mapping(target = "idx", ignore = true)  // idx는 자동 생성되므로 매핑에서 제외
     @Mapping(source = "user", target = "user")
     @Mapping(source = "payment", target = "payment")
-    Subscribe tosubscribe(User user , Payment payment);
+    @Mapping(source = "reqDto.price", target = "price")
+    @Mapping(source = "reqDto.period", target = "period")
+    Subscribe tosubscribe(User user , Payment payment,PostRentalDeliveryReqDto reqDto);
 
-    @Mapping(source = "dto.sale_idx", target = "sale.idx")  // sale_idx를 Sale 객체의 idx로 매핑
+
+    @Mapping(target = "idx", ignore = true)  // idx는 자동 생성되므로 매핑에서 제외
+    @Mapping(source = "dto.price", target = "price")  // sale_idx를 Sale 객체의 idx로 매핑
+    @Mapping(source = "sale", target = "sale")  // sale_idx를 Sale 객체의 idx로 매핑
     @Mapping(target = "start_at", expression = "java(java.time.LocalDateTime.now())")  // start_at에 현재 시간 적용
     @Mapping(source = "subscribe", target = "subscribe")
     @Mapping(target = "endAt", expression = "java(calculateEndAt(java.time.LocalDateTime.now(), dto.getPeriod()))")  // endAt 계산
-    SubscribeDetail tosubscribedetail(Subscribe subscribe, PostRentalDeliveryReqDto dto);
+    SubscribeDetail tosubscribedetail(Subscribe subscribe, PostRentalDeliveryReqDto dto ,Sale sale);
 
     // 개월 수 더하는 로직
     default LocalDateTime calculateEndAt(LocalDateTime start_at, int period) {
         return start_at.plusMonths(period);  // period만큼 월을 더해 계산
     }
 
+    @Mapping(target = "idx", ignore = true)
     @Mapping(source = "dto.recipientName", target = "recipientName")
     @Mapping(source = "dto.recipientPhone", target = "recipientPhone")
     @Mapping(source = "dto.postalCode", target = "postalCode")
