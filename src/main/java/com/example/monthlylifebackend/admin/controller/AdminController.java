@@ -1,10 +1,18 @@
 package com.example.monthlylifebackend.admin.controller;
 
-import com.example.monthlylifebackend.admin.service.AdminService;
+import com.example.monthlylifebackend.admin.dto.request.PatchItemCountReq;
+import com.example.monthlylifebackend.admin.dto.response.GetItemListRes;
+import com.example.monthlylifebackend.admin.facade.AdminFacade;
+import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Tag(name = "어드민 api")
@@ -13,18 +21,27 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final AdminService adminService;
+    private final AdminFacade adminFacade;
 
-    @Operation(summary = "전체 구독 조회", description = "주문, 결제, 연체 관리용 전체 구독 내역을 조회합니다.")
-    @GetMapping("/subscriptions")
-    public void getAllSubscriptions() {
-        // 로직
+    @Operation(summary = "관리자 전체 재고 관리", description = "판매 아이템의 재고를 관리페이지를 조회합니다.")
+    @GetMapping("/item")
+    public BaseResponse<Page<GetItemListRes>> getAllItems(int page, int size) {
+        Page<GetItemListRes> dto = adminFacade.findAllItemsByPage(page,size);
+        return BaseResponse.onSuccess(dto);
+    }
+    @Operation(summary = "관리자 재고 변경", description = "판매 아이템의 재고를 관리페이지를 변경합니다.")
+    @PatchMapping("/item/{itemIdx}")
+    public ResponseEntity getAllItems(@RequestBody PatchItemCountReq req) {
+        adminFacade.modifyItemCount(req);
+        return ResponseEntity.ok(null);
     }
 
-    @Operation(summary = "예약 스케줄 조회", description = "반납 및 배송 예약 일정을 조회합니다.")
-    @GetMapping("/schedule")
-    public void getScheduleList() {
-        // 로직
+    @Operation(summary = "배송 스케줄 관리 조회", description = "반납 및 배송 예약 일정을 조회합니다.")
+    @GetMapping("/delivery")
+    public ResponseEntity getDeliveryScheduleList(int page, int size) {
+        Page<GetDeliveryListRes> dto = adminFacade.findAllDeliveryByPage(page,size);
+        return ResponseEntity.ok(dto);
+
     }
 
     @Operation(summary = "예약 스케줄 업데이트", description = "반납/배송 스케줄을 수정합니다.")
@@ -32,6 +49,17 @@ public class AdminController {
     public void updateSchedule() {
         // 로직
     }
+
+
+
+
+    @Operation(summary = "전체 구독 조회", description = "주문, 결제, 연체 관리용 전체 구독 내역을 조회합니다.")
+    @GetMapping("/subscriptions")
+    public void getAllSubscriptions() {
+        // 로직
+    }
+
+
 
     @Operation(summary = "통계 리포트 조회", description = "월간 및 분기별 통계 데이터를 조회합니다.")
     @GetMapping("/report")
