@@ -25,8 +25,8 @@ public class PostSaleRegisterReq {
     @Getter
     @NoArgsConstructor
     public static class SalePriceReq {
-        private String period;
-        private String price;
+        private int period;
+        private int price;
     }
 }
 

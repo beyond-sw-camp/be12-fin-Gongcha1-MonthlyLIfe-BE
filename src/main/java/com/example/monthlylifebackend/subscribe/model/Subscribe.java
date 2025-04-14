@@ -23,7 +23,7 @@ public class Subscribe extends BaseEntity {
     //주문 시 총 가격
     private int price;
 
-    private String period;
+    private int period;
 
 
 

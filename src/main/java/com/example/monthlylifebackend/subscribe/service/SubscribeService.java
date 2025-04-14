@@ -2,9 +2,9 @@ package com.example.monthlylifebackend.subscribe.service;
 
 
 import com.example.monthlylifebackend.product.repository.ProductRepository;
-import com.example.monthlylifebackend.product.repository.SaleHasProductRepository;
-import com.example.monthlylifebackend.product.repository.SalePriceRepository;
-import com.example.monthlylifebackend.product.repository.SaleRepository;
+import com.example.monthlylifebackend.sale.repository.SaleHasProductRepository;
+import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
+import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
@@ -85,7 +85,7 @@ public class SubscribeService {
 
         for (ProductRequestDto product : reqDto.getProducts()) {
             // Sale 조회
-            Sale sale = saleRepository.findByIdx(product.getSale_idx())
+            Sale sale = saleRepository.findById(product.getSale_idx())
                     .orElseThrow(() -> new RuntimeException("해당 세일 없음"));
 
             SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, product, sale);

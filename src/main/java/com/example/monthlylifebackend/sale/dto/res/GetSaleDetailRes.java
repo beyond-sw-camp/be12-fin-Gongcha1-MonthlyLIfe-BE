@@ -47,9 +47,9 @@ public class GetSaleDetailRes {
     @Schema(description = "가격 정보")
     public static class PriceInfo {
         @Schema(description = "기간 (개월)", example = "12")
-        private String period;
+        private int period;
 
         @Schema(description = "가격", example = "19900")
-        private String price;
+        private int price;
     }
 }
