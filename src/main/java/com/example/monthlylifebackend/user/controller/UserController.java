@@ -1,9 +1,13 @@
 package com.example.monthlylifebackend.user.controller;
 
-import com.example.monthlylifebackend.user.service.UserService;
+import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
+import com.example.monthlylifebackend.user.facade.UserFacade;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,12 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "회원", description = "회원 가입, 정보 수정, 탈퇴 등 사용자 관련 API")
 public class UserController {
 
-    private final UserService userService;
+    private final UserFacade userFacade;
 
     @Operation(summary = "회원가입", description = "신규 회원을 등록합니다.")
     @PostMapping("/register")
-    public void registerUser() {
-        // 회원가입 로직
+    public ResponseEntity<BaseResponse<String>> registerUser(@RequestBody @Valid PostSignupReq dto) {
+        // 회원가입
+        BaseResponse<String> result = BaseResponse.created(userFacade.signup(dto));
+        return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "아이디/비밀번호 찾기", description = "아이디 또는 비밀번호를 찾습니다.")
