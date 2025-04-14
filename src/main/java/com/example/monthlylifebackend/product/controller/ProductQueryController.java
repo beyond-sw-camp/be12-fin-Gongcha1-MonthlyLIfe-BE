@@ -2,6 +2,7 @@ package com.example.monthlylifebackend.product.controller;
 
 
 import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.product.dto.res.GetProductDetailRes;
 import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
 import com.example.monthlylifebackend.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +26,7 @@ public class ProductQueryController {
     private final ProductService productService;
 
 
+    @Operation(summary = "상품 목록 조회", description = "상품 목록을 조회합니다.")
     @GetMapping("/list")
     public ResponseEntity<BaseResponse<List<GetProductListRes>>> getProductList() {
         List<GetProductListRes> productList = productService.getProductList();
@@ -47,7 +49,8 @@ public class ProductQueryController {
 
     @Operation(summary = "상품 상세 조회", description = "상품 ID로 상세 정보를 조회합니다.")
     @GetMapping("/{id}")
-    public void getProductDetail(@PathVariable("id") Long productId) {
-        // 상품 상세 조회 로직 구현
+    public ResponseEntity<BaseResponse<GetProductDetailRes>> getProductDetail(@PathVariable("id") Long productId) {
+        GetProductDetailRes detail = productService.getProductDetail(productId);
+        return ResponseEntity.ok(BaseResponse.created(detail));
     }
 }
