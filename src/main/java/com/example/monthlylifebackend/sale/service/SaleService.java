@@ -15,6 +15,8 @@ import com.example.monthlylifebackend.sale.repository.SaleHasProductRepository;
 import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
 import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,10 +73,11 @@ public class SaleService {
     }
 
 
-    public List<GetSaleListRes> getSalesByCategory(Long categoryIdx) {
-        List<Sale> sales = saleRepository.findByCategoryIdx(categoryIdx);
+    public Page<GetSaleListRes> getSalesByCategory(Long categoryIdx, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Sale> sales = saleRepository.findByCategoryIdx(categoryIdx, pageRequest);
 
-        return sales.stream().map(sale ->
+        return sales.map(sale ->
                 GetSaleListRes.builder()
                         .name(sale.getName())
                         .description(sale.getDescription())
@@ -87,7 +90,7 @@ public class SaleService {
                                 ).toList()
                         )
                         .build()
-        ).toList();
+        );
     }
 
     public GetSaleDetailRes getSaleDetailInCategory(Long categoryIdx, Long saleIdx) {

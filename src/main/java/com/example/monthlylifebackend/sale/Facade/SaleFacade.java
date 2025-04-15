@@ -7,6 +7,7 @@ import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.service.SaleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class SaleFacade {
         return saleService.registerSale(dto);
     }
 
-    public List<GetSaleListRes> getSalesByCategory(Long categoryIdx) {
-        return saleService.getSalesByCategory(categoryIdx);
+    public Page<GetSaleListRes> getSalesByCategory(Long categoryIdx, int page, int size) {
+        return saleService.getSalesByCategory(categoryIdx, page, size);
     }
 
     public GetSaleDetailRes getSaleDetailInCategory(Long categoryIdx, Long saleIdx) {

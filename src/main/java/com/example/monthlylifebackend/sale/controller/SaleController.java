@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +35,11 @@ public class SaleController {
 
     @Operation(summary = "카테고리별 판매상품 목록 조회", description = "카테고리별 판매 상품 목록을 조회합니다.")
     @GetMapping("/category/{categoryIdx}")
-    public ResponseEntity<BaseResponse<List<GetSaleListRes>>> getSalesByCategory(
-            @PathVariable Long categoryIdx) {
-        List<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx);
+    public ResponseEntity<BaseResponse<Page<GetSaleListRes>>> getSalesByCategory(
+            @PathVariable Long categoryIdx,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size) {
+        Page<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx,page,size);
         return ResponseEntity.ok(BaseResponse.created(salesByCategory));
     }
 
