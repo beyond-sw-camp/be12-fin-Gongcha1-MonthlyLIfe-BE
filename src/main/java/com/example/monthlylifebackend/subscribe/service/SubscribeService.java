@@ -26,6 +26,7 @@ import com.example.monthlylifebackend.support.repository.PaymentRepository;
 import com.example.monthlylifebackend.support.repository.RentalDeliveryRepository;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,10 +59,9 @@ public class SubscribeService {
 
 
     public Page<GetDeliveryListRes> findDeliveryListByPage(int page, int size) {
-//        Page<GetDeliveryListRes> pagedto = (Page<GetDeliveryListRes>)
-//        .findDeliveryList(PageRequest.of(page,size));
-//        return pagedto;
-        return null;
+        Page<GetDeliveryListRes> pagedto = (Page<GetDeliveryListRes>)
+        subscribeRepository.findDeliveryList(PageRequest.of(page,size));
+        return pagedto;
     }
     //구독 할때 결제 할때
     @Transactional
