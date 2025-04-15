@@ -42,4 +42,8 @@ public class Subscribe extends BaseEntity {
     @Version
     @Schema(description = "버전 (낙관적 락)", example = "0")
     private Long version;
+
+
+
 }
+

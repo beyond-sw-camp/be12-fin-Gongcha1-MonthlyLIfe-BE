@@ -2,9 +2,9 @@ package com.example.monthlylifebackend.subscribe.service;
 
 
 import com.example.monthlylifebackend.product.repository.ProductRepository;
-import com.example.monthlylifebackend.product.repository.SaleHasProductRepository;
-import com.example.monthlylifebackend.product.repository.SalePriceRepository;
-import com.example.monthlylifebackend.product.repository.SaleRepository;
+import com.example.monthlylifebackend.sale.repository.SaleHasProductRepository;
+import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
+import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;

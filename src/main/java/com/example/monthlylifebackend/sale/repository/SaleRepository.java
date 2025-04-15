@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.product.repository;
+package com.example.monthlylifebackend.sale.repository;
 
 
 import com.example.monthlylifebackend.sale.model.Sale;
@@ -24,4 +24,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 """)
     Optional<SalePrice> findBySaleIdxAndPeriod(@Param("saleIdx") Long saleIdx, @Param("period") int period);
 
+    List<Sale> findByCategoryIdx(Long categoryIdx);
+    Optional<Sale> findByIdxAndCategoryIdx(Long saleIdx, Long categoryIdx);
 }

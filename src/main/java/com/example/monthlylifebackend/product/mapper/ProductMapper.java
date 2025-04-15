@@ -1,5 +1,7 @@
 package com.example.monthlylifebackend.product.mapper;
 
+import com.example.monthlylifebackend.item.model.Item;
+import com.example.monthlylifebackend.product.dto.req.PostProductImageReq;
 import com.example.monthlylifebackend.product.dto.req.PostProductRegisterReq;
 import com.example.monthlylifebackend.product.dto.res.GetProductDetailRes;
 import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
@@ -13,7 +15,34 @@ public interface ProductMapper {
 
     Product toEntity(PostProductRegisterReq dto);
 
-    GetProductListRes toGetProductListRes(Product product);
+    default GetProductListRes toGetProductListRes(Product product) {
+// ItemList가 비어있지 않으면 첫 번째 Item을 기준으로 condition, location, count 추출
+        Item item = product.getItemList().isEmpty() ? null : product.getItemList().get(0);
+
+        return GetProductListRes.builder()
+                .name(product.getName())
+                .code(product.getCode())
+                .manufacturer(product.getManufacturer())
+                .description(product.getDescription())
+                .condition(item != null && item.getCondition() != null ? item.getCondition().getName() : null)
+                .location(item != null && item.getItemLocation() != null ? item.getItemLocation().getName() : null)
+                .count(item != null ? item.getCount() : 0)
+                .productImages(
+                        product.getProductImageList().stream()
+                                .map(img -> {
+                                    PostProductImageReq dto = new PostProductImageReq();
+                                    // reflection 기반 setter 없으면 생성자 추가해도 됨
+                                    try {
+                                        java.lang.reflect.Field field = PostProductImageReq.class.getDeclaredField("productImgUrl");
+                                        field.setAccessible(true);
+                                        field.set(dto, img.getProductImgUrl());
+                                    } catch (Exception ignored) {}
+                                    return dto;
+                                })
+                                .toList()
+                )
+                .build();
+    }
     // 상세 조회용
     GetProductDetailRes toGetProductDetailRes(Product product);
 

@@ -17,11 +17,9 @@ import java.util.List;
 // 판매 상품 엔티티
 public class Product extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idx;
+    private String code;
 
     private String description;
-    private String code;
     private String name;
     private String manufacturer;
 
