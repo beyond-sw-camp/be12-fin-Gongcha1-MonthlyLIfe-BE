@@ -99,6 +99,9 @@ public class SubscribeService {
 
 
             SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, product, sale ,price);
+            // Todo list 셋 해야할까?
+
+
             subscribeDetail.setSubscribe(subscribe);
 
 
