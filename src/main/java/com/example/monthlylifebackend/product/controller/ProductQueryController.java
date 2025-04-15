@@ -49,8 +49,8 @@ public class ProductQueryController {
 
     @Operation(summary = "상품 상세 조회", description = "상품 ID로 상세 정보를 조회합니다.")
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<GetProductDetailRes>> getProductDetail(@PathVariable("id") Long productId) {
-        GetProductDetailRes detail = productFacade.getProductDetail(productId);
+    public ResponseEntity<BaseResponse<GetProductDetailRes>> getProductDetail(@PathVariable("id") String productCode) {
+        GetProductDetailRes detail = productFacade.getProductDetail(productCode);
         return ResponseEntity.ok(BaseResponse.created(detail));
     }
 }

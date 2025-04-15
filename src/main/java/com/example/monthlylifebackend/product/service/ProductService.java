@@ -2,6 +2,8 @@ package com.example.monthlylifebackend.product.service;
 
 
 import com.example.monthlylifebackend.admin.repository.ItemRepository;
+import com.example.monthlylifebackend.common.code.status.ErrorStatus;
+import com.example.monthlylifebackend.common.exception.handler.ProductHandler;
 import com.example.monthlylifebackend.item.model.Item;
 import com.example.monthlylifebackend.item.model.ItemLocation;
 import com.example.monthlylifebackend.product.dto.req.PostProductRegisterReq;
@@ -64,10 +66,17 @@ public class ProductService {
     }
 
     // 상품 상세 조회
-    public GetProductDetailRes getProductDetail(Long productId) {
-        Product product = productRepository.findById(productId)
+    public GetProductDetailRes getProductDetail(String productCode) {
+        Product product = productRepository.findById(productCode)
                 .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
         return productMapper.toGetProductDetailRes(product);
+    }
+
+    public Product getProduct(String productCode) {
+        Product product = productRepository.findById(productCode)
+                .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_PRODUCT));
+
+        return product;
     }
 
 }
