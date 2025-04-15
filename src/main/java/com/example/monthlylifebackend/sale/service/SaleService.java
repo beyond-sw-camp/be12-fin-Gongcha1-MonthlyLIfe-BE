@@ -29,6 +29,7 @@ public class SaleService {
     private final SalePriceRepository salePriceRepository;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ConditionRepository conditionRepository;
     private final SaleMapper saleMapper;
 
     public Long registerSale(PostSaleRegisterReq dto) {
@@ -53,7 +54,11 @@ public class SaleService {
                 .map(sp -> SaleHasProduct.builder()
                         .sale(sale)
                         .product(productMap.get(sp.getProductCode()))
-                        .condition(Condition.builder().idx(sp.getConditionIdx()).build()) // FK만 연결
+                        .condition(
+                                conditionRepository.findById(sp.getConditionIdx())
+                                        .orElseThrow(() -> new RuntimeException("Condition 없음"))
+                        )
+
                         .build())
                 .toList();
         saleHasProductRepository.saveAll(productLinks);
