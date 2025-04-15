@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.sale.service;
 
 
+import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
@@ -114,6 +115,16 @@ public class SaleService {
                         ).toList()
                 )
                 .build();
+    }
+
+    public List<GetCategoryRes> getSaleCategoryList() {
+        return categoryRepository.findAll().stream()
+                .map(c -> GetCategoryRes.builder()
+                        .idx(c.getIdx())
+                        .name(c.getName())
+                        .iconUrl(c.getIconUrl())
+                        .build())
+                .toList();
     }
 
 

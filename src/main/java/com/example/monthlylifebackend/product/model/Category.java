@@ -25,5 +25,7 @@ public class Category extends BaseEntity {
     @JoinColumn(name = "parent_idx")
     private Category parent;  // 부모 카테고리
 
+    private String iconUrl; // 카테고리 아이콘
+
 }
 

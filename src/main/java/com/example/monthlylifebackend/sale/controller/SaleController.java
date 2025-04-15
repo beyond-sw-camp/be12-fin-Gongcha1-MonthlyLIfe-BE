@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.sale.controller;
 
 import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.Facade.SaleFacade;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
@@ -26,9 +27,10 @@ public class SaleController {
 
     @Operation(summary = "판매상품 등록", description = "상품 + 상태 조합 + 기간별 가격을 포함한 판매상품을 등록합니다.")
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<Long>> registerSale(@RequestBody @Valid PostSaleRegisterReq dto) {
+    public BaseResponse<Long> registerSale(@RequestBody @Valid PostSaleRegisterReq dto) {
         Long saleIdx = saleFacade.registerSale(dto);
-        return ResponseEntity.ok(BaseResponse.created(saleIdx));
+        return BaseResponse.onSuccess(saleIdx);
+//        return ResponseEntity.ok(BaseResponse.created(saleIdx));
     }
 
     @Operation(summary = "카테고리별 판매상품 목록 조회", description = "카테고리별 판매 상품 목록을 조회합니다.")
@@ -49,6 +51,12 @@ public class SaleController {
         return ResponseEntity.ok(BaseResponse.created(saleDetailInCategory));
     }
 
+    @Operation(summary = "판매 카테고리 목록 조회", description = "판매 등록 시 선택할 수 있는 카테고리 목록을 조회합니다.")
+    @GetMapping("/categories")
+    public ResponseEntity<BaseResponse<List<GetCategoryRes>>> getSaleCategories() {
+        List<GetCategoryRes> categories = saleFacade.getSaleCategoryList();
+        return ResponseEntity.ok(BaseResponse.created(categories));
+    }
 
 
 }
