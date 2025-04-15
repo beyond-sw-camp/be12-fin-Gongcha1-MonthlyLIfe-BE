@@ -1,0 +1,112 @@
+package com.example.monthlylifebackend.payment;
+
+import com.example.monthlylifebackend.payment.dto.req.PostBillingKeyReq;
+import io.portone.sdk.server.common.BillingKeyPaymentInput;
+import io.portone.sdk.server.common.Currency;
+import io.portone.sdk.server.common.PaymentAmountInput;
+import io.portone.sdk.server.payment.PayWithBillingKeyResponse;
+import io.portone.sdk.server.payment.Payment;
+import io.portone.sdk.server.payment.PaymentAmount;
+import io.portone.sdk.server.payment.PaymentClient;
+import io.portone.sdk.server.payment.paymentschedule.CreatePaymentScheduleResponse;
+import io.portone.sdk.server.payment.paymentschedule.PaymentScheduleClient;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.concurrent.CompletableFuture;
+
+@Service
+@RequiredArgsConstructor
+public class CustomPaymentClient {
+    private final PaymentClient paymentClient;
+    private final PaymentScheduleClient paymentScheduleClient;
+
+    //paymentId로 결제 가격 가져오기
+    public Long getPaymentByPaymentId(String paymentId) {
+        Payment payment = paymentClient.getPayment(paymentId).join();
+        Payment.Recognized recognized = (Payment.Recognized) payment;
+        PaymentAmount amount = recognized.getAmount();
+        return amount.getTotal();
+    }
+
+    // 빌링키로 결제하기
+    public CompletableFuture<PayWithBillingKeyResponse> startPayment(String paymentId, PostBillingKeyReq dto, String subscribeCode, int price) {
+
+        BillingKeyPaymentInput input = getMinimumInput(dto.getBillingKey(), subscribeCode, price);
+
+
+        return paymentClient.payWithBillingKey(
+                    paymentId,
+                    dto.getBillingKey(),
+                    null,
+                    subscribeCode,
+                    null,
+                    null,
+                    getAmount(price),
+                    Currency.Krw.INSTANCE,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                    );
+    }
+
+    //빌링키로 한달뒤 결제 예약 걸기
+    public CompletableFuture<CreatePaymentScheduleResponse> OneMonthAfterPayment(String paymentId,PostBillingKeyReq dto, String subscribeCode, int price, LocalDateTime dateTime) {
+        return schedulePayment(paymentId, dto, subscribeCode, price, dateTime.plusMinutes(1));
+    }
+
+    //빌링키로 결제 예약 걸기
+    private CompletableFuture<CreatePaymentScheduleResponse> schedulePayment(String paymentId,PostBillingKeyReq dto, String subscribeCode, int price, LocalDateTime dateTime) {
+
+        Instant time = dateTime.atZone(ZoneId.systemDefault()).toInstant();
+
+        BillingKeyPaymentInput input = getMinimumInput(dto.getBillingKey(), subscribeCode, price);
+
+        return paymentScheduleClient.createPaymentSchedule(paymentId, input, time);
+    }
+
+    private BillingKeyPaymentInput getMinimumInput(String billingKey, String orderName, int price) {
+        return  new BillingKeyPaymentInput(
+                null,
+                billingKey,
+                null,
+                orderName,
+                null,
+                null,
+                getAmount(price),
+                Currency.Krw.INSTANCE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    private PaymentAmountInput getAmount(int price) {
+        return new PaymentAmountInput(
+                price,
+                0L,
+                0L
+        );
+    }
+}

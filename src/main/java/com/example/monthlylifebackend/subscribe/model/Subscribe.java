@@ -1,11 +1,11 @@
 package com.example.monthlylifebackend.subscribe.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
+import com.example.monthlylifebackend.payment.model.Payment;
 import com.example.monthlylifebackend.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

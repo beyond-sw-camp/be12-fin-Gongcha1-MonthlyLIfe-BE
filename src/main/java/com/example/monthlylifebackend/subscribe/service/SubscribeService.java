@@ -12,26 +12,21 @@ import com.example.monthlylifebackend.subscribe.dto.req.ProductRequestDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
-import com.example.monthlylifebackend.subscribe.model.Payment;
+import com.example.monthlylifebackend.payment.model.Payment;
 import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.subscribe.repository.SubscribeDetailRepository;
 import com.example.monthlylifebackend.subscribe.repository.SubscribeRepository;
  import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import com.example.monthlylifebackend.support.repository.PaymentRepository;
+import com.example.monthlylifebackend.payment.PaymentRepository;
 import com.example.monthlylifebackend.support.repository.RentalDeliveryRepository;
 import com.example.monthlylifebackend.user.model.User;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +64,7 @@ public class SubscribeService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("유저 없음"));
 
-        Payment payment = Payment.builder().cardNumber(123123).build();
+        Payment payment = Payment.builder().build();
         paymentRepository.save(payment);
         // *************************
 

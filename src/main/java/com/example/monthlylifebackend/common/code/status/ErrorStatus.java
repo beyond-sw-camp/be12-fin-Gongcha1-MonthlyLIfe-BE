@@ -23,7 +23,11 @@ public enum ErrorStatus implements BaseErrorCode {
 
 
     //Item 에러
-    _NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "ITEM4004", "아이템이 존재하지 않습니다.");
+    _NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "ITEM4004", "아이템이 존재하지 않습니다."),
+
+    //Payment 에러
+    _FAIL_PAYMENT(HttpStatus.BAD_REQUEST, "PAYMENT4000", "결제 실패했습니다."),
+    _NOT_FOUND_PAYMENT(HttpStatus.NOT_FOUND, "PAYMENT4040", "결제 정보가 존재하지 않습니다.");
 
 
     private final HttpStatus httpStatus;

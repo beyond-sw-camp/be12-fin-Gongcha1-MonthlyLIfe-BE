@@ -6,7 +6,7 @@ import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
 import com.example.monthlylifebackend.subscribe.dto.req.ProductRequestDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
-import com.example.monthlylifebackend.subscribe.model.Payment;
+import com.example.monthlylifebackend.payment.model.Payment;
 import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
