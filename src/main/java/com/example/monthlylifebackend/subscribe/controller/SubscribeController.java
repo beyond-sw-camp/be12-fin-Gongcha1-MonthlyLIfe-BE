@@ -1,12 +1,18 @@
 package com.example.monthlylifebackend.subscribe.controller;
 
+import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
+import com.example.monthlylifebackend.subscribe.facade.SubscribeFacade;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
+import com.example.monthlylifebackend.user.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/subscribe")
@@ -16,16 +22,15 @@ public class SubscribeController {
 
     private final SubscribeService subscribeService;
 
+    private final SubscribeFacade subscribeFacade;
+
 
     @Operation(summary = "상품 구독 신청서", description = "상품을 구독하고 계약을 시작합니다.")
     @GetMapping("/subscribe")
-    public GetSubscribePageResDto GetSubscription(@RequestParam("saleIdx") Long saleIdx,
-                                                  @RequestParam("period") int period, @RequestParam("id") String id) {
+    public BaseResponse<GetSubscribePageResDto> GetSubscription(@RequestParam("saleIdx") Long saleIdx,
+                                                                @RequestParam("period") int period, @RequestParam("id") String id) {
 
-
-
-
-        return subscribeService.getSubscription(id,saleIdx , period);
+        return BaseResponse.onSuccess(subscribeService.getSubscription(id,saleIdx , period));
     }
 
 
@@ -39,6 +44,8 @@ public class SubscribeController {
         String id ="1";
 
         subscribeService.createSubscription(reqDto ,id);
+
+
 
 
 
@@ -86,7 +93,10 @@ public class SubscribeController {
 
     @Operation(summary = "구독 정보 조회", description = "현재 구독 중인 상품의 정보를 확인합니다.")
     @GetMapping("/info")
-    public void getSubscriptionInfo() {
+    public List<GetSubscribeRes> getSubscriptionInfo() {
         // 구독 정보 조회 로직
+
+        User user = User.builder().id("1").build();
+        return subscribeFacade.getSubscriptionInfo(user);
     }
 }
