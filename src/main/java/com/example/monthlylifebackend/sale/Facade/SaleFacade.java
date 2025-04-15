@@ -27,7 +27,6 @@ public class SaleFacade {
     public GetSaleDetailRes getSaleDetailInCategory(Long categoryIdx, Long saleIdx) {
         return saleService.getSaleDetailInCategory(categoryIdx, saleIdx);
     }
-
     public List<GetCategoryRes> getSaleCategoryList() {
         return saleService.getSaleCategoryList();
     }
