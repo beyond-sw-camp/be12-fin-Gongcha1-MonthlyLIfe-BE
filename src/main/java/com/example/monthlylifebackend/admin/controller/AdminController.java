@@ -1,7 +1,8 @@
 package com.example.monthlylifebackend.admin.controller;
 
 import com.example.monthlylifebackend.admin.dto.request.PatchItemCountReq;
-import com.example.monthlylifebackend.admin.dto.response.GetItemListRes;
+import com.example.monthlylifebackend.admin.dto.response.GetProductItemRes;
+import com.example.monthlylifebackend.admin.dto.response.GetProductRes;
 import com.example.monthlylifebackend.admin.facade.AdminFacade;
 import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
@@ -23,17 +24,26 @@ public class AdminController {
 
     private final AdminFacade adminFacade;
 
-    @Operation(summary = "관리자 전체 재고 관리", description = "판매 아이템의 재고를 관리페이지를 조회합니다.")
-    @GetMapping("/item")
-    public BaseResponse<Page<GetItemListRes>> getAllItems(int page, int size) {
-        Page<GetItemListRes> dto = adminFacade.findAllItemsByPage(page,size);
+    @Operation(summary = "관리자 전체 재고 조회", description = "판매 아이템의 재고를 관리페이지를 조회합니다.")
+    @GetMapping("/product")
+    public BaseResponse<Page<GetProductRes>> getAllItems(int page, int size) {
+        Page<GetProductRes> dto = adminFacade.findAllItemsByPage(page,size);
         return BaseResponse.onSuccess(dto);
     }
+
+    @Operation(summary = "관리자 상세 재고 관리", description = "판매 아이템의 재고 상세 페이지를 조회합니다.")
+    @GetMapping("/item-detail/{idx}")
+    public BaseResponse<GetProductItemRes> getAllItemDetails(@PathVariable String idx) {
+        GetProductItemRes dto = adminFacade.findItemDetail(idx);
+        return BaseResponse.onSuccess(dto);
+    }
+
     @Operation(summary = "관리자 재고 변경", description = "판매 아이템의 재고를 관리페이지를 변경합니다.")
-    @PatchMapping("/item/{itemIdx}")
-    public ResponseEntity getAllItems(@RequestBody PatchItemCountReq req) {
+    @PatchMapping("/item-detail/{idx}")
+    public BaseResponse changeItemCount(@PathVariable String idx,
+                                        @RequestBody PatchItemCountReq req) {
         adminFacade.modifyItemCount(req);
-        return ResponseEntity.ok(null);
+        return BaseResponse.onSuccess(null);
     }
 
     @Operation(summary = "배송 스케줄 관리 조회", description = "반납 및 배송 예약 일정을 조회합니다.")

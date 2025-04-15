@@ -18,7 +18,6 @@ import java.util.List;
 public class Product extends BaseEntity {
     @Id
     private String code;
-
     private String description;
     private String name;
     private String manufacturer;

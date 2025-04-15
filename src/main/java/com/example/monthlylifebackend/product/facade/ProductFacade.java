@@ -24,7 +24,7 @@ public class ProductFacade {
         return productService.getProductList();
     }
 
-    public GetProductDetailRes getProductDetail(Long productId) {
-        return productService.getProductDetail(productId);
+    public GetProductDetailRes getProductDetail(String productCode) {
+        return productService.getProductDetail(productCode);
     }
 }
