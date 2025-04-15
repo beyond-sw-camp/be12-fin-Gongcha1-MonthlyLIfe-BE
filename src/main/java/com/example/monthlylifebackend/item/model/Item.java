@@ -24,10 +24,6 @@ public class Item extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    private LocalDateTime createdAt;
-
-    private String isAvailable;
-
     private int count;
 
     @ManyToOne

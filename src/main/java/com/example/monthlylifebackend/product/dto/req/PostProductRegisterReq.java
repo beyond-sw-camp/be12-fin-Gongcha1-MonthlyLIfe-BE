@@ -27,6 +27,12 @@ public class PostProductRegisterReq {
     @Schema(description = "제조사", example = "삼성전자")
     private String manufacturer;
 
+    @Schema(description = "상품 위치 상태 (창고, 대여중, 수리중 등)", example = "창고")
+    private String location;
+
+    @Schema(description = "상품 상태 등급 (S, A, B, C 중 하나)", example = "A")
+    private String condition;
+
     @Schema(description = "상품 이미지 리스트")
     private List<PostProductImageReq> productImages;
 }
