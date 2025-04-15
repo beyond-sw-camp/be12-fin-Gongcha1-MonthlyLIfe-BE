@@ -10,6 +10,7 @@ import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
 import com.example.monthlylifebackend.subscribe.dto.req.ProductRequestDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
 import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
 import com.example.monthlylifebackend.subscribe.model.Payment;
@@ -18,20 +19,16 @@ import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.subscribe.repository.SubscribeDetailRepository;
 import com.example.monthlylifebackend.subscribe.repository.SubscribeRepository;
- import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import com.example.monthlylifebackend.user.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import com.example.monthlylifebackend.support.repository.PaymentRepository;
 import com.example.monthlylifebackend.support.repository.RentalDeliveryRepository;
-import com.example.monthlylifebackend.user.model.User;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,20 +39,30 @@ public class SubscribeService {
 
     private final SubscribeRepository subscribeRepository;
 
-    public Page<GetDeliveryListRes> findDeliveryListByPage(int page, int size) {
-        Page<GetDeliveryListRes> pagedto = (Page<GetDeliveryListRes>) subscribeRepository.findDeliveryList(PageRequest.of(page,size));
-        return pagedto;
-    }
-    private final UserRepository userRepository;
-    private final ProductRepository productRepository;
-    private final SaleHasProductRepository saleHasProductRepository;
-    private final SubscribeMapper subscribeMapper;
-    private final SaleRepository saleRepository;
-    private final SalePriceRepository salePriceRepository;
-    private final PaymentRepository paymentRepository;
-    private final RentalDeliveryRepository rentalDeliveryRepository;
-    private final SubscribeDetailRepository subscribeDetailRepository;
 
+    private final UserRepository userRepository;
+
+    private final SubscribeMapper subscribeMapper;
+
+    private final SaleRepository saleRepository;
+
+    private final SalePriceRepository salePriceRepository;
+
+    private final PaymentRepository paymentRepository;
+
+    private final RentalDeliveryRepository rentalDeliveryRepository;
+
+
+
+
+
+
+    public Page<GetDeliveryListRes> findDeliveryListByPage(int page, int size) {
+//        Page<GetDeliveryListRes> pagedto = (Page<GetDeliveryListRes>)
+//        .findDeliveryList(PageRequest.of(page,size));
+//        return pagedto;
+        return null;
+    }
     //구독 할때 결제 할때
     @Transactional
     public void createSubscription(PostRentalDeliveryReqDto reqDto, String id) {
@@ -85,10 +92,16 @@ public class SubscribeService {
 
         for (ProductRequestDto product : reqDto.getProducts()) {
             // Sale 조회
-            Sale sale = saleRepository.findById(product.getSale_idx())
+            Sale sale = saleRepository.findWithSalePricesByIdx(product.getSale_idx())
                     .orElseThrow(() -> new RuntimeException("해당 세일 없음"));
+            SalePrice price = salePriceRepository.findBySaleIdxAndPeriod(product.getSale_idx(), product.getPeriod())
+                    .orElseThrow(() -> new RuntimeException("해당 가격 없음"));
 
-            SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, product, sale);
+
+            SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, product, sale ,price);
+            // Todo list 셋 해야할까?
+
+
             subscribeDetail.setSubscribe(subscribe);
 
 
@@ -116,4 +129,17 @@ public class SubscribeService {
 
         return subscribeMapper.getSubscriptionResDto(sale, salePrice ,user);
     }
+
+
+
+    public List<GetSubscribeRes> getSubscriptionInfo(User user) {
+        List<Subscribe> subscribes = subscribeRepository.findWithDetailsByUserId(user.getId());
+        return subscribeMapper.toGetSubscribeResList(subscribes);
+    }
+
+
+
+
+
+
 }
