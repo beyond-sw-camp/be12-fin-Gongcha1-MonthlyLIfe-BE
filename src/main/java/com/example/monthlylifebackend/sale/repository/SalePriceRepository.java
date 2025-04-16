@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface SalePriceRepository extends JpaRepository<SalePrice, Long> {
     Optional<SalePrice> findBySaleIdxAndPeriod(Long saleIdx, int period);
+
+    Optional<SalePrice> findByIdx(Long salePriceIdx);
 }
