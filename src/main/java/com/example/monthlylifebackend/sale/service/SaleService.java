@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.sale.service;
 
 
+import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
@@ -14,6 +15,8 @@ import com.example.monthlylifebackend.sale.repository.SaleHasProductRepository;
 import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
 import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +32,7 @@ public class SaleService {
     private final SalePriceRepository salePriceRepository;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ConditionRepository conditionRepository;
     private final SaleMapper saleMapper;
 
     public Long registerSale(PostSaleRegisterReq dto) {
@@ -50,11 +54,17 @@ public class SaleService {
                 .collect(Collectors.toMap(Product::getCode, p -> p));
 
         List<SaleHasProduct> productLinks = dto.getSaleProducts().stream()
-                .map(sp -> SaleHasProduct.builder()
-                        .sale(sale)
-                        .product(productMap.get(sp.getProductCode()))
-                        .condition(Condition.builder().idx(sp.getConditionIdx()).build()) // FK만 연결
-                        .build())
+                .map(sp -> {
+                    Product product = productMap.get(sp.getProductCode());
+                    if (product == null) {
+                        throw new RuntimeException("등록되지 않은 상품 코드입니다: " + sp.getProductCode());
+                    }
+
+                    Condition condition = conditionRepository.findById(sp.getConditionIdx())
+                            .orElseThrow(() -> new RuntimeException("Condition 없음"));
+
+                    return new SaleHasProduct(null, sale, product, condition);
+                })
                 .toList();
         saleHasProductRepository.saveAll(productLinks);
 
@@ -64,70 +74,83 @@ public class SaleService {
         return sale.getIdx();
     }
 
+    public Page<GetSaleListRes> getSalesByCategory(Long categoryIdx, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Sale> sales = saleRepository.findByCategoryIdx(categoryIdx, pageRequest);
 
-    public List<GetSaleListRes> getSalesByCategory(Long categoryIdx) {
-        List<Sale> sales = saleRepository.findByCategoryIdx(categoryIdx);
+        return sales.map(sale -> {
+            List<GetSaleListRes.ProductInfo> productList = sale.getSaleHasProductList().stream()
+                    .filter(shp -> shp.getProduct() != null && shp.getCondition() != null)
+                    .map(shp -> new GetSaleListRes.ProductInfo(
+                            shp.getProduct().getCode(),
+                            shp.getCondition().getName()
+                    ))
+                    .toList();
 
-        return sales.stream().map(sale ->
-                GetSaleListRes.builder()
-                        .name(sale.getName())
-                        .description(sale.getDescription())
-                        .productList(
-                                sale.getSaleHasProductList().stream().map(shp ->
-                                        GetSaleListRes.ProductInfo.builder()
-                                                .productCode(shp.getProduct().getCode())
-                                                .conditionName(shp.getCondition().getName())
-                                                .build()
-                                ).toList()
-                        )
-                        .build()
-        ).toList();
+
+            List<GetSaleDetailRes.PriceInfo> priceList = sale.getSalePriceList().stream()
+                    .map(price -> new GetSaleDetailRes.PriceInfo(
+                            price.getPeriod(),
+                            price.getPrice()
+                    ))
+                    .toList();
+
+            return new GetSaleListRes(
+                    sale.getName(),
+                    sale.getDescription(),
+                    productList,
+                    priceList
+            );
+        });
     }
 
     public GetSaleDetailRes getSaleDetailInCategory(Long categoryIdx, Long saleIdx) {
         Sale sale = saleRepository.findByIdxAndCategoryIdx(saleIdx, categoryIdx)
                 .orElseThrow(() -> new RuntimeException("해당 카테고리에 판매상품이 없음"));
 
-        return GetSaleDetailRes.builder()
-                .name(sale.getName())
-                .description(sale.getDescription())
-                .categoryIdx(categoryIdx)
-                .productList(
-                        sale.getSaleHasProductList().stream().map(shp ->
-                                GetSaleDetailRes.ProductInfo.builder()
-                                        .productCode(shp.getProduct().getCode())
-                                        .conditionName(shp.getCondition().getName())
-                                        .build()
-                        ).toList()
-                )
-                .priceList(
-                        sale.getSalePriceList().stream().map(price ->
-                                GetSaleDetailRes.PriceInfo.builder()
-                                        .period(price.getPeriod())
-                                        .price(price.getPrice())
-                                        .build()
-                        ).toList()
-                )
-                .build();
+        List<GetSaleDetailRes.ProductInfo> productList = sale.getSaleHasProductList().stream()
+                .map(shp -> new GetSaleDetailRes.ProductInfo(
+                        shp.getProduct().getCode(),
+                        shp.getCondition().getName()
+                ))
+                .toList();
+
+        List<GetSaleDetailRes.PriceInfo> priceList = sale.getSalePriceList().stream()
+                .map(price -> new GetSaleDetailRes.PriceInfo(
+                        price.getPeriod(),
+                        price.getPrice()
+                ))
+                .toList();
+
+        return new GetSaleDetailRes(
+                sale.getName(),
+                sale.getDescription(),
+                categoryIdx,
+                productList,
+                priceList
+        );
     }
 
-
-
-
-
-    // 상품 정보 조회
-    public SalePrice getSalePrice(Long salePriceIdx) {
-
-        return salePriceRepository.findByIdx(salePriceIdx)
-                .orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다."));
-
+    public List<GetCategoryRes> getSaleCategoryList() {
+        return categoryRepository.findAll().stream()
+                .map(c -> new GetCategoryRes(
+                        c.getIdx(),
+                        c.getName(),
+                        c.getIconUrl(),
+                        c.getParent() != null ? c.getParent().getIdx() : null
+                ))
+                .toList();
     }
 
-
-
-
-
-
+    public List<GetSaleListRes> getSaleProductList() {
+        List<Sale> sales = saleRepository.findAll();
+        return sales.stream()
+                .map(saleMapper::toGetSaleProductListRes)
+                .toList();
+    }
 }
+
+
+
 
 
