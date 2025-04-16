@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static com.example.monthlylifebackend.subscribe.model.SubscribeStatus.RETURN_REQUESTED;
+
 @Facade
 @RequiredArgsConstructor
 public class SubscribeFacade {
@@ -28,23 +30,12 @@ public class SubscribeFacade {
     }
 
 
-
     @Transactional
     public void returnDelivery(String userId, PostReturnDeliveryReq reqDto) {
-        SubscribeDetail detail = subscribeService.getSubscribeDetailWithUserValidation(userId, reqDto.getSubscribedetailIdx());
-
-        if (detail.getStatus().equals(SubscribeStatus.RETURN_REQUESTED)) {
-            throw new RuntimeException("현재 반납 요청이 불가능한 상태입니다.");
-        }
-
-        detail.updateStatus(SubscribeStatus.RETURN_REQUESTED);
-
-        subscribeService.createReturnDelivery(detail, reqDto);
+        subscribeService.createReturnDelivery(userId, reqDto);
     }
 
-
     public GetSubscribeDetailInfoRes getReturnDelivery(String userId, Long detailId) {
-        SubscribeDetail detail = subscribeService.getSubscribeDetailWithUserValidation(userId, detailId);
-        return subscribeMapper.toReturnDeliveryDto(detail);
+        return subscribeService.getReturnDelivery(userId, detailId);
     }
 }
