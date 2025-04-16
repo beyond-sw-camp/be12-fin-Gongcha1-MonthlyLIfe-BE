@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.product.repository;
+package com.example.monthlylifebackend.sale.repository;
 
 import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import org.springframework.data.jpa.repository.JpaRepository;

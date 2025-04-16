@@ -20,6 +20,7 @@ public class ItemLocation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
+    //대여중, 수리중, 창고
     private String name;
 
     @OneToMany(mappedBy = "itemLocation")

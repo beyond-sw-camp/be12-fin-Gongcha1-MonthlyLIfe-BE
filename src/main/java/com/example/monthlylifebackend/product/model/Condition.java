@@ -27,7 +27,6 @@ public class Condition extends BaseEntity {
     @OneToMany(mappedBy = "condition")
     private List<Item> itemList = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "saleHasProduction_idx")
-    private SaleHasProduct saleHasProduct;
+    @OneToMany(mappedBy = "condition")
+    private List<SaleHasProduct> saleHasProductList = new ArrayList<>();
 }

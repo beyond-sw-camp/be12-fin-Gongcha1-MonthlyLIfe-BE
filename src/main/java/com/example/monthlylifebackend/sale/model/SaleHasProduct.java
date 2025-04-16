@@ -22,9 +22,6 @@ public class SaleHasProduct extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    @OneToMany(mappedBy = "saleHasProduct")
-    private List<Condition> conditionList = new ArrayList<>();
-
     @ManyToOne
     @JoinColumn(name = "product_code")
     private Product product;
@@ -32,4 +29,8 @@ public class SaleHasProduct extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "sale_idx")
     private Sale sale;
+
+    @ManyToOne
+    @JoinColumn(name = "condition_idx")
+    private Condition condition;
 }

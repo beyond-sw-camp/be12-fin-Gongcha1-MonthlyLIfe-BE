@@ -18,35 +18,26 @@ public class ReturnDelivery extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idx;
 
-    private String recipientName;
+    @Schema(description = "구독자 이름", example = "홍길동")
+    private String subscribeName;
 
-    private String recipientPhone;
+    @Schema(description = "구독자 전화번호", example = "010-1234-5678")
+    private String subscribePhone;
 
-    private String postalCode;
 
+
+    @Schema(description = "주소 1", example = "서울특별시 강남구 테헤란로 123")
     private String address1;
 
+    @Schema(description = "주소 2", example = "101동 202호")
     private String address2;
 
-    private String status;
+    @Schema(description = "서유", example = "문 앞에 놔주세요")
+    private String description;
 
-    private String deliveryCol;
+    @Schema(description = "회수 가능 시간", example = "2025-04-14T15:00:00")
+    private LocalDateTime pickupDate;
 
-    private String courierCompany;
-
-    private String trackingNumber;
-
-    private String deliveryMemo;
-
-    private String shippedAt;
-
-    private String deliveredAt;
-
-    private String deliverycol1;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "subscribeDetail_idx")

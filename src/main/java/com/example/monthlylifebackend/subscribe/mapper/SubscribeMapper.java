@@ -2,19 +2,27 @@ package com.example.monthlylifebackend.subscribe.mapper;
 
 
 import com.example.monthlylifebackend.sale.model.Sale;
+import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
+import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.req.ProductRequestDto;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.payment.model.Payment;
 import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
+import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Mapper(componentModel = "spring") // Spring Bean으로 등록
 public interface SubscribeMapper {
 
@@ -29,23 +37,26 @@ public interface SubscribeMapper {
     @Mapping(target = "idx", ignore = true)  // idx는 자동 생성되므로 매핑에서 제외
     @Mapping(source = "user", target = "user")
     @Mapping(source = "payment", target = "payment")
-    Subscribe tosubscribe(User user , Payment payment , ProductRequestDto productRequestDto);
+    Subscribe tosubscribe(User user , Payment payment, ProductRequestDto postProductRegisterReq);
 
 
 
 
-    @Mapping(target = "idx", ignore = true)  // idx는 자동 생성되므로 매핑에서 제외
-    @Mapping(source = "dto.price", target = "price")  // sale_idx를 Sale 객체의 idx로 매핑
-    @Mapping(source = "sale", target = "sale")  // sale_idx를 Sale 객체의 idx로 매핑
+    @Mapping(target = "idx", ignore = true)
+    @Mapping(source = "salePrice.price", target = "price")
+    @Mapping(source = "salePrice.period", target = "period")
+    @Mapping(source = "sale", target = "sale")  //
     @Mapping(target = "start_at", expression = "java(java.time.LocalDateTime.now())")  // start_at에 현재 시간 적용
     @Mapping(source = "subscribe", target = "subscribe")
     @Mapping(target = "endAt", expression = "java(calculateEndAt(java.time.LocalDateTime.now(), dto.getPeriod()))")  // endAt 계산
-    SubscribeDetail tosubscribedetail(Subscribe subscribe, ProductRequestDto dto, Sale sale);
+    SubscribeDetail tosubscribedetail(Subscribe subscribe, ProductRequestDto dto, Sale sale , SalePrice salePrice);
 
     // 개월 수 더하는 로직
     default LocalDateTime calculateEndAt(LocalDateTime start_at, int period) {
         return start_at.plusMonths(period);  // period만큼 월을 더해 계산
     }
+
+
 
 
     @Mapping(target = "idx", ignore = true)
@@ -64,4 +75,52 @@ public interface SubscribeMapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())") // 생성시간 자동 설정
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())") // 업데이트 시간 자동 설정
     RentalDelivery toRentalDelivery(PostRentalDeliveryReqDto dto ,SubscribeDetail subscribeDetail);
+
+
+
+//    List<GetSubscribeRes> getSubscriptionInfo(List<Subscribe> subscribes);
+
+
+
+
+    @Mapping(source = "idx", target = "subscribeIdx")
+    @Mapping(source = "createdAt", target = "createdAt")
+    @Mapping(source = "subscribeDetailList", target = "details")
+    GetSubscribeRes toGetSubscribeRes(Subscribe subscribe);
+
+    @Mapping(source = "idx", target = "idx")
+    @Mapping(source = "sale.name", target = "name")  // Join fetch 한 Sale.name
+    @Mapping(source = "period", target = "period")
+    @Mapping(source = "price", target = "price")
+    GetSubscribeDetailRes toGetSubscribeDetailRes(SubscribeDetail detail);
+
+    List<GetSubscribeRes> toGetSubscribeResList(List<Subscribe> subscribes);
+    List<GetSubscribeDetailRes> toGetSubscribeDetailResList(List<SubscribeDetail> details);
+
+
+    @Mapping(target = "idx", ignore = true)
+    @Mapping(source = "detail", target = "subscribeDetail")
+    ReturnDelivery toReturnDeliveryEntity(SubscribeDetail detail, PostReturnDeliveryReq postReturnDeliveryReq) ;
+
+
+    // 구독 반납
+    @Mapping(source = "idx", target = "subscribeDetailIdx")
+    @Mapping(source = "sale.name", target = "salename")
+    @Mapping(target = "imageUrl", expression = "java(getFirstImageUrl(detail))")
+    @Mapping(source = "status", target = "status")
+    GetSubscribeDetailInfoRes toReturnDeliveryDto(SubscribeDetail detail);
+
+
+
+    default String getFirstImageUrl(SubscribeDetail detail) {
+        List<SaleHasProduct> shpList = detail.getSale().getSaleHasProductList();
+        if (shpList != null && !shpList.isEmpty()) {
+            Product product = shpList.get(0).getProduct();
+            if (product.getProductImageList() != null && !product.getProductImageList().isEmpty()) {
+                return product.getProductImageList().get(0).getProductImgUrl();
+            }
+        }
+        return null;
+    }
+
 }
