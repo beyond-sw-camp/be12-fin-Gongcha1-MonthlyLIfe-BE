@@ -28,4 +28,8 @@ public class CartFacade {
 
 
     }
+
+    public void deleteCart(Long cartIdx) {
+        cartService.deleteCart(cartIdx);
+    }
 }

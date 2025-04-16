@@ -24,13 +24,11 @@ public class CartController {
         User user = User.builder().id("1").build();
 
         cartFacade.addToCart(salePriceIdx , user);
-//        cartService.addToCart(user, salePrice);
     }
 
-//    @DeleteMapping("/{salePriceId}")
-//    public void removeFromCart(@PathVariable Long salePriceId, @RequestAttribute("user") User user) {
-//        SalePrice salePrice = salePriceRepository.findById(salePriceId)
-//                .orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다."));
-//        cartService.removeFromCart(user, salePrice);
-//    }
+    @PostMapping("/cart/{cartIdx}/delete")
+    public void deleteCart(@PathVariable Long cartIdx) {
+        cartFacade.deleteCart(cartIdx);
+    }
+
 }
