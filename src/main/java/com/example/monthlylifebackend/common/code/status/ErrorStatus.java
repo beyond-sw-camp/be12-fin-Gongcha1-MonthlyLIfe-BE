@@ -47,8 +47,13 @@ public enum ErrorStatus implements BaseErrorCode {
     _SUBSCRIBE_DETAIL_ALREADY_CANCELED(HttpStatus.BAD_REQUEST, "SUBSCRIBE4016", "이미 해지된 구독 상세입니다."),
     _INVALID_RETURN_REQUEST(HttpStatus.BAD_REQUEST, "SUBSCRIBE4017", "잘못된 반납 요청입니다."),
     _ALREADY_DELIVERED(HttpStatus.BAD_REQUEST, "SUBSCRIBE4018", "이미 배송 완료된 구독입니다."),
-    _DELIVERY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "SUBSCRIBE4019", "배송 중인 상품은 반납할 수 없습니다.");
-
+    _DELIVERY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "SUBSCRIBE4019", "배송 중인 상품은 반납할 수 없습니다."),
+// Cart 에러
+    _NOT_FOUND_CART(HttpStatus.NOT_FOUND, "CART4004", "장바구니 항목을 찾을 수 없습니다."), // 장바구니에 해당 ID가 없음
+    _DUPLICATED_CART_ITEM(HttpStatus.BAD_REQUEST, "CART4001", "이미 장바구니에 존재하는 상품입니다."), // 중복 추가 방지
+    _UNAUTHORIZED_CART_ACCESS(HttpStatus.FORBIDDEN, "CART4002", "장바구니에 대한 접근 권한이 없습니다."), // 다른 유저의 장바구니 접근 시
+    _EMPTY_CART(HttpStatus.BAD_REQUEST, "CART4003", "장바구니가 비어 있습니다."), // 주문 전에 비어 있을 때
+    _CART_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "CART4005", "장바구니 저장에 실패했습니다."); // 예상치 못한 저장 오류
 
 
     private final HttpStatus httpStatus;
