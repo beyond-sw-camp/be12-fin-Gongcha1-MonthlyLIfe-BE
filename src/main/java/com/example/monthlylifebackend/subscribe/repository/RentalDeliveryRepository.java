@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.support.repository;
+package com.example.monthlylifebackend.subscribe.repository;
 
 import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
 import org.springframework.data.jpa.repository.JpaRepository;

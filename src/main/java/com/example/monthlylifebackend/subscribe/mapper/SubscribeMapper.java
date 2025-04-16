@@ -1,17 +1,18 @@
 package com.example.monthlylifebackend.subscribe.mapper;
 
 
+import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.sale.model.Sale;
+import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
+import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.req.ProductRequestDto;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
-import com.example.monthlylifebackend.subscribe.model.Payment;
-import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
-import com.example.monthlylifebackend.subscribe.model.Subscribe;
-import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
+import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -92,5 +93,31 @@ public interface SubscribeMapper {
 
     List<GetSubscribeRes> toGetSubscribeResList(List<Subscribe> subscribes);
     List<GetSubscribeDetailRes> toGetSubscribeDetailResList(List<SubscribeDetail> details);
+
+
+    @Mapping(target = "idx", ignore = true)
+    @Mapping(source = "detail", target = "subscribeDetail")
+    ReturnDelivery toReturnDeliveryEntity(SubscribeDetail detail, PostReturnDeliveryReq postReturnDeliveryReq) ;
+
+
+    // 구독 반납
+    @Mapping(source = "idx", target = "subscribeDetailIdx")
+    @Mapping(source = "sale.name", target = "salename")
+    @Mapping(target = "imageUrl", expression = "java(getFirstImageUrl(detail))")
+    @Mapping(source = "status", target = "status")
+    GetSubscribeDetailInfoRes toReturnDeliveryDto(SubscribeDetail detail);
+
+
+
+    default String getFirstImageUrl(SubscribeDetail detail) {
+        List<SaleHasProduct> shpList = detail.getSale().getSaleHasProductList();
+        if (shpList != null && !shpList.isEmpty()) {
+            Product product = shpList.get(0).getProduct();
+            if (product.getProductImageList() != null && !product.getProductImageList().isEmpty()) {
+                return product.getProductImageList().get(0).getProductImgUrl();
+            }
+        }
+        return null;
+    }
 
 }

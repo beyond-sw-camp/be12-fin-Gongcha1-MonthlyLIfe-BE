@@ -24,4 +24,6 @@ public class GetSubscribeDetailRes {
 
         @Schema(description = "상품 가격", example = "29900")
         private int price;
+
+
 }
