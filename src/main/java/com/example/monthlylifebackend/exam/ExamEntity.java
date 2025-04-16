@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.common.example;
+package com.example.monthlylifebackend.exam;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class ExampleEntity extends BaseEntity {
+public class ExamEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;

@@ -7,9 +7,12 @@ import io.portone.sdk.server.payment.PayWithBillingKeyResponse;
 import io.portone.sdk.server.payment.Payment;
 import io.portone.sdk.server.payment.PaymentAmount;
 import io.portone.sdk.server.payment.PaymentClient;
+import io.portone.sdk.server.payment.billingkey.BillingKeyClient;
+import io.portone.sdk.server.payment.billingkey.BillingKeyInfo;
 import io.portone.sdk.server.payment.paymentschedule.CreatePaymentScheduleResponse;
 import io.portone.sdk.server.payment.paymentschedule.PaymentScheduleClient;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -17,11 +20,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.concurrent.CompletableFuture;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class CustomPaymentClient {
     private final PaymentClient paymentClient;
     private final PaymentScheduleClient paymentScheduleClient;
+    private final BillingKeyClient billingKeyClient;
 
     //paymentId로 결제 가격 가져오기
     public Long getPaymentByPaymentId(String paymentId) {
@@ -29,6 +33,10 @@ public class CustomPaymentClient {
         Payment.Recognized recognized = (Payment.Recognized) payment;
         PaymentAmount amount = recognized.getAmount();
         return amount.getTotal();
+    }
+
+    public BillingKeyInfo checkBillingKey(String billingKey) {
+        return billingKeyClient.getBillingKeyInfo(billingKey).join();
     }
 
     // 빌링키로 결제하기
@@ -41,7 +49,7 @@ public class CustomPaymentClient {
                     subscribeCode,
                     null,
                     null,
-                    getAmount(price),
+                    createAmount(price),
                     Currency.Krw.INSTANCE,
                     null,
                     null,
@@ -81,7 +89,7 @@ public class CustomPaymentClient {
                 orderName,
                 null,
                 null,
-                getAmount(price),
+                createAmount(price),
                 Currency.Krw.INSTANCE,
                 null,
                 null,
@@ -98,7 +106,7 @@ public class CustomPaymentClient {
         );
     }
 
-    private PaymentAmountInput getAmount(Long price) {
+    private PaymentAmountInput createAmount(Long price) {
         return new PaymentAmountInput(
                 price,
                 0L,

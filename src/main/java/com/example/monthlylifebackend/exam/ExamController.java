@@ -1,7 +1,6 @@
 package com.example.monthlylifebackend.exam;
 
 
-import com.example.monthlylifebackend.common.example.ExampleEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,25 +17,25 @@ public class ExamController {
     private final ExamService examService;
 
     @GetMapping
-    public List<ExampleEntity> getAll() {
+    public List<ExamEntity> getAll() {
         return examService.findAll();
     }
 
     // 단일 조회
     @GetMapping("/{id}")
-    public Optional<ExampleEntity> getOne(@PathVariable Long idx) {
+    public Optional<ExamEntity> getOne(@PathVariable Long idx) {
         return examService.findById(idx);
     }
 
     // 등록
     @PostMapping
-    public ExampleEntity create(@RequestBody ExampleEntity exam) {
+    public ExamEntity create(@RequestBody ExamEntity exam) {
         return examService.save(exam);
     }
 
     // 수정 (POST 방식)
     @PostMapping("/{id}/edit")
-    public ExampleEntity update(@PathVariable Long id, @RequestBody ExampleEntity updatedExam) {
+    public ExamEntity update(@PathVariable Long id, @RequestBody ExamEntity updatedExam) {
         return examService.update(id, updatedExam);
     }
 

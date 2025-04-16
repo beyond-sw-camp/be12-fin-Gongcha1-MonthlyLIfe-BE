@@ -1,17 +1,13 @@
 package com.example.monthlylifebackend.payment;
 
 import com.example.monthlylifebackend.common.BaseResponse;
-import com.example.monthlylifebackend.common.example.ExampleEntity;
-import com.example.monthlylifebackend.exam.ExamService;
 import com.example.monthlylifebackend.payment.dto.req.PostBillingKeyReq;
-import com.example.monthlylifebackend.payment.dto.req.PostWebhookDataReq;
 import com.example.monthlylifebackend.payment.dto.req.PostWebhookReq;
+import com.example.monthlylifebackend.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,9 +18,9 @@ public class PaymentController {
     private final PaymentFacade paymentFacade;
 
     @PostMapping("/billing")
-    public ResponseEntity<BaseResponse<String>> update(@RequestBody PostBillingKeyReq dto) {
+    public ResponseEntity<BaseResponse<String>> update(@RequestBody PostBillingKeyReq dto, @AuthenticationPrincipal User user) {
         System.out.println(dto.getBillingKey());
-        paymentFacade.startPayment(dto);
+        paymentFacade.startPayment(dto, user);
         return ResponseEntity.ok(BaseResponse.onSuccess("success"));
     }
 
@@ -32,5 +28,10 @@ public class PaymentController {
     public void webhook(@RequestBody PostWebhookReq dto) {
          System.out.println(dto);
          paymentFacade.getWebhook(dto);
+    }
+
+    @PostMapping("/check")
+    public void check(@RequestBody PostBillingKeyReq dto) {
+        paymentFacade.check(dto.getBillingKey());
     }
 }

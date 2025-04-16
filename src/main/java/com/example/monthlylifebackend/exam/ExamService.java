@@ -1,10 +1,8 @@
 package com.example.monthlylifebackend.exam;
 
 
-import com.example.monthlylifebackend.common.example.ExampleEntity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,20 +16,20 @@ public class ExamService {
 
     private EntityRepository entityRepository;
 
-    public List<ExampleEntity> findAll() {
+    public List<ExamEntity> findAll() {
         return entityRepository.findAll();
     }
 
-    public Optional<ExampleEntity> findById(Long idx) {
+    public Optional<ExamEntity> findById(Long idx) {
         return entityRepository.findById(idx);
     }
 
-    public ExampleEntity save(ExampleEntity entity) {
+    public ExamEntity save(ExamEntity entity) {
         return entityRepository.save(entity);
     }
 
-    public ExampleEntity update(Long idx, ExampleEntity updatedEntity) {
-        ExampleEntity existing = entityRepository.findById(idx)
+    public ExamEntity update(Long idx, ExamEntity updatedEntity) {
+        ExamEntity existing = entityRepository.findById(idx)
                 .orElseThrow(() -> new EntityNotFoundException("해당 엔티티를 찾을 수 없습니다."));
 
 

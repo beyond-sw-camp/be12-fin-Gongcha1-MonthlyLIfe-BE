@@ -17,24 +17,18 @@ import com.example.monthlylifebackend.payment.model.Payment;
 import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.subscribe.repository.ReturnDeliveryRepository;
 import com.example.monthlylifebackend.subscribe.repository.SubscribeDetailRepository;
-import com.example.monthlylifebackend.subscribe.model.Payment;
 import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.subscribe.repository.SubscribeRepository;
  import lombok.RequiredArgsConstructor;
 import com.example.monthlylifebackend.user.model.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import com.example.monthlylifebackend.payment.PaymentRepository;
-import com.example.monthlylifebackend.support.repository.RentalDeliveryRepository;
-import com.example.monthlylifebackend.user.model.User;
-import com.example.monthlylifebackend.support.repository.PaymentRepository;
+import com.example.monthlylifebackend.payment.repository.PaymentRepository;
 import com.example.monthlylifebackend.subscribe.repository.RentalDeliveryRepository;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -149,10 +143,6 @@ public class SubscribeService {
 
         ReturnDelivery delivery = subscribeMapper.toReturnDeliveryEntity(detail, reqDto);
         returnDeliveryRepository.save(delivery);
-
-
-
-
     }
 
     // 사용자에게 상품이 있는지 없는지 확인하는 코드
@@ -163,6 +153,7 @@ public class SubscribeService {
         if (!detail.getSubscribe().getUser().getId().equals(userId)) {
             throw new RuntimeException("권한 없음");
         }
+
         return detail;
     }
 
@@ -171,4 +162,7 @@ public class SubscribeService {
         SubscribeDetail rs = getSubscribeDetailWithUserValidation(userId, detailId);
         return subscribeMapper.toReturnDeliveryDto(rs);
     }
+//    public  GetSubscribeWithBillingKey(Long idx) {
+//
+//    }
 }

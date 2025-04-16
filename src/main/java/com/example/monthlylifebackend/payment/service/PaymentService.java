@@ -1,6 +1,8 @@
-package com.example.monthlylifebackend.payment;
+package com.example.monthlylifebackend.payment.service;
 
 import com.example.monthlylifebackend.common.exception.handler.PaymentHandler;
+import com.example.monthlylifebackend.payment.CustomPaymentClient;
+import com.example.monthlylifebackend.payment.repository.PaymentRepository;
 import com.example.monthlylifebackend.payment.dto.req.PostBillingKeyReq;
 import com.example.monthlylifebackend.payment.dto.req.PostWebhookReq;
 import com.example.monthlylifebackend.payment.model.Payment;
@@ -46,6 +48,8 @@ public class PaymentService {
         paymentRepository.save(payment);
     }
 
+
+
     //
     public String getWebhook(PostWebhookReq dto) {
         //결제 웹훅 아니면 오류
@@ -77,5 +81,9 @@ public class PaymentService {
         String paymentId = "payment"+"-"+subscribeIdx+"-"+UUID.randomUUID();
         Payment payment = new Payment(paymentId, price);
         return paymentRepository.save(payment);
+    }
+
+    public void checkBillingKey(String billingKey) {
+        System.out.println(customPaymentClient.checkBillingKey(billingKey));
     }
 }

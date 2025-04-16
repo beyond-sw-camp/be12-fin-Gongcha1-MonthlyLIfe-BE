@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.subscribe.mapper;
 
 
+import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import com.example.monthlylifebackend.sale.model.SalePrice;

@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.config;
 
 import io.portone.sdk.server.payment.PaymentClient;
+import io.portone.sdk.server.payment.billingkey.BillingKeyClient;
 import io.portone.sdk.server.payment.paymentschedule.PaymentScheduleClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,5 +32,10 @@ public class PortOneConfig {
     @Bean
     public PaymentScheduleClient paymentScheduleClient() {
         return new PaymentScheduleClient(apiSecret, "http://api.portone.io", null);
+    }
+
+    @Bean
+    public BillingKeyClient billingKeyClient() {
+        return new BillingKeyClient(apiSecret, "http://api.portone.io", null);
     }
 }

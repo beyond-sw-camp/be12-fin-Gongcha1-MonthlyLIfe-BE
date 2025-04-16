@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.payment;
+package com.example.monthlylifebackend.payment.repository;
 
 import com.example.monthlylifebackend.payment.model.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
