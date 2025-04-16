@@ -136,7 +136,8 @@ public class SaleService {
                 .map(c -> new GetCategoryRes(
                         c.getIdx(),
                         c.getName(),
-                        c.getIconUrl()
+                        c.getIconUrl(),
+                        c.getParent() != null ? c.getParent().getIdx() : null
                 ))
                 .toList();
     }

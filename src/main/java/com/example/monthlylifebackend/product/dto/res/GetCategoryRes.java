@@ -21,4 +21,7 @@ public class GetCategoryRes {
 
     @Schema(description = "카테고리 아이콘 URL")
     private String iconUrl;
+
+    @Schema(description = "상위 카테고리 IDX (없으면 null)")
+    private Long parentIdx;
 }
