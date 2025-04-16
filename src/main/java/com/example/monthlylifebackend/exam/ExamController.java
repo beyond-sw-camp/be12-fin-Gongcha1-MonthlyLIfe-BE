@@ -1,7 +1,6 @@
 package com.example.monthlylifebackend.exam;
 
 
-import com.example.monthlylifebackend.common.example.ExampleEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

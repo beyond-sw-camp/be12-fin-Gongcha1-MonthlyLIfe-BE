@@ -22,11 +22,7 @@ public class CartFacade {
 
     public void addToCart(Long salePriceIdx , User user){
         SalePrice salePrice = saleService.getSalePrice(salePriceIdx);
-
-
         cartService.addToCart(user , salePrice);
-
-
     }
 
     public void deleteCart(Long cartIdx) {

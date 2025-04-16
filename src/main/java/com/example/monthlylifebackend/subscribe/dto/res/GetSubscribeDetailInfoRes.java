@@ -25,8 +25,10 @@ public class GetSubscribeDetailInfoRes {
     @Schema(description = "상품 가격", example = "29900")
     private int price;
 
+    @Schema(description = "상품 이미지 URL", example = "https://image.server.com/product/1.jpg")
     private String imageUrl;
 
+    @Schema(description = "구독 상태", example = "SUBSCRIBING")
     private SubscribeStatus status;
 
 
