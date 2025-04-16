@@ -1,6 +1,5 @@
 package com.example.monthlylifebackend.payment;
 
-import com.example.monthlylifebackend.payment.dto.req.PostBillingKeyReq;
 import io.portone.sdk.server.common.BillingKeyPaymentInput;
 import io.portone.sdk.server.common.Currency;
 import io.portone.sdk.server.common.PaymentAmountInput;
@@ -33,14 +32,11 @@ public class CustomPaymentClient {
     }
 
     // 빌링키로 결제하기
-    public CompletableFuture<PayWithBillingKeyResponse> startPayment(String paymentId, PostBillingKeyReq dto, String subscribeCode, int price) {
-
-        BillingKeyPaymentInput input = getMinimumInput(dto.getBillingKey(), subscribeCode, price);
-
+    public CompletableFuture<PayWithBillingKeyResponse> startPayment(String paymentId, String billingKey, String subscribeCode, Long price) {
 
         return paymentClient.payWithBillingKey(
                     paymentId,
-                    dto.getBillingKey(),
+                    billingKey,
                     null,
                     subscribeCode,
                     null,
@@ -63,21 +59,21 @@ public class CustomPaymentClient {
     }
 
     //빌링키로 한달뒤 결제 예약 걸기
-    public CompletableFuture<CreatePaymentScheduleResponse> OneMonthAfterPayment(String paymentId,PostBillingKeyReq dto, String subscribeCode, int price, LocalDateTime dateTime) {
-        return schedulePayment(paymentId, dto, subscribeCode, price, dateTime.plusMinutes(1));
+    public CompletableFuture<CreatePaymentScheduleResponse> OneMonthAfterPayment(String paymentId, String billingKey, String subscribeCode, Long price, LocalDateTime dateTime) {
+        return schedulePayment(paymentId, billingKey, subscribeCode, price, dateTime.plusMinutes(1));
     }
 
     //빌링키로 결제 예약 걸기
-    private CompletableFuture<CreatePaymentScheduleResponse> schedulePayment(String paymentId,PostBillingKeyReq dto, String subscribeCode, int price, LocalDateTime dateTime) {
+    private CompletableFuture<CreatePaymentScheduleResponse> schedulePayment(String paymentId,String billingKey, String subscribeCode, Long price, LocalDateTime dateTime) {
 
         Instant time = dateTime.atZone(ZoneId.systemDefault()).toInstant();
 
-        BillingKeyPaymentInput input = getMinimumInput(dto.getBillingKey(), subscribeCode, price);
+        BillingKeyPaymentInput input = getMinimumInput(billingKey, subscribeCode, price);
 
         return paymentScheduleClient.createPaymentSchedule(paymentId, input, time);
     }
 
-    private BillingKeyPaymentInput getMinimumInput(String billingKey, String orderName, int price) {
+    private BillingKeyPaymentInput getMinimumInput(String billingKey, String orderName, Long price) {
         return  new BillingKeyPaymentInput(
                 null,
                 billingKey,
@@ -102,7 +98,7 @@ public class CustomPaymentClient {
         );
     }
 
-    private PaymentAmountInput getAmount(int price) {
+    private PaymentAmountInput getAmount(Long price) {
         return new PaymentAmountInput(
                 price,
                 0L,

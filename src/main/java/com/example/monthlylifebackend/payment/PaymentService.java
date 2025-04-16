@@ -25,8 +25,6 @@ public class PaymentService {
 
     private final CustomPaymentClient customPaymentClient;
     public void startPayment(PostBillingKeyReq dto, Subscribe subscribe){
-
-
         //구독 번호 구하기
         String subscribeCode = subscribe.getIdx()+"";
 
@@ -38,43 +36,46 @@ public class PaymentService {
         }
 
         //payment 번호 구하기
-        String paymentId = getNewPaymentId();
-
-        //payment 저장
-        Payment payment = new Payment(paymentId, price);
-        paymentRepository.save(payment);
+        Payment payment = createPayment(subscribe.getIdx(), price);
 
         //구독번호와 가격을 이용해서 첫번째 결제하기
-        CompletableFuture<PayWithBillingKeyResponse> future = customPaymentClient.startPayment(paymentId, dto, subscribeCode, price);
-
+        CompletableFuture<PayWithBillingKeyResponse> future = customPaymentClient.startPayment(payment.getPaymentId(), dto.getBillingKey(), subscribeCode, price);
         future.join();
         //결제 레포지토리에 결제 완료 저장
         payment.paySuccess();
         paymentRepository.save(payment);
     }
 
-    public void getWebhook(PostWebhookReq dto) {
-        //결제 웹학 아니면 오류
+    //
+    public String getWebhook(PostWebhookReq dto) {
+        //결제 웹훅 아니면 오류
         if (!dto.getType().equals("TRANSACTION.PAID"))
             throw new PaymentHandler(_FAIL_PAYMENT);
 
-        String paymentId = dto.getData().getPaymentId();
-
-
+        String webhookPaymentId = dto.getData().getPaymentId();
         //결제를 다시 포트원으로 보내서 확인
-        Long total = customPaymentClient.getPaymentByPaymentId(paymentId);
+        Long total = customPaymentClient.getPaymentByPaymentId(webhookPaymentId);
 
-        Payment payment = paymentRepository.findByPaymentId(paymentId).orElseThrow(() -> new PaymentHandler(_NOT_FOUND_PAYMENT));
-        //가격이 다르면 오류
+        //DB의 결제내역 확인
+        Payment payment = paymentRepository.findByPaymentId(webhookPaymentId).orElseThrow(() -> new PaymentHandler(_NOT_FOUND_PAYMENT));
+
+        //포트원과 DB와 가격이 다르면 오류
         if (!Objects.equals(payment.getPrice(), total)) throw new PaymentHandler(_FAIL_PAYMENT);
 
         payment.paySuccess();
         paymentRepository.save(payment);
 
-
+        return payment.getPaymentId();
     }
 
-    private String getNewPaymentId() {
-        return "payment"+ UUID.randomUUID();
+    public void schedulePayment(Subscribe subscribe, String billingKey, Long price) {
+        Payment payment = createPayment(subscribe.getIdx(), price);
+        customPaymentClient.OneMonthAfterPayment(payment.getPaymentId(), billingKey, subscribe.getIdx()+"", price, LocalDateTime.now());
+    }
+
+    private Payment createPayment(Long subscribeIdx, Long price) {
+        String paymentId = "payment"+"-"+subscribeIdx+"-"+UUID.randomUUID();
+        Payment payment = new Payment(paymentId, price);
+        return paymentRepository.save(payment);
     }
 }
