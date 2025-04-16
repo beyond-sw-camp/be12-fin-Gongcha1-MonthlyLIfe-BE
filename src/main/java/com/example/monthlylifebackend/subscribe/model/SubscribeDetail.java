@@ -61,4 +61,17 @@ public class SubscribeDetail extends BaseEntity {
     @OneToMany(mappedBy = "subscribeDetail")
     @Schema(description = "반납 내역")
     private List<ReturnDelivery> returnDeliveryList = new ArrayList<>();
+
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SubscribeStatus status = SubscribeStatus.SUBSCRIBING;
+
+    public void updateStatus(SubscribeStatus status) {
+        this.status = status;
+    }
+
+
+
 }

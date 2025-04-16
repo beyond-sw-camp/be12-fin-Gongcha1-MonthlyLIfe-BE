@@ -2,6 +2,8 @@ package com.example.monthlylifebackend.subscribe.controller;
 
 import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
+import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
 import com.example.monthlylifebackend.subscribe.facade.SubscribeFacade;
@@ -10,6 +12,7 @@ import com.example.monthlylifebackend.user.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,10 +33,8 @@ public class SubscribeController {
     public BaseResponse<GetSubscribePageResDto> GetSubscription(@RequestParam("saleIdx") Long saleIdx,
                                                                 @RequestParam("period") int period, @RequestParam("id") String id) {
 
-        return BaseResponse.onSuccess(subscribeService.getSubscription(id,saleIdx , period));
+        return BaseResponse.onSuccess(subscribeService.getSubscription(id, saleIdx, period));
     }
-
-
 
 
     @Operation(summary = "상품 구독 생성", description = "상품을 구독하고 계약을 시작합니다.")
@@ -41,15 +42,9 @@ public class SubscribeController {
     public void createSubscription(@RequestBody PostRentalDeliveryReqDto reqDto) {
 
 
-        String id ="1";
+        String id = "1";
 
-        subscribeService.createSubscription(reqDto ,id);
-
-
-
-
-
-
+        subscribeService.createSubscription(reqDto, id);
 
 
     }
@@ -57,7 +52,6 @@ public class SubscribeController {
     @Operation(summary = "카트 상품 구독 생성", description = "상품을 구독하고 계약을 시작합니다.")
     @PostMapping("/subscribe/cart")
     public void createCartSubscription() {
-        // 구독 생성 및 계약 시작 로직
     }
 
 
@@ -75,8 +69,11 @@ public class SubscribeController {
 
     @Operation(summary = "반납 신청", description = "구독한 상품의 반납 및 회수 요청을 보냅니다.")
     @PostMapping("/return")
-    public void requestReturn() {
+    public void requestReturn(/*@AuthenticationPrincipal User user,*/@RequestBody PostReturnDeliveryReq reqDto) {
+
         // 반납 신청 로직
+        String user ="1";
+        subscribeFacade.returnDelivery(user, reqDto);
     }
 
     @Operation(summary = "자동 결제 설정 변경", description = "자동 결제 여부 설정 및 결제 수단 변경을 처리합니다.")
@@ -98,5 +95,15 @@ public class SubscribeController {
 
         User user = User.builder().id("1").build();
         return subscribeFacade.getSubscriptionInfo(user);
+    }
+
+
+    @GetMapping("/info/{subscribeDetailIdx}")
+    public GetSubscribeDetailInfoRes getSubscribeDetailInfoRes(@PathVariable Long subscribeDetailIdx/*, @AuthenticationPrincipal User user*/) {
+        String user="1";
+
+        return subscribeFacade.getReturnDelivery(user,subscribeDetailIdx);
+
+
     }
 }
