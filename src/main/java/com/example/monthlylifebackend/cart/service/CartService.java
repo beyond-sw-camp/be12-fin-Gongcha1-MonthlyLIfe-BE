@@ -6,6 +6,7 @@ import com.example.monthlylifebackend.cart.model.Cart;
 import com.example.monthlylifebackend.cart.repository.CartRepository;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.user.model.User;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,9 @@ public class CartService {
     private final CartMapper cartMapper;
     private final CartRepository cartRepository;
 
+
+
+
     public void addToCart(User user, SalePrice salePrice) {
 
 
@@ -24,7 +28,9 @@ public class CartService {
 
         cartRepository.save(cart);
 
-
+        if (cartRepository.existsByUserAndSalePrice(user, salePrice)) {
+            throw new CustomException("이미 장바구니에 담긴 상품입니다.");
+        }
 
     }
 

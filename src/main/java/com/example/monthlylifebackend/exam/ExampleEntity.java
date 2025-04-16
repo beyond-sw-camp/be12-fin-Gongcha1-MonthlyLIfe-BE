@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.common.example;
+package com.example.monthlylifebackend.exam;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import jakarta.persistence.Entity;

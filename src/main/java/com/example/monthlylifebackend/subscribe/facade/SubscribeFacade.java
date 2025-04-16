@@ -2,8 +2,10 @@ package com.example.monthlylifebackend.subscribe.facade;
 
 
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
+import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
 import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
@@ -20,7 +22,6 @@ import static com.example.monthlylifebackend.subscribe.model.SubscribeStatus.RET
 @Facade
 @RequiredArgsConstructor
 public class SubscribeFacade {
-    private final SubscribeMapper subscribeMapper;
 
     private final SubscribeService subscribeService;
 
@@ -31,13 +32,23 @@ public class SubscribeFacade {
 
 
     @Transactional
-    public void returnDelivery(String userId, PostReturnDeliveryReq reqDto) {
-        subscribeService.createReturnDelivery(userId, reqDto);
+    public void returnDelivery(User user, PostReturnDeliveryReq reqDto) {
+        subscribeService.createReturnDelivery(user.getId(), reqDto);
     }
 
-    public GetSubscribeDetailInfoRes getReturnDelivery(String userId, Long detailId) {
-        return subscribeService.getReturnDelivery(userId, detailId);
+    public GetSubscribeDetailInfoRes getReturnDelivery(User user, Long detailId) {
+        return subscribeService.getReturnDelivery(user.getId(), detailId);
     }
 
+
+    public void createSubscription(PostRentalDeliveryReqDto reqDto, User user) {
+        subscribeService.createSubscription(reqDto,user.getId());
+
+    }
+
+    public GetSubscribePageResDto getSubscription(User user, Long saleidx, int period) {
+        return subscribeService.getSubscription(user.getId()
+                , saleidx, period);
+    }
 
 }

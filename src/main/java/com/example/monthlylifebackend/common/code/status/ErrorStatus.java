@@ -26,7 +26,30 @@ public enum ErrorStatus implements BaseErrorCode {
     _NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "ITEM4004", "아이템이 존재하지 않습니다."),
 
     //Product 에러
-    _NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "PRODUCT4004", "상품이 존재하지 않습니다.");
+    _NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "PRODUCT4004", "상품이 존재하지 않습니다."),
+
+    //Subscribe 에러
+    // Subscribe 에러
+    _NOT_FOUND_SUBSCRIBE(HttpStatus.NOT_FOUND, "SUBSCRIBE4004", "구독 정보가 존재하지 않습니다."),
+    _INVALID_SUBSCRIBE_STATUS(HttpStatus.BAD_REQUEST, "SUBSCRIBE4001", "현재 구독 상태에서는 반납 요청이 불가능합니다."),
+    _DUPLICATED_SUBSCRIBE(HttpStatus.BAD_REQUEST, "SUBSCRIBE4002", "이미 구독된 상품입니다."),
+    _NOT_FOUND_SUBSCRIBE_DETAIL(HttpStatus.NOT_FOUND, "SUBSCRIBE4005", "구독 상세 정보가 존재하지 않습니다."),
+    _UNAUTHORIZED_SUBSCRIBE_ACCESS(HttpStatus.FORBIDDEN, "SUBSCRIBE4006", "구독에 대한 접근 권한이 없습니다."),
+    _NOT_FOUND_SALE(HttpStatus.NOT_FOUND, "SUBSCRIBE4007", "해당 세일 정보를 찾을 수 없습니다."),
+    _NOT_FOUND_SALE_PRICE(HttpStatus.NOT_FOUND, "SUBSCRIBE4008", "해당 기간의 세일 가격 정보를 찾을 수 없습니다."),
+    _ALREADY_RETURN_REQUESTED(HttpStatus.BAD_REQUEST, "SUBSCRIBE4009", "이미 반납 요청된 구독입니다."),
+    _ALREADY_SUBSCRIBED(HttpStatus.CONFLICT, "SUBSCRIBE4010", "이미 동일한 조건으로 구독 중입니다."),
+    _INVALID_SUBSCRIBE_PERIOD(HttpStatus.BAD_REQUEST, "SUBSCRIBE4011", "잘못된 구독 기간입니다."),
+    _UNSUPPORTED_PAYMENT_METHOD(HttpStatus.BAD_REQUEST, "SUBSCRIBE4012", "지원하지 않는 결제 방식입니다."),
+    _PAYMENT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SUBSCRIBE4013", "결제에 실패했습니다."),
+    _NOT_ELIGIBLE_FOR_RETURN(HttpStatus.FORBIDDEN, "SUBSCRIBE4014", "반납 가능한 기간이 아닙니다."),
+    _RETURN_DELIVERY_NOT_FOUND(HttpStatus.NOT_FOUND, "SUBSCRIBE4015", "반납 배송 정보가 존재하지 않습니다."),
+    _SUBSCRIBE_DETAIL_ALREADY_CANCELED(HttpStatus.BAD_REQUEST, "SUBSCRIBE4016", "이미 해지된 구독 상세입니다."),
+    _INVALID_RETURN_REQUEST(HttpStatus.BAD_REQUEST, "SUBSCRIBE4017", "잘못된 반납 요청입니다."),
+    _ALREADY_DELIVERED(HttpStatus.BAD_REQUEST, "SUBSCRIBE4018", "이미 배송 완료된 구독입니다."),
+    _DELIVERY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "SUBSCRIBE4019", "배송 중인 상품은 반납할 수 없습니다.");
+
+
 
     private final HttpStatus httpStatus;
     private final String code;

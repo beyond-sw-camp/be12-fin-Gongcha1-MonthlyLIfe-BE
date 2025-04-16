@@ -1,10 +1,8 @@
 package com.example.monthlylifebackend.exam;
 
 
-import com.example.monthlylifebackend.common.example.ExampleEntity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
