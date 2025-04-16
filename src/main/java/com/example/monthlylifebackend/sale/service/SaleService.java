@@ -112,6 +112,22 @@ public class SaleService {
     }
 
 
+
+
+
+    // 상품 정보 조회
+    public SalePrice getSalePrice(Long salePriceIdx) {
+
+        return salePriceRepository.findByIdx(salePriceIdx)
+                .orElseThrow(() -> new RuntimeException("해당 상품이 존재하지 않습니다."));
+
+    }
+
+
+
+
+
+
 }
 
 

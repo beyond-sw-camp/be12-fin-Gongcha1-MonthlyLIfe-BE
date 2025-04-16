@@ -49,10 +49,7 @@ public class SubscribeController {
 
     }
 
-    @Operation(summary = "카트 상품 구독 생성", description = "상품을 구독하고 계약을 시작합니다.")
-    @PostMapping("/subscribe/cart")
-    public void createCartSubscription() {
-    }
+
 
 
     @Operation(summary = "구독 취소 신청", description = "현재 구독을 취소 신청합니다.")

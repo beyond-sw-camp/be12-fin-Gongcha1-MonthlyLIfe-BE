@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.subscribe.model;
+package com.example.monthlylifebackend.cart.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.sale.model.SalePrice;

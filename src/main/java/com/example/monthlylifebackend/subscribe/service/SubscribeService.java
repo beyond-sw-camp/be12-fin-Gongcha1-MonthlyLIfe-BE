@@ -159,6 +159,8 @@ public class SubscribeService {
     }
 
 
+
+    // 구독 상세 정보 가져와짐
     public GetSubscribeDetailInfoRes getReturnDelivery(String userId, Long detailId) {
         SubscribeDetail rs = getSubscribeDetailWithUserValidation(userId, detailId);
         return subscribeMapper.toReturnDeliveryDto(rs);
