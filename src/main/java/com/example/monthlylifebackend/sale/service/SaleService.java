@@ -141,6 +141,13 @@ public class SaleService {
                 ))
                 .toList();
     }
+
+    public List<GetSaleListRes> getSaleProductList() {
+        List<Sale> sales = saleRepository.findAll();
+        return sales.stream()
+                .map(saleMapper::toGetSaleProductListRes)
+                .toList();
+    }
 }
 
 

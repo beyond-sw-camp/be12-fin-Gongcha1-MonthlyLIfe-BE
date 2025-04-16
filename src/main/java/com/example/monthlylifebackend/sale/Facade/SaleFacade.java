@@ -31,4 +31,8 @@ public class SaleFacade {
     public List<GetCategoryRes> getSaleCategoryList() {
         return saleService.getSaleCategoryList();
     }
+
+    public List<GetSaleListRes> getSaleProductList() {
+        return saleService.getSaleProductList();
+    }
 }

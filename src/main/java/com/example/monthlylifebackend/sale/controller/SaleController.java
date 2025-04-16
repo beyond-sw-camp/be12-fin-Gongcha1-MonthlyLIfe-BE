@@ -33,6 +33,13 @@ public class SaleController {
         return ResponseEntity.ok(BaseResponse.created(saleIdx));
     }
 
+    @Operation(summary = "판매 상품 목록 조회", description = "판매 상품 목록을 조회합니다.")
+    @GetMapping("/list")
+    public ResponseEntity<BaseResponse<List<GetSaleListRes>>> getProductList() {
+        List<GetSaleListRes> saleProductList = saleFacade.getSaleProductList();
+        return ResponseEntity.ok(BaseResponse.created(saleProductList));
+    }
+
     @Operation(summary = "카테고리별 판매상품 목록 조회", description = "카테고리별 판매 상품 목록을 조회합니다.")
     @GetMapping("/category/{categoryIdx}")
     public ResponseEntity<BaseResponse<Page<GetSaleListRes>>> getSalesByCategory(
