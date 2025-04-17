@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductRequestDto {
+public class PostSaleReq {
 
 
     @Schema(description = "세일 ID", example = "1")

@@ -1,16 +1,18 @@
 package com.example.monthlylifebackend.subscribe.controller;
 
 import com.example.monthlylifebackend.common.BaseResponse;
-import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
+import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
+import com.example.monthlylifebackend.subscribe.dto.req.PostSubscribeReq;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
 import com.example.monthlylifebackend.subscribe.facade.SubscribeFacade;
-import com.example.monthlylifebackend.subscribe.service.SubscribeService;
 import com.example.monthlylifebackend.user.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +32,8 @@ public class SubscribeController {
     @Operation(summary = "상품 구독 신청서", description = "상품을 구독하고 계약을 시작합니다.")
     @GetMapping("/subscribe")
     public BaseResponse<GetSubscribePageResDto> GetSubscription(@RequestParam("saleIdx") Long saleIdx,
-                                                                @RequestParam("period") int period/*,@AuthenticationPrincipal User user*/) {
-        // Todo 삭제할것
-        User user = User.builder().id("1").build();
-
+                                                                @RequestParam("period") int period,
+                                                                @AuthenticationPrincipal @Valid @NotNull User user) {
 
         GetSubscribePageResDto rs = subscribeFacade.getSubscription(user, saleIdx, period);
         return BaseResponse.onSuccess(rs);
@@ -42,14 +42,11 @@ public class SubscribeController {
 
     @Operation(summary = "상품 구독 생성", description = "상품을 구독하고 계약을 시작합니다.")
     @PostMapping("/subscribe")
-    public BaseResponse createSubscription(@RequestBody PostRentalDeliveryReqDto reqDto /*,@AuthenticationPrincipal User user*/) {
+    public BaseResponse<Long> createSubscription(@RequestBody PostSubscribeReq reqDto,
+                                           @AuthenticationPrincipal User user) {
 
-        // Todo 삭제할것
-        User user = User.builder().id("1").build();
-
-
-        subscribeFacade.createSubscription(reqDto, user);
-        return BaseResponse.onSuccess(null);
+        Long idx = subscribeFacade.createSubscription(reqDto, user);
+        return BaseResponse.onSuccess(idx);
 
     }
 

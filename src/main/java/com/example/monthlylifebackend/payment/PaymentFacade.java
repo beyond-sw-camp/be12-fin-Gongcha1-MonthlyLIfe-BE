@@ -3,12 +3,14 @@ package com.example.monthlylifebackend.payment;
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.payment.dto.req.PostBillingKeyReq;
 import com.example.monthlylifebackend.payment.dto.req.PostWebhookReq;
+import com.example.monthlylifebackend.payment.dto.res.GetPaymentMethodRes;
 import com.example.monthlylifebackend.payment.service.BillingKeyService;
 import com.example.monthlylifebackend.payment.service.PaymentService;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
 import com.example.monthlylifebackend.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 @Facade
@@ -18,15 +20,24 @@ public class PaymentFacade {
     private final BillingKeyService billingKeyService;
     private final SubscribeService subscribeService;
 
+    public Long createPaymentMethod(PostBillingKeyReq dto, User user) {
+        //빌링키를 포트원에 확인하고 정보 받아오기
+        return billingKeyService.createPaymentMethod(dto, user);
+    }
+
+    public Page<GetPaymentMethodRes> getPaymentMethodResPage(User user, int page, int size) {
+        return billingKeyService.getPaymentMethodByUser(user, page, size);
+    }
+
     @Transactional
     public void startPayment(PostBillingKeyReq dto, User user) {
 
         Subscribe subscribe = subscribeService.getSubscribeByIdx(1L);
         //구독번호와 가격을 이용해서 첫번째 결제하기
-        paymentService.startPayment(dto, subscribe);
+        paymentService.startPayment(dto.getBillingKey(), subscribe);
 
-        //빌링 키 저장
-        billingKeyService.createBillingKey(dto, user);
+//        //빌링 키 저장
+//        billingKeyService.createBillingKey(dto, user);
     }
 
     @Transactional

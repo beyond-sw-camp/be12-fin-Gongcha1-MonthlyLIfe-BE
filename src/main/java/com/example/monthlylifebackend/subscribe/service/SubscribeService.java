@@ -12,8 +12,7 @@ import com.example.monthlylifebackend.subscribe.dto.req.*;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
-import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReqDto;
-import com.example.monthlylifebackend.subscribe.dto.req.ProductRequestDto;
+import com.example.monthlylifebackend.subscribe.dto.req.PostSaleReq;
 import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
 import com.example.monthlylifebackend.subscribe.model.*;
@@ -60,35 +59,28 @@ public class SubscribeService {
         return subscribeRepository.findDeliveryList(PageRequest.of(page, size));
     }
 
-    //구독 할때 결제 할때
+    //구독 할때
     @Transactional
-    public void createSubscription(PostRentalDeliveryReqDto reqDto, String id) {
-        // 유저 존재 여부 확인
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("유저 없음"));
+    public Subscribe createSubscription(PostSubscribeReq reqDto, User user) {
+        //결제 수단
+        BillingKey billingKey = BillingKey.builder().idx(reqDto.getBillingKeyIdx()).build();
 
-        BillingKey billingKey = BillingKey.builder().build();
+        Subscribe subscribe = subscribeMapper.tosubscribe(user, billingKey);
 
-        Subscribe subscribe = subscribeMapper.tosubscribe(user, billingKey, reqDto.getProducts().get(0));
-        subscribeRepository.save(subscribe);
-
-
-        for (ProductRequestDto product : reqDto.getProducts()) {
-            // 세일 존재 여부 확인
-            Sale sale = saleRepository.findWithSalePricesByIdx(product.getSale_idx())
-                    .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SALE));
-
-            // 세일 가격 존재 여부 확인
-            SalePrice price = salePriceRepository.findBySaleIdxAndPeriod(product.getSale_idx(), product.getPeriod())
+        for (PostSaleReq saleReq : reqDto.getSales()) {
+            // 세일 가격 불러오기
+            SalePrice salePrice = salePriceRepository.findBySaleIdxAndPeriod(saleReq.getSale_idx(), saleReq.getPeriod())
                     .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SALE_PRICE));
 
-            SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, product, sale, price);
-            subscribeDetail.setSubscribe(subscribe);
+            SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, salePrice);
             subscribe.getSubscribeDetailList().add(subscribeDetail);
 
-            RentalDelivery delivery = subscribeMapper.toRentalDelivery(reqDto, subscribeDetail);
+            RentalDelivery delivery = subscribeMapper.toRentalDelivery(reqDto.getRentalDelivery(), subscribeDetail);
             rentalDeliveryRepository.save(delivery);
         }
+        Subscribe ret = subscribeRepository.save(subscribe);
+
+        return ret;
     }
 
     // 구독버튼 누를시  필요로 하는 정보들 가져오는 코드
@@ -160,10 +152,8 @@ public class SubscribeService {
     public Long calcPriceCycle(Subscribe subscribe, int cycle ) {
         Long price = 0L;
         for(SubscribeDetail sd : subscribe.getSubscribeDetailList()) {
-            Integer period = sd.getPeriod();
-            int detailPrice = sd.getPrice();
-            if(period >= cycle) {
-                price += detailPrice;
+            if(sd.getPeriod() >= cycle) {
+                price += sd.getPrice();
             }
         }
         return price;

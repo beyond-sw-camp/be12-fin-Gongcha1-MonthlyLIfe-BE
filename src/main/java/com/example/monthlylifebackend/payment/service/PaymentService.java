@@ -9,6 +9,7 @@ import com.example.monthlylifebackend.payment.model.Payment;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import io.portone.sdk.server.payment.PayWithBillingKeyResponse;
+import io.portone.sdk.server.payment.billingkey.BillingKeyInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +18,15 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import static com.example.monthlylifebackend.common.code.status.ErrorStatus._FAIL_PAYMENT;
+import static com.example.monthlylifebackend.common.code.status.ErrorStatus._PAYMENT_FAILED;
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._NOT_FOUND_PAYMENT;
 
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
     private final PaymentRepository paymentRepository;
-
     private final CustomPaymentClient customPaymentClient;
-    public void startPayment(PostBillingKeyReq dto, Subscribe subscribe){
+    public void startPayment(String billingKey, Subscribe subscribe){
         //구독 번호 구하기
         String subscribeCode = subscribe.getIdx()+"";
 
@@ -41,7 +41,7 @@ public class PaymentService {
         Payment payment = createPayment(subscribe.getIdx(), price, 1);
 
         //구독번호와 가격을 이용해서 첫번째 결제하기
-        CompletableFuture<PayWithBillingKeyResponse> future = customPaymentClient.startPayment(payment.getPaymentId(), dto.getBillingKey(), subscribeCode, price);
+        CompletableFuture<PayWithBillingKeyResponse> future = customPaymentClient.startPayment(payment.getPaymentId(), billingKey, subscribeCode, price);
         future.join();
         //결제 레포지토리에 결제 완료 저장
         payment.paySuccess();
@@ -55,7 +55,7 @@ public class PaymentService {
         //결제 웹훅 아니면 오류
         String s = dto.getType();
         if (!dto.getType().equals("Transaction.Paid"))
-            throw new PaymentHandler(_FAIL_PAYMENT);
+            throw new PaymentHandler(_PAYMENT_FAILED);
 
         String webhookPaymentId = dto.getData().getPaymentId();
         //결제를 다시 포트원으로 보내서 확인
@@ -65,7 +65,7 @@ public class PaymentService {
         Payment payment = paymentRepository.findByPaymentId(webhookPaymentId).orElseThrow(() -> new PaymentHandler(_NOT_FOUND_PAYMENT));
 
         //포트원과 DB와 가격이 다르면 오류
-        if (!Objects.equals(payment.getPrice(), total)) throw new PaymentHandler(_FAIL_PAYMENT);
+        if (!Objects.equals(payment.getPrice(), total)) throw new PaymentHandler(_PAYMENT_FAILED);
 
         payment.paySuccess();
         paymentRepository.save(payment);
@@ -85,6 +85,7 @@ public class PaymentService {
     }
 
     public void checkBillingKey(String billingKey) {
-        System.out.println(customPaymentClient.checkBillingKey(billingKey));
+        BillingKeyInfo billingKeyInfo = customPaymentClient.checkBillingKey(billingKey);
+
     }
 }

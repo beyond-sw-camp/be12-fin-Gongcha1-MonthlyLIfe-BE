@@ -25,7 +25,7 @@ public class SubscribeDetail extends BaseEntity {
     private Long idx;
 
     @Schema(description = "구독 시작일", example = "2025-04-14T00:00:00")
-    private LocalDateTime start_at;
+    private LocalDateTime startAt;
 
     @Schema(description = "구독 종료일", example = "2025-07-14T00:00:00")
     private LocalDateTime endAt;

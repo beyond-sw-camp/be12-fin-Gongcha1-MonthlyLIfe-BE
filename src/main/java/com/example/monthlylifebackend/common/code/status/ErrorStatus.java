@@ -26,7 +26,8 @@ public enum ErrorStatus implements BaseErrorCode {
     _NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "ITEM4004", "아이템이 존재하지 않습니다."),
 
     //Payment 에러
-    _FAIL_PAYMENT(HttpStatus.BAD_REQUEST, "PAYMENT4000", "결제 실패했습니다."),
+    _PAYMENT_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT4000", "결제 실패했습니다."),
+    _UNSUPPORTED_PAYMENT_METHOD(HttpStatus.BAD_REQUEST, "PAYMENT4001", "지원하지 않는 결제 수단입니다."),
     _NOT_FOUND_PAYMENT(HttpStatus.NOT_FOUND, "PAYMENT4040", "결제 정보가 존재하지 않습니다."),
 
     //Product 에러
@@ -44,8 +45,6 @@ public enum ErrorStatus implements BaseErrorCode {
     _ALREADY_RETURN_REQUESTED(HttpStatus.BAD_REQUEST, "SUBSCRIBE4009", "이미 반납 요청된 구독입니다."),
     _ALREADY_SUBSCRIBED(HttpStatus.CONFLICT, "SUBSCRIBE4010", "이미 동일한 조건으로 구독 중입니다."),
     _INVALID_SUBSCRIBE_PERIOD(HttpStatus.BAD_REQUEST, "SUBSCRIBE4011", "잘못된 구독 기간입니다."),
-    _UNSUPPORTED_PAYMENT_METHOD(HttpStatus.BAD_REQUEST, "SUBSCRIBE4012", "지원하지 않는 결제 방식입니다."),
-    _PAYMENT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "SUBSCRIBE4013", "결제에 실패했습니다."),
     _NOT_ELIGIBLE_FOR_RETURN(HttpStatus.FORBIDDEN, "SUBSCRIBE4014", "반납 가능한 기간이 아닙니다."),
     _RETURN_DELIVERY_NOT_FOUND(HttpStatus.NOT_FOUND, "SUBSCRIBE4015", "반납 배송 정보가 존재하지 않습니다."),
     _SUBSCRIBE_DETAIL_ALREADY_CANCELED(HttpStatus.BAD_REQUEST, "SUBSCRIBE4016", "이미 해지된 구독 상세입니다."),

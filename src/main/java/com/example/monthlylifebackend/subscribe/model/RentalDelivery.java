@@ -37,8 +37,6 @@ public class RentalDelivery extends BaseEntity {
 
     private String status;
 
-    private String deliverycol;
-
     private String courierCompany;
 
     private String trackingNumber;
@@ -48,10 +46,6 @@ public class RentalDelivery extends BaseEntity {
     private String shippedAt;
 
     private String deliveredAt;
-
-    private String deliveryCol1;
-
-    private Long subscribeIdx;
 
     private LocalDateTime createdAt;
 

@@ -24,9 +24,14 @@ public class BillingKey extends BaseEntity {
 
     private String billingKey;
 
+    private String cardCompany;
+
+    private String cardNumber;
+
     public void setBillingKey(String billingKey) {
         this.billingKey = billingKey;
     }
+    public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
 
     @ManyToOne
     @JoinColumn(name = "user_id")
