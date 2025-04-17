@@ -42,6 +42,7 @@ public class SubscribeFacade {
     }
 
 
+    @Transactional
     public Long createSubscription(PostSubscribeReq reqDto, User user) {
         Subscribe subscribe = subscribeService.createSubscription(reqDto,user);
 
