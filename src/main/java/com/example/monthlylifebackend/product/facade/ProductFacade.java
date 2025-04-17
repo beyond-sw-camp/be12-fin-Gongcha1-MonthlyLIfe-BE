@@ -8,7 +8,9 @@ import com.example.monthlylifebackend.product.repository.ProductRepository;
 import com.example.monthlylifebackend.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Facade
@@ -16,8 +18,12 @@ import java.util.List;
 public class ProductFacade {
     private final ProductService productService;
 
-    public String registerProduct(PostProductRegisterReq dto) {
-        return productService.registerProduct(dto);
+    //    public String registerProduct(PostProductRegisterReq dto) {
+//        return productService.registerProduct(dto);
+//    }
+    public String registerProduct(PostProductRegisterReq dto,
+                                  List<MultipartFile> images) throws IOException {
+        return productService.registerProduct(dto, images);
     }
 
     public List<GetProductListRes> getProductList() {
