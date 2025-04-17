@@ -1,5 +1,8 @@
 package com.example.monthlylifebackend.cart.mapper;
 
+
+import com.example.monthlylifebackend.cart.dto.GetCartListProjection;
+
 import com.example.monthlylifebackend.cart.dto.res.GetCartListRes;
 import com.example.monthlylifebackend.cart.model.Cart;
 import com.example.monthlylifebackend.sale.model.SalePrice;
@@ -27,13 +30,7 @@ public interface CartMapper {
 
     List<GetCartListRes> toCartDtoList(List<Cart> cartList);
 
-//    @Mapping(target = "saleidx", source = "salePrice.sale.idx")
-//    @Mapping(target = "salename", source = "salePrice.sale.name")
-//    @Mapping(target = "period", source = "salePrice.period")
-//    @Mapping(target = "price", source = "salePrice.price")
-//    @Mapping(target = "productCode", expression = "java(cart.getSalePrice().getSale().getSaleHasProductList().get(0).getProduct().getCode())")
-//    GetCartListDto toCartDto(Cart cart);
-//
-//    List<GetCartListDto> toCartDtoList(List<Cart> carts);
 
+
+    List<GetCartListRes> toCartDtoListFromProjection(List<GetCartListProjection> projections);
 }

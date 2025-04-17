@@ -1,7 +1,7 @@
 package com.example.monthlylifebackend.cart.service;
 
 
-import com.example.monthlylifebackend.cart.dto.GetCartListDto;
+import com.example.monthlylifebackend.cart.dto.GetCartListProjection;
 import com.example.monthlylifebackend.cart.dto.res.GetCartListRes;
 import com.example.monthlylifebackend.cart.mapper.CartMapper;
 import com.example.monthlylifebackend.cart.model.Cart;
@@ -42,37 +42,30 @@ public class CartService {
 
 
     @Transactional
+
     public void deleteCart(Long cartIdx) {
         cartRepository.deleteByIdx(cartIdx);
     }
 
-//    public List<GetCartListRes> getCartList(String userId) {
+//public List<GetCartListDto> getCartList(String userId) {
+//    List<Cart> cartList = cartRepository.findWithSaleByUser(userId);
 //
-//        List<Cart> cartList = cartRepository.findWithSaleByUser(userId);
-//        if (cartList == null || cartList.isEmpty()) {
-//            throw new CartHandler(ErrorStatus._EMPTY_CART);
-//        }
-//        for (Cart cart : cartList) {
-//            String code = cart.getSalePrice()
-//                    .getSale()
-//                    .getSaleHasProductList()
-//                    .get(0)
-//                    .getProduct()
-//                    .getCode();
-//        }
-//        List<GetCartListRes> rs =cartMapper.toCartDtoList(cartList);
-//
-//        return rs;
-//
+//    if (cartList == null || cartList.isEmpty()) {
+//        throw new CartHandler(ErrorStatus._EMPTY_CART);
 //    }
-public List<GetCartListDto> getCartList(String userId) {
-    List<Cart> cartList = cartRepository.findWithSaleByUser(userId);
+//
+//    return cartMapper.toCartDtoList(cartList);
+//}
 
-    if (cartList == null || cartList.isEmpty()) {
-        throw new CartHandler(ErrorStatus._EMPTY_CART);
+    public List<GetCartListRes> getCartList(String userId) {
+        List<GetCartListProjection> projections = cartRepository.findCartListProjection(userId);
+
+        if (projections == null || projections.isEmpty()) {
+            throw new CartHandler(ErrorStatus._EMPTY_CART);
+        }
+        return cartMapper.toCartDtoListFromProjection(projections);
+
     }
 
-    return cartMapper.toCartDtoList(cartList);
-}
 
 }
