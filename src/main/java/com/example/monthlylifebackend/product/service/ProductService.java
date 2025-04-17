@@ -2,6 +2,7 @@ package com.example.monthlylifebackend.product.service;
 
 
 import com.example.monthlylifebackend.admin.repository.ItemRepository;
+import com.example.monthlylifebackend.cart.dto.GetCartListDto;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.ProductHandler;
 import com.example.monthlylifebackend.item.model.Item;
@@ -15,6 +16,7 @@ import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.repository.ConditionRepository;
 import com.example.monthlylifebackend.product.repository.ItemLocationRepository;
 import com.example.monthlylifebackend.product.repository.ProductRepository;
+import com.example.monthlylifebackend.sale.mapper.SaleMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,7 @@ public class ProductService {
     private final ConditionRepository conditionRepository;
     private final ItemLocationRepository itemLocationRepository;
     private final ItemRepository itemRepository;
+    private final SaleMapper saleMapper;
 
     public String registerProduct(PostProductRegisterReq dto) {
         // Product 생성
@@ -78,5 +81,9 @@ public class ProductService {
 
         return product;
     }
+    public void getProductImg(List<GetCartListDto> dto) {
+        //
+    }
+
 
 }
