@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @Schema(description = "구독 상세 응답 DTO")
 public class GetCartListRes {
 
+        private Long cartidx;
+
         @Schema(description = "구독 상세 Idx", example = "101")
         private Long saleidx;
 
