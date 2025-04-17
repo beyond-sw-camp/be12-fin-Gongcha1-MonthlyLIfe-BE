@@ -24,10 +24,16 @@ public class AdminController {
 
     private final AdminFacade adminFacade;
 
+    @Operation(summary = "관리자 전체 페이징 재고 조회", description = "판매 아이템의 재고 관리페이지를 페이징 처리하여 조회합니다.")
+    @GetMapping("/product-by-page")
+    public BaseResponse<Page<GetProductRes>> getAllItemsByPage(int page, int size) {
+        Page<GetProductRes> dto = adminFacade.findAllItemsByPage(page,size);
+        return BaseResponse.onSuccess(dto);
+    }
     @Operation(summary = "관리자 전체 재고 조회", description = "판매 아이템의 재고를 관리페이지를 조회합니다.")
     @GetMapping("/product")
-    public BaseResponse<Page<GetProductRes>> getAllItems(int page, int size) {
-        Page<GetProductRes> dto = adminFacade.findAllItemsByPage(page,size);
+    public BaseResponse<List<GetProductRes>> getAllItemsByPage() {
+        List<GetProductRes> dto = adminFacade.findAllItems();
         return BaseResponse.onSuccess(dto);
     }
 
@@ -46,11 +52,19 @@ public class AdminController {
         return BaseResponse.onSuccess(null);
     }
 
+    @Operation(summary = "배송 스케줄 관리 조회", description = "페이지 별로 반납 및 배송 예약 일정을 조회합니다.")
+    @GetMapping("/delivery-by-page")
+    public BaseResponse getDeliveryScheduleListByPage(int page, int size) {
+        Page<GetDeliveryListRes> dto = adminFacade.findAllDeliveryByPage(page,size);
+        return BaseResponse.onSuccess(dto);
+
+    }
+
     @Operation(summary = "배송 스케줄 관리 조회", description = "반납 및 배송 예약 일정을 조회합니다.")
     @GetMapping("/delivery")
-    public ResponseEntity getDeliveryScheduleList(int page, int size) {
-        Page<GetDeliveryListRes> dto = adminFacade.findAllDeliveryByPage(page,size);
-        return ResponseEntity.ok(dto);
+    public BaseResponse getDeliveryScheduleList() {
+        List<GetDeliveryListRes> dto = adminFacade.findAllDelivery();
+        return BaseResponse.onSuccess(dto);
 
     }
 
