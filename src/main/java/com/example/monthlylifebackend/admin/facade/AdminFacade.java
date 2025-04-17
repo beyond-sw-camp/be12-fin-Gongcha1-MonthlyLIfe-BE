@@ -27,6 +27,12 @@ public class AdminFacade {
     private final ProductService productService;
 
     @Transactional(readOnly = true)
+    public List<GetProductRes> findAllItems() {
+        List<GetProductRes> dtoList = itemService.findAllItems();
+        return dtoList;
+    }
+
+    @Transactional(readOnly = true)
     public Page<GetProductRes> findAllItemsByPage(int page, int size) {
         Page<GetProductRes> pagedto = itemService.findAllItemsByPage(page, size);
         return pagedto;
@@ -55,6 +61,11 @@ public class AdminFacade {
 
         // Mapper로 변환하여 DTO 통합 응답 생성
         return itemMapper.toResponse(product, itemList);
+    }
+
+    public List<GetDeliveryListRes> findAllDelivery() {
+        List<GetDeliveryListRes> pagedto = subscribeService.findDeliveryList();
+        return pagedto;
     }
 
 }
