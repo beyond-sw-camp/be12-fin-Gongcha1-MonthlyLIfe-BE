@@ -43,7 +43,10 @@ public class SubscribeService {
     private final SubscribeDetailRepository subscribeDetailRepository;
 
     public Page<GetDeliveryListRes> findDeliveryListByPage(int page, int size) {
-        return subscribeRepository.findDeliveryList(PageRequest.of(page, size));
+        return subscribeRepository.findDeliveryListByPage(PageRequest.of(page, size));
+    }
+    public List<GetDeliveryListRes> findDeliveryList() {
+        return subscribeRepository.findDeliveryList();
     }
 
     @Transactional

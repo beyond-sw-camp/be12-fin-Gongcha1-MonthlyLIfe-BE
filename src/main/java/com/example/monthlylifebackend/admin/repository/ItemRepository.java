@@ -11,7 +11,6 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
-
     // ✅ 전체 상품 재고 요약 조회 (상품 코드 기준)
     @Query("""
         SELECT new com.example.monthlylifebackend.admin.dto.response.GetProductRes(
@@ -27,7 +26,27 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         JOIN i.itemLocation il
         GROUP BY p.code, p.name, p.manufacturer
     """)
-    Page<GetProductRes> findProductStockSummary(Pageable pageable);
+    List<GetProductRes> findProductStockSummary();
+
+
+    // ✅ 전체 상품 재고 요약 조회 + 페이징 (상품 코드 기준)
+    @Query("""
+        SELECT new com.example.monthlylifebackend.admin.dto.response.GetProductRes(
+            p.code,
+            p.name,
+            p.manufacturer,
+            SUM(i.count),
+            SUM(CASE WHEN il.name = '창고' THEN i.count ELSE 0 END),
+            MIN(i.createdAt)
+        )
+        FROM Item i
+        JOIN i.product p
+        JOIN i.itemLocation il
+        GROUP BY p.code, p.name, p.manufacturer
+    """)
+    Page<GetProductRes> findProductStockSummaryByPage(Pageable pageable);
+
+
 
     // ✅ 상품 상세 하위 재고 리스트
     @Query("""

@@ -20,8 +20,13 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     public Page<GetProductRes> findAllItemsByPage(int page, int size) {
-        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummary(PageRequest.of(page,size));
+        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummaryByPage(PageRequest.of(page,size));
         return pagedto;
+    }
+
+    public List<GetProductRes> findAllItems() {
+        List<GetProductRes> dtoList = itemRepository.findProductStockSummary();
+        return dtoList;
     }
 
     public Item modifyItemCount(PatchItemCountReq dto) {
