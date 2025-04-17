@@ -1,6 +1,8 @@
 package com.example.monthlylifebackend.cart.controller;
 
 
+import com.example.monthlylifebackend.cart.dto.GetCartListDto;
+import com.example.monthlylifebackend.cart.dto.res.GetCartListRes;
 import com.example.monthlylifebackend.cart.facade.CartFacade;
 
 import com.example.monthlylifebackend.common.BaseResponse;
@@ -12,7 +14,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +39,11 @@ public class CartController {
     }
 
 
+
+
+
+
+
     @Operation(summary = "장바구니에서 상품 삭제", description = "장바구니에서 특정 항목을 삭제합니다.")
     @PostMapping("/{cartIdx}/delete")
     public BaseResponse deleteCart(@PathVariable Long cartIdx) {
@@ -41,6 +51,16 @@ public class CartController {
 
         return BaseResponse.onSuccess(null);
 
+    }
+
+
+    @Operation(summary = "장바구니 조회", description = "장바구니를 조회합니다.")
+    @GetMapping("/list")
+    public BaseResponse<List<GetCartListDto>> getCartList(/*@AuthenticationPrincipal User user*/){
+        User user = User.builder().id("1").build();
+        List<GetCartListDto> rs =cartFacade.getCartList(user);
+
+        return BaseResponse.onSuccess(rs);
     }
 
 }
