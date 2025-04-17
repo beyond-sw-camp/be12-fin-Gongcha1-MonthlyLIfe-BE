@@ -14,6 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @Schema(description = "판매 상품 목록 조회 응답 DTO")
 public class GetSaleListRes {
+    @Schema(description = "판매 ID", example = "10")
+    private Long idx;
 
     @Schema(description = "판매 상품 이름", example = "[특가] 울트라 HD 스마트 TV 75인치 (사은품증정)")
     private String name;
@@ -21,11 +23,14 @@ public class GetSaleListRes {
     @Schema(description = "상품 설명", example = "리얼 4K, 6세대 인공지능 알파5, 새로워진 스마트 기능")
     private String description;
 
+    @Schema(description = "카테고리 ID", example = "1")
+    private Long categoryIdx;
+
     @Schema(description = "포함 상품 목록")
     private List<ProductInfo> productList;
 
     @Schema(description = "기간별 가격 목록")
-    private List<GetSaleDetailRes.PriceInfo> priceList;
+    private List<PriceInfo> priceList;
 
     @Getter
     @Builder

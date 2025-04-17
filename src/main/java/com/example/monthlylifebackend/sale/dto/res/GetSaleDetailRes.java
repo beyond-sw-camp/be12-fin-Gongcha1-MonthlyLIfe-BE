@@ -12,6 +12,9 @@ import java.util.List;
 @Schema(description = "판매상품 상세 조회 응답 DTO")
 public class GetSaleDetailRes {
 
+    @Schema(description = "판매 ID", example = "10")
+    private Long idx;
+
     @Schema(description = "판매 상품 이름", example = "[특가] 울트라 HD 스마트 TV 75인치")
     private String name;
 
@@ -20,6 +23,8 @@ public class GetSaleDetailRes {
 
     @Schema(description = "카테고리 ID", example = "1")
     private Long categoryIdx;
+
+
 
     @Schema(description = "포함된 상품 목록")
     private List<ProductInfo> productList;
