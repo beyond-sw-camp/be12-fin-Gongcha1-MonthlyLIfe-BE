@@ -1,6 +1,5 @@
 package com.example.monthlylifebackend.cart.facade;
 
-import com.example.monthlylifebackend.cart.dto.GetCartListDto;
 import com.example.monthlylifebackend.cart.dto.res.GetCartListRes;
 import com.example.monthlylifebackend.cart.service.CartService;
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
@@ -35,12 +34,10 @@ public class CartFacade {
     }
 
 //    public List<GetCartListRes> getCartList(User user) {
-    public List<GetCartListDto> getCartList(User user) {
+    public List<GetCartListRes> getCartList(User user) {
 
-        List<GetCartListDto> getcartListDto = cartService.getCartList(user.getId());
-//        List<T> codelist ;
-        productService.getProductImg(getcartListDto);
-//        Mapper
-        return cartService.getCartList(user.getId());
+        List<GetCartListRes> rs = cartService.getCartList(user.getId());
+
+        return rs;
     }
 }
