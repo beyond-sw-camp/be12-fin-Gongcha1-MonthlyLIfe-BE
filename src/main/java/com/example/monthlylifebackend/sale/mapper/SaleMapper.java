@@ -1,19 +1,21 @@
 package com.example.monthlylifebackend.sale.mapper;
 
-import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
+import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.product.model.Category;
-import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
-import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
+import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
+import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import org.mapstruct.*;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface SaleMapper {
+
+    // --- 등록용 Entity 매핑 (변경 없음) ---
 
     @Mapping(target = "idx", ignore = true)
     @Mapping(target = "category", expression = "java(category)")
@@ -30,29 +32,71 @@ public interface SaleMapper {
     @IterableMapping(elementTargetType = SalePrice.class)
     List<SalePrice> toSalePriceList(List<PostSaleRegisterReq.SalePriceReq> list, @Context Sale sale);
 
-//    GetSaleListRes toGetSaleProductListRes(Sale sale);
-    default GetSaleListRes toGetSaleProductListRes(Sale sale) {
-        List<GetSaleListRes.ProductInfo> productList = sale.getSaleHasProductList().stream()
-                .filter(shp -> shp.getProduct() != null && shp.getCondition() != null)
-                .map(shp -> new GetSaleListRes.ProductInfo(
-                        shp.getProduct().getCode(),
-                        shp.getCondition().getName()
-                ))
-                .toList();
 
-        List<GetSaleDetailRes.PriceInfo> priceList = sale.getSalePriceList().stream()
-                .map(price -> new GetSaleDetailRes.PriceInfo(
-                        price.getPeriod(),
-                        price.getPrice()
-                ))
-                .toList();
+    // --- 조회용 DTO 매핑 ---
 
-        return new GetSaleListRes(
-                sale.getName(),
-                sale.getDescription(),
-                productList,
-                priceList
-        );
-    }
+    /** Sale → List 응답 DTO */
+    @Mapping(source = "idx",             target = "idx")             // 사실 같은 이름은 생략해도 자동 매핑됨
+    @Mapping(source = "category.idx",   target = "categoryIdx")
+    @Mapping(source = "saleHasProductList", target = "productList")
+    @Mapping(source = "salePriceList",       target = "priceList")
+    GetSaleListRes toGetSaleListRes(Sale sale);
+
+    /** Sale → Detail 응답 DTO */
+    @Mapping(source = "idx",             target = "idx")             // ID 필드는 DTO 에 idx 로 선언되어 있으므로
+    @Mapping(source = "category.idx",   target = "categoryIdx")
+    @Mapping(source = "saleHasProductList", target = "productList")
+    @Mapping(source = "salePriceList",       target = "priceList")
+    GetSaleDetailRes toGetSaleDetailRes(Sale sale);
+
+
+    // --- 내부 리스트 요소 매핑: SaleHasProduct → ProductInfo ---
+
+    @IterableMapping(elementTargetType = GetSaleListRes.ProductInfo.class)
+    @Mapping(source = "product.code",   target = "productCode")
+    @Mapping(source = "condition.name", target = "conditionName")
+    List<GetSaleListRes.ProductInfo> mapProductInfoList(List<SaleHasProduct> list);
+
+    @Mapping(source = "product.code",   target = "productCode")
+    @Mapping(source = "condition.name", target = "conditionName")
+    GetSaleListRes.ProductInfo toProductInfo(SaleHasProduct shp);
+
+
+    // --- 내부 리스트 요소 매핑: SalePrice → PriceInfo ---
+
+    @IterableMapping(elementTargetType = GetSaleListRes.PriceInfo.class)
+    List<GetSaleListRes.PriceInfo> mapPriceInfoList(List<SalePrice> list);
+
+    @Mapping(source = "period", target = "period")
+    @Mapping(source = "price",  target = "price")
+    GetSaleListRes.PriceInfo toPriceInfo(SalePrice price);
+
+    // Category → GetCategoryRes
+    @Mapping(source = "idx",          target = "idx")
+    @Mapping(source = "name",         target = "name")
+    @Mapping(source = "iconUrl",      target = "iconUrl")
+    @Mapping(source = "parent.idx",   target = "parentIdx")
+    GetCategoryRes toCategoryRes(Category category);
+
+
+    // --- Detail용 리스트 요소 매핑: SaleHasProduct → GetSaleDetailRes.ProductInfo ---
+
+    @IterableMapping(elementTargetType = GetSaleDetailRes.ProductInfo.class)
+    @Mapping(source = "product.code",   target = "productCode")
+    @Mapping(source = "condition.name", target = "conditionName")
+    List<GetSaleDetailRes.ProductInfo> mapDetailProductInfoList(List<SaleHasProduct> list);
+
+    @Mapping(source = "product.code",   target = "productCode")
+    @Mapping(source = "condition.name", target = "conditionName")
+    GetSaleDetailRes.ProductInfo toDetailProductInfo(SaleHasProduct shp);
+
+
+    // --- Detail용 리스트 요소 매핑: SalePrice → GetSaleDetailRes.PriceInfo ---
+
+    @IterableMapping(elementTargetType = GetSaleDetailRes.PriceInfo.class)
+    List<GetSaleDetailRes.PriceInfo> mapDetailPriceInfoList(List<SalePrice> list);
+
+    @Mapping(source = "period", target = "period")
+    @Mapping(source = "price",  target = "price")
+    GetSaleDetailRes.PriceInfo toDetailPriceInfo(SalePrice price);
 }
-
