@@ -1,6 +1,7 @@
-package com.example.monthlylifebackend.subscribe.model;
+package com.example.monthlylifebackend.payment.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
+import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,16 +20,23 @@ public class Payment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
+    private String paymentId;
 
-    private int cardNumber;
+    private boolean isPaid;
+
+    private Long price;
+
+    public Payment(String paymentId, Long price) {
+        this.paymentId = paymentId;
+        this.price = price;
+        isPaid = false;
+    }
 
 
-    private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
-
-    @OneToMany(mappedBy = "payment")
-    private List<Subscribe> subscribeList = new ArrayList<>();
+    public void paySuccess() {
+        isPaid = true;
+    }
 
     @ManyToOne
     @JoinColumn(name = "subscribe_idx")

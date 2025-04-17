@@ -1,12 +1,13 @@
 package com.example.monthlylifebackend.subscribe.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
+import com.example.monthlylifebackend.payment.model.BillingKey;
+import com.example.monthlylifebackend.payment.model.Payment;
 import com.example.monthlylifebackend.user.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +31,9 @@ public class Subscribe extends BaseEntity {
     private User user;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "payment_idx")
-    @Schema(description = "결제 정보")
-    private Payment payment;
+    @JoinColumn(name = "billing_key_idx")
+    @Schema(description = "빌링 키 정보")
+    private BillingKey billingKey;
 
     @Builder.Default
     @OneToMany(mappedBy = "subscribe", cascade = CascadeType.ALL)

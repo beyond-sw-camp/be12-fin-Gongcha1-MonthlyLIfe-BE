@@ -13,11 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Schema(description = "구독 + 렌탈 배송 요청 DTO")
-public class PostRentalDeliveryReqDto {
-
-    @Schema(description = "상품 정보 리스트", required = true)
-    private List<ProductRequestDto> products;
-
+public class PostRentalDeliveryReq {
     @Schema(description = "수령인 이름", example = "홍길동")
     private String recipientName;
 

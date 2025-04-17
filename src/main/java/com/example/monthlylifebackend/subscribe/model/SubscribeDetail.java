@@ -25,7 +25,7 @@ public class SubscribeDetail extends BaseEntity {
     private Long idx;
 
     @Schema(description = "구독 시작일", example = "2025-04-14T00:00:00")
-    private LocalDateTime start_at;
+    private LocalDateTime startAt;
 
     @Schema(description = "구독 종료일", example = "2025-07-14T00:00:00")
     private LocalDateTime endAt;
@@ -34,9 +34,9 @@ public class SubscribeDetail extends BaseEntity {
     private int price;
 
     @Schema(description = "구독 기간 (개월 수)", example = "3")
-    private String period;
+    private Integer period;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sale_idx")
     @Schema(description = "연결된 판매 상품")
     private Sale sale;
