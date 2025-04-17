@@ -21,8 +21,10 @@ public class PaymentFacade {
     @Transactional
     public void startPayment(PostBillingKeyReq dto, User user) {
 
+        Subscribe subscribe = subscribeService.getSubscribeByIdx(1L);
         //구독번호와 가격을 이용해서 첫번째 결제하기
-        paymentService.startPayment(dto, Subscribe.builder().idx(1L).build());
+        paymentService.startPayment(dto, subscribe);
+
         //빌링 키 저장
         billingKeyService.createBillingKey(dto, user);
     }
@@ -33,23 +35,31 @@ public class PaymentFacade {
         //포트원에 한번 검증하고 올바르면 ok로 저장
         String paymentId = paymentService.getWebhook(dto);
 
+        Long subscribeIdx = extractSubscribeIdx(paymentId);
+        Integer cycle = extractNextCycle(paymentId);
+
         //구독을 확인하고 다음달 결제할 가격 설정
-        Long subscribeIdx = extractMiddleAsLong(paymentId);
+        Subscribe subscribe = subscribeService.getSubscribeByIdx(subscribeIdx);
 
-        Subscribe subscribe = Subscribe.builder().build();
+        //빌링 키 조회
+        String billingKey = billingKeyService.getBillingKey(subscribe.getBillingKey().getIdx());
 
-        String billingKey = billingKeyService.getBillingKey(1L);
-        Long nextPrice = 12000L;
+        //결제 가격 조회
+        Long nextPrice = subscribeService.calcPriceCycle(subscribe, cycle);
 
         //다음달 결제를 해야하면 결제 예약
         if (nextPrice == 0) return;
-        paymentService.schedulePayment(subscribe, billingKey, nextPrice);
+
+        paymentService.schedulePayment(subscribe, billingKey, nextPrice, cycle);
     }
 
-    private Long extractMiddleAsLong(String str) {
+    private Long extractSubscribeIdx(String str) {
         String[] parts = str.split("-");
         return Long.parseLong(parts[1]);
-
+    }
+    private Integer extractNextCycle(String str) {
+        String[] parts = str.split("-");
+        return Integer.parseInt(parts[2]) + 1;
     }
 
     public void check(String billingKey) {

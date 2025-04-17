@@ -34,9 +34,9 @@ public class SubscribeDetail extends BaseEntity {
     private int price;
 
     @Schema(description = "구독 기간 (개월 수)", example = "3")
-    private String period;
+    private Integer period;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sale_idx")
     @Schema(description = "연결된 판매 상품")
     private Sale sale;

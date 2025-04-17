@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.subscribe.mapper;
 
 
+import com.example.monthlylifebackend.payment.model.BillingKey;
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SaleHasProduct;
@@ -37,8 +38,8 @@ public interface SubscribeMapper {
 
     @Mapping(target = "idx", ignore = true)  // idx는 자동 생성되므로 매핑에서 제외
     @Mapping(source = "user", target = "user")
-    @Mapping(source = "payment", target = "payment")
-    Subscribe tosubscribe(User user , Payment payment, ProductRequestDto postProductRegisterReq);
+    @Mapping(source = "billingKey", target = "billingKey")
+    Subscribe tosubscribe(User user , BillingKey billingKey, ProductRequestDto postProductRegisterReq);
 
 
 

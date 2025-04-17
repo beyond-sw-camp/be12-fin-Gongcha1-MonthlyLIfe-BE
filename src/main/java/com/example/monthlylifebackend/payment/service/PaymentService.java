@@ -38,7 +38,7 @@ public class PaymentService {
         }
 
         //payment 번호 구하기
-        Payment payment = createPayment(subscribe.getIdx(), price);
+        Payment payment = createPayment(subscribe.getIdx(), price, 1);
 
         //구독번호와 가격을 이용해서 첫번째 결제하기
         CompletableFuture<PayWithBillingKeyResponse> future = customPaymentClient.startPayment(payment.getPaymentId(), dto.getBillingKey(), subscribeCode, price);
@@ -53,7 +53,8 @@ public class PaymentService {
     //
     public String getWebhook(PostWebhookReq dto) {
         //결제 웹훅 아니면 오류
-        if (!dto.getType().equals("TRANSACTION.PAID"))
+        String s = dto.getType();
+        if (!dto.getType().equals("Transaction.Paid"))
             throw new PaymentHandler(_FAIL_PAYMENT);
 
         String webhookPaymentId = dto.getData().getPaymentId();
@@ -72,13 +73,13 @@ public class PaymentService {
         return payment.getPaymentId();
     }
 
-    public void schedulePayment(Subscribe subscribe, String billingKey, Long price) {
-        Payment payment = createPayment(subscribe.getIdx(), price);
+    public void schedulePayment(Subscribe subscribe, String billingKey, Long price, Integer cycle) {
+        Payment payment = createPayment(subscribe.getIdx(), price, cycle);
         customPaymentClient.OneMonthAfterPayment(payment.getPaymentId(), billingKey, subscribe.getIdx()+"", price, LocalDateTime.now());
     }
 
-    private Payment createPayment(Long subscribeIdx, Long price) {
-        String paymentId = "payment"+"-"+subscribeIdx+"-"+UUID.randomUUID();
+    private Payment createPayment(Long subscribeIdx, Long price, int cycle) {
+        String paymentId = "payment"+"-"+subscribeIdx+"-"+cycle+"-"+UUID.randomUUID();
         Payment payment = new Payment(paymentId, price);
         return paymentRepository.save(payment);
     }

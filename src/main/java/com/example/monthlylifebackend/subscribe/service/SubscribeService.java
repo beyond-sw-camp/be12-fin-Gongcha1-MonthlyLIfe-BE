@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.subscribe.service;
 
 
+import com.example.monthlylifebackend.payment.model.BillingKey;
 import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
 import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.model.Sale;
@@ -78,12 +79,12 @@ public class SubscribeService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("유저 없음"));
 
-        Payment payment = Payment.builder().build();
-        paymentRepository.save(payment);
+        BillingKey billingKey = BillingKey.builder().build();
+//        paymentRepository.save(payment);
         // *************************
 
 
-        Subscribe subscribe = subscribeMapper.tosubscribe(user, payment, reqDto.getProducts().get(0));
+        Subscribe subscribe = subscribeMapper.tosubscribe(user, billingKey, reqDto.getProducts().get(0));
         subscribeRepository.save(subscribe);
 
 
@@ -164,7 +165,23 @@ public class SubscribeService {
         SubscribeDetail rs = getSubscribeDetailWithUserValidation(userId, detailId);
         return subscribeMapper.toReturnDeliveryDto(rs);
     }
-//    public  GetSubscribeWithBillingKey(Long idx) {
-//
-//    }
+
+    //구독 idx로 구독 반환
+    public Subscribe getSubscribeByIdx(Long idx) {
+        Subscribe subscribe = subscribeRepository.findById(idx).orElseThrow();
+
+        return subscribe;
+    }
+
+    public Long calcPriceCycle(Subscribe subscribe, int cycle ) {
+        Long price = 0L;
+        for(SubscribeDetail sd : subscribe.getSubscribeDetailList()) {
+            Integer period = sd.getPeriod();
+            int detailPrice = sd.getPrice();
+            if(period >= cycle) {
+                price += detailPrice;
+            }
+        }
+        return price;
+    }
 }
