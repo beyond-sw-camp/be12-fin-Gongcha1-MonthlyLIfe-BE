@@ -24,6 +24,9 @@ public class GetSaleListRes {
     @Schema(description = "포함 상품 목록")
     private List<ProductInfo> productList;
 
+    @Schema(description = "기간별 가격 목록")
+    private List<GetSaleDetailRes.PriceInfo> priceList;
+
     @Getter
     @Builder
     @NoArgsConstructor
@@ -35,5 +38,18 @@ public class GetSaleListRes {
 
         @Schema(description = "상태", example = "S급")
         private String conditionName;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Schema(description = "가격 정보")
+    public static class PriceInfo {
+        @Schema(description = "기간 (개월)", example = "12")
+        private int period;
+
+        @Schema(description = "가격", example = "19900")
+        private int price;
     }
 }

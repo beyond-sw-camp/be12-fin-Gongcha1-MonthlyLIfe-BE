@@ -23,7 +23,6 @@ import java.util.List;
 @Tag(name = "구독 서비스", description = "구독 생성, 취소, 연장, 결제 관리 등 API")
 public class SubscribeController {
 
-    private final SubscribeService subscribeService;
 
     private final SubscribeFacade subscribeFacade;
 
@@ -31,21 +30,26 @@ public class SubscribeController {
     @Operation(summary = "상품 구독 신청서", description = "상품을 구독하고 계약을 시작합니다.")
     @GetMapping("/subscribe")
     public BaseResponse<GetSubscribePageResDto> GetSubscription(@RequestParam("saleIdx") Long saleIdx,
-                                                                @RequestParam("period") int period, @RequestParam("id") String id) {
+                                                                @RequestParam("period") int period/*,@AuthenticationPrincipal User user*/) {
+        // Todo 삭제할것
+        User user = User.builder().id("1").build();
 
-        return BaseResponse.onSuccess(subscribeService.getSubscription(id, saleIdx, period));
+
+        GetSubscribePageResDto rs = subscribeFacade.getSubscription(user, saleIdx, period);
+        return BaseResponse.onSuccess(rs);
     }
 
 
     @Operation(summary = "상품 구독 생성", description = "상품을 구독하고 계약을 시작합니다.")
     @PostMapping("/subscribe")
-    public void createSubscription(@RequestBody PostRentalDeliveryReqDto reqDto) {
+    public BaseResponse createSubscription(@RequestBody PostRentalDeliveryReqDto reqDto /*,@AuthenticationPrincipal User user*/) {
+
+        // Todo 삭제할것
+        User user = User.builder().id("1").build();
 
 
-        String id = "1";
-
-        subscribeService.createSubscription(reqDto, id);
-
+        subscribeFacade.createSubscription(reqDto, user);
+        return BaseResponse.onSuccess(null);
 
     }
 
@@ -66,11 +70,14 @@ public class SubscribeController {
 
     @Operation(summary = "반납 신청", description = "구독한 상품의 반납 및 회수 요청을 보냅니다.")
     @PostMapping("/return")
-    public void requestReturn(/*@AuthenticationPrincipal User user,*/@RequestBody PostReturnDeliveryReq reqDto) {
+    public BaseResponse requestReturn(/*@AuthenticationPrincipal User user,*/@RequestBody PostReturnDeliveryReq reqDto) {
 
-        // 반납 신청 로직
-        String user ="1";
+
+        // Todo 삭제할것
+        User user = User.builder().id("1").build();
+
         subscribeFacade.returnDelivery(user, reqDto);
+        return BaseResponse.onSuccess(null);
     }
 
     @Operation(summary = "자동 결제 설정 변경", description = "자동 결제 여부 설정 및 결제 수단 변경을 처리합니다.")
@@ -85,22 +92,30 @@ public class SubscribeController {
         // 구독 연장 로직
     }
 
-    @Operation(summary = "구독 정보 조회", description = "현재 구독 중인 상품의 정보를 확인합니다.")
+    @Operation(summary = "구독 정보 조회", description = "현재 내가 구독하고있는 목록을 확인합니다.")
     @GetMapping("/info")
-    public List<GetSubscribeRes> getSubscriptionInfo() {
-        // 구독 정보 조회 로직
+    public BaseResponse<List<GetSubscribeRes>> getSubscriptionInfo() {
 
+        // Todo 삭제할것
         User user = User.builder().id("1").build();
-        return subscribeFacade.getSubscriptionInfo(user);
+
+
+
+        List<GetSubscribeRes>  rs =subscribeFacade.getSubscriptionInfo(user);
+        return BaseResponse.onSuccess(rs);
+
     }
 
-
+    @Operation(summary = "구독 디테일 조회", description = "현재 구독 중인 상품의 정보를 확인합니다.")
     @GetMapping("/info/{subscribeDetailIdx}")
-    public GetSubscribeDetailInfoRes getSubscribeDetailInfoRes(@PathVariable Long subscribeDetailIdx/*, @AuthenticationPrincipal User user*/) {
-        String user="1";
+    public BaseResponse<GetSubscribeDetailInfoRes> getSubscribeDetailInfoRes(@PathVariable Long subscribeDetailIdx/*, @AuthenticationPrincipal User user*/) {
 
-        return subscribeFacade.getReturnDelivery(user,subscribeDetailIdx);
+        // Todo 삭제할것
+        User user = User.builder().id("1").build();
 
 
+
+        GetSubscribeDetailInfoRes rs =subscribeFacade.getReturnDelivery(user,subscribeDetailIdx);
+        return BaseResponse.onSuccess(rs);
     }
 }

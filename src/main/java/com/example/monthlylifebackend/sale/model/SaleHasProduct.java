@@ -33,4 +33,11 @@ public class SaleHasProduct extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "condition_idx")
     private Condition condition;
+
+    public SaleHasProduct(Long idx, Sale sale, Product product, Condition condition) {
+        this.idx = idx;
+        this.sale = sale;
+        this.product = product;
+        this.condition = condition;
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.monthlylifebackend.sale.dto.req;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ public class PostSaleRegisterReq {
 
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class SaleProductInfo {
         private String productCode;
         private Long conditionIdx;
@@ -24,6 +26,7 @@ public class PostSaleRegisterReq {
 
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class SalePriceReq {
         private int period;
         private int price;
