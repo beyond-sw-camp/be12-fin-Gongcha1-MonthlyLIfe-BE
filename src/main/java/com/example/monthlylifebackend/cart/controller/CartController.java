@@ -1,7 +1,6 @@
 package com.example.monthlylifebackend.cart.controller;
 
 
-import com.example.monthlylifebackend.cart.dto.GetCartListDto;
 import com.example.monthlylifebackend.cart.dto.res.GetCartListRes;
 import com.example.monthlylifebackend.cart.facade.CartFacade;
 
@@ -56,9 +55,9 @@ public class CartController {
 
     @Operation(summary = "장바구니 조회", description = "장바구니를 조회합니다.")
     @GetMapping("/list")
-    public BaseResponse<List<GetCartListDto>> getCartList(/*@AuthenticationPrincipal User user*/){
+    public BaseResponse<List<GetCartListRes>> getCartList(/*@AuthenticationPrincipal User user*/){
         User user = User.builder().id("1").build();
-        List<GetCartListDto> rs =cartFacade.getCartList(user);
+        List<GetCartListRes> rs =cartFacade.getCartList(user);
 
         return BaseResponse.onSuccess(rs);
     }

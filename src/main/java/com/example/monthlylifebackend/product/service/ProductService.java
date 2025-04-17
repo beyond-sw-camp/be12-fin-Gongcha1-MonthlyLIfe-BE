@@ -2,7 +2,6 @@ package com.example.monthlylifebackend.product.service;
 
 
 import com.example.monthlylifebackend.admin.repository.ItemRepository;
-import com.example.monthlylifebackend.cart.dto.GetCartListDto;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.ProductHandler;
 import com.example.monthlylifebackend.item.model.Item;
@@ -80,9 +79,6 @@ public class ProductService {
                 .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_PRODUCT));
 
         return product;
-    }
-    public void getProductImg(List<GetCartListDto> dto) {
-        //
     }
 
 
