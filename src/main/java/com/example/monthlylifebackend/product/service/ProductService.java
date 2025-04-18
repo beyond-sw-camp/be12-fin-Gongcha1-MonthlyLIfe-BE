@@ -73,7 +73,6 @@ public String registerProduct(PostProductRegisterReq dto,
                               List<MultipartFile> images) throws IOException {
     // 1) 기본 Product 매핑
     Product product = productMapper.toEntity(dto);
-
     // 2) 이미지 파일 저장 및 Entity 연결
     if (images != null && !images.isEmpty()) {
         // 업로드 폴더가 없으면 생성
@@ -99,6 +98,23 @@ public String registerProduct(PostProductRegisterReq dto,
     // 3) Product 저장
     productRepository.save(product);
 
+//     Condition 조회
+        Condition condition = conditionRepository.findByName(dto.getCondition())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 상태 등급입니다: " + dto.getCondition()));
+
+        // ItemLocation 조회
+        ItemLocation location = itemLocationRepository.findByName(dto.getLocation())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 위치입니다: " + dto.getLocation()));
+
+        // Item 생성
+        Item item = Item.builder()
+                .product(product)
+                .condition(condition)
+                .itemLocation(location)
+                .count(dto.getCount())         // 기본 재고 수량 1개로 설정 (필요 시 수정)
+                .build();
+
+        itemRepository.save(item);
     // 4) 기존 Item 생성 로직
     // … condition, location 조회, Item 저장
 
