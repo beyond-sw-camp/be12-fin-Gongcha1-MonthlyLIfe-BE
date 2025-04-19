@@ -9,9 +9,7 @@ import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.*;
-import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
-import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
-import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
+import com.example.monthlylifebackend.subscribe.dto.res.*;
 import com.example.monthlylifebackend.subscribe.dto.req.PostSaleReq;
 import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
@@ -28,9 +26,11 @@ import org.springframework.data.domain.Page;
 import com.example.monthlylifebackend.subscribe.repository.RentalDeliveryRepository;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.example.monthlylifebackend.subscribe.model.SubscribeStatus.RETURN_REQUESTED;
@@ -103,12 +103,25 @@ public class SubscribeService {
         return subscribeMapper.getSubscriptionResDto(sale, salePrice, user);
     }
 
-    // 나의 구독 정보들
-    public List<GetSubscribeRes> getSubscriptionInfo(User user) {
-        List<Subscribe> subscribes = subscribeRepository.findWithDetailsByUserId(user.getId());
-        return subscribeMapper.toGetSubscribeResList(subscribes);
-    }
 
+    public Page<GetSubscribeListRes> getSubscriptionInfo(String userId, Pageable pageable) {
+        // 1) 구독ID 페이징 → 각 페이지에 N개 ID만
+        Page<Long> idPage = subscribeRepository.findSubscriptionIdsByUser(userId, pageable);
+
+        // 2) 그 ID들로 상세 조회
+        List<GetSubscribeListProjection> projections =
+                subscribeRepository.findDetailsBySubscribeIds(userId, idPage.getContent());
+
+        // 3) Projection → DTO 그룹핑
+        List<GetSubscribeListRes> dtoList = subscribeMapper.toResList(projections);
+
+        // 4) PageImpl 으로 감싸기
+        return new PageImpl<>(
+                dtoList,
+                pageable,
+                idPage.getTotalElements()
+        );
+    }
     // 반납 시 생성되는 반납 신청서
     public void createReturnDelivery(String userId, PostReturnDeliveryReq reqDto) {
         SubscribeDetail detail = getSubscribeDetailWithUserValidation(userId, reqDto.getSubscribedetailIdx());
@@ -161,4 +174,6 @@ public class SubscribeService {
         }
         return price;
     }
+
+
 }

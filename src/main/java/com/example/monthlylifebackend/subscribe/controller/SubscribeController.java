@@ -5,6 +5,7 @@ import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.req.PostSubscribeReq;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeListRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
 import com.example.monthlylifebackend.subscribe.facade.SubscribeFacade;
@@ -14,6 +15,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,14 +96,22 @@ public class SubscribeController {
 
     @Operation(summary = "구독 정보 조회", description = "현재 내가 구독하고있는 목록을 확인합니다.")
     @GetMapping("/info")
-    public BaseResponse<List<GetSubscribeRes>> getSubscriptionInfo() {
+    public BaseResponse<Page<GetSubscribeListRes>> getSubscriptionInfo(@RequestParam(defaultValue = "0") int page,
+                                                                       @RequestParam(defaultValue = "5") int size) {
+
+
 
         // Todo 삭제할것
         User user = User.builder().id("1").build();
 
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by("idx").descending()
+        );
 
 
-        List<GetSubscribeRes>  rs =subscribeFacade.getSubscriptionInfo(user);
+        Page<GetSubscribeListRes> rs = subscribeFacade.getSubscriptionInfo(user, pageable);
         return BaseResponse.onSuccess(rs);
 
     }
@@ -115,4 +128,7 @@ public class SubscribeController {
         GetSubscribeDetailInfoRes rs =subscribeFacade.getReturnDelivery(user,subscribeDetailIdx);
         return BaseResponse.onSuccess(rs);
     }
+
+
+
 }
