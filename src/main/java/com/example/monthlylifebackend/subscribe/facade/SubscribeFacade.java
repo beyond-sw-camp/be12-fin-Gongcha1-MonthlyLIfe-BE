@@ -8,6 +8,7 @@ import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.req.PostSubscribeReq;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeListRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
@@ -15,6 +16,8 @@ import com.example.monthlylifebackend.subscribe.service.SubscribeService;
 import com.example.monthlylifebackend.user.model.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -27,8 +30,8 @@ public class SubscribeFacade {
     private final BillingKeyService billingKeyService;
 
 
-    public List<GetSubscribeRes> getSubscriptionInfo(User user) {
-        return subscribeService.getSubscriptionInfo(user);
+    public Page<GetSubscribeListRes> getSubscriptionInfo(User user, Pageable pageable) {
+        return subscribeService.getSubscriptionInfo(user.getId() ,pageable);
     }
 
 
@@ -57,5 +60,6 @@ public class SubscribeFacade {
         return subscribeService.getSubscription(user.getId()
                 , saleidx, period);
     }
+
 
 }

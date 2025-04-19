@@ -8,20 +8,21 @@ import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
-import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
-import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailRes;
-import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
+import com.example.monthlylifebackend.subscribe.dto.res.*;
 import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
-import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
 import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import java.util.LinkedHashMap;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring") // Spring Bean으로 등록
 public interface SubscribeMapper {
@@ -73,24 +74,24 @@ public interface SubscribeMapper {
 
 
 
+
+
+    // 2024 / 4  / 19 주석 처리 해놨는데 나중에 별 이상 없으면 지워도됌
 //    List<GetSubscribeRes> getSubscriptionInfo(List<Subscribe> subscribes);
-
-
-
-
-    @Mapping(source = "idx", target = "subscribeIdx")
-    @Mapping(source = "createdAt", target = "createdAt")
-    @Mapping(source = "subscribeDetailList", target = "details")
-    GetSubscribeRes toGetSubscribeRes(Subscribe subscribe);
-
-    @Mapping(source = "idx", target = "idx")
-    @Mapping(source = "sale.name", target = "name")  // Join fetch 한 Sale.name
-    @Mapping(source = "period", target = "period")
-    @Mapping(source = "price", target = "price")
-    GetSubscribeDetailRes toGetSubscribeDetailRes(SubscribeDetail detail);
-
-    List<GetSubscribeRes> toGetSubscribeResList(List<Subscribe> subscribes);
-    List<GetSubscribeDetailRes> toGetSubscribeDetailResList(List<SubscribeDetail> details);
+//
+//    @Mapping(source = "idx", target = "subscribeIdx")
+//    @Mapping(source = "createdAt", target = "createdAt")
+//    @Mapping(source = "subscribeDetailList", target = "details")
+//    GetSubscribeRes toGetSubscribeRes(Subscribe subscribe);
+//
+//    @Mapping(source = "idx", target = "idx")
+//    @Mapping(source = "sale.name", target = "name")  // Join fetch 한 Sale.name
+//    @Mapping(source = "period", target = "period")
+//    @Mapping(source = "price", target = "price")
+//    GetSubscribeDetailRes toGetSubscribeDetailRes(SubscribeDetail detail);
+//
+//    List<GetSubscribeRes> toGetSubscribeResList(List<Subscribe> subscribes);
+//    List<GetSubscribeDetailRes> toGetSubscribeDetailResList(List<SubscribeDetail> details);
 
 
     @Mapping(target = "idx", ignore = true)
@@ -116,6 +117,36 @@ public interface SubscribeMapper {
             }
         }
         return null;
-    }
 
+
+    }
+    @Mapping(source = "subscribeDetailIdx", target = "subscribeDetailIdx")
+    @Mapping(source = "saleidx", target = "saleidx")
+    @Mapping(source = "salename", target = "salename")
+    @Mapping(source = "productImgurl", target = "productImgurl")
+    GetSubscribeListDto toDto(GetSubscribeListProjection projection);
+
+
+//    List<GetSubscribeListDto> toSubscriptionInfo (List<GetSubscribeListProjection> list);
+
+    // 여기에 subcribeIdx 매핑해?
+    default List<GetSubscribeListRes> toResList(List<GetSubscribeListProjection> list) {
+        if (list == null || list.isEmpty()) return Collections.emptyList();
+
+        // subscribeIdx 기준으로 groupBy
+        Map<Long, List<GetSubscribeListProjection>> grouped = list.stream()
+                .collect(Collectors.groupingBy(GetSubscribeListProjection::getSubscribeIdx, LinkedHashMap::new, Collectors.toList()));
+
+        return grouped.entrySet().stream()
+                .map(entry -> {
+                    GetSubscribeListProjection base = entry.getValue().get(0);
+
+                    return GetSubscribeListRes.builder()
+                            .subscribeIdx(base.getSubscribeIdx())
+                            .createdAt(base.getCreated_at())
+                            .details(entry.getValue().stream().map(this::toDto).toList())
+                            .build();
+                })
+                .toList();
+    }
 }
