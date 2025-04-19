@@ -51,6 +51,10 @@ public enum ErrorStatus implements BaseErrorCode {
     _INVALID_RETURN_REQUEST(HttpStatus.BAD_REQUEST, "SUBSCRIBE4017", "잘못된 반납 요청입니다."),
     _ALREADY_DELIVERED(HttpStatus.BAD_REQUEST, "SUBSCRIBE4018", "이미 배송 완료된 구독입니다."),
     _DELIVERY_IN_PROGRESS(HttpStatus.BAD_REQUEST, "SUBSCRIBE4019", "배송 중인 상품은 반납할 수 없습니다."),
+    _AccessDenied_(HttpStatus.BAD_REQUEST, "SUBSCRIBE4020", "본인 구독만 취소 복원이 가능합니다"),
+    _INVALID_RETURN_STATUS(HttpStatus.BAD_REQUEST, "SUBSCRIBE4021", "현재 반납(취소) 요청 상태가 아닙니다."),
+    _NOT_FOUND_RETURN_(HttpStatus.BAD_REQUEST, "SUBSCRIBE4021", "반납 신청 내역이 없습니다"),
+
 // Cart 에러
     _NOT_FOUND_CART(HttpStatus.NOT_FOUND, "CART4004", "장바구니 항목을 찾을 수 없습니다."), // 장바구니에 해당 ID가 없음
     _DUPLICATED_CART_ITEM(HttpStatus.BAD_REQUEST, "CART4001", "이미 장바구니에 존재하는 상품입니다."), // 중복 추가 방지

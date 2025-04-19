@@ -58,6 +58,10 @@ public class SubscribeController {
 
 
 
+
+
+
+
     @Operation(summary = "구독 취소 신청", description = "현재 구독을 취소 신청합니다.")
     @PostMapping("/cancel")
     public void cancelSubscription() {
@@ -65,9 +69,14 @@ public class SubscribeController {
     }
 
     @Operation(summary = "구독 취소 철회", description = "취소된 구독을 다시 활성화합니다.")
-    @PostMapping("/cancel/undo")
-    public void undoCancelSubscription() {
+    @PostMapping("/{detailIdx}/cancel/undo")
+    public BaseResponse undoCancelSubscription(/*@AuthenticationPrincipal User user,*/ @PathVariable Long detailIdx) {
+        User user = User.builder().id("1").build();
         // 구독 취소 신청 취소 로직
+
+        subscribeFacade.undoCancleSubscription(user ,detailIdx);
+        return BaseResponse.onSuccess(null);
+
     }
 
     @Operation(summary = "반납 신청", description = "구독한 상품의 반납 및 회수 요청을 보냅니다.")

@@ -7,6 +7,7 @@ import com.example.monthlylifebackend.product.service.ProductService;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.sale.service.SaleService;
 import com.example.monthlylifebackend.user.model.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class CartFacade {
 
 
 
-
+    @Transactional
     public void addToCart(Long salePriceIdx , User user){
         SalePrice salePrice = saleService.getSalePrice(salePriceIdx);
         cartService.addToCart(user , salePrice);
@@ -33,7 +34,6 @@ public class CartFacade {
         cartService.deleteCart(cartIdx);
     }
 
-//    public List<GetCartListRes> getCartList(User user) {
     public List<GetCartListRes> getCartList(User user) {
 
         List<GetCartListRes> rs = cartService.getCartList(user.getId());

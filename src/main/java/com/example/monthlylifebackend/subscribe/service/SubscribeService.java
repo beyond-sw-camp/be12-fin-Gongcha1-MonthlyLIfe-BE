@@ -31,6 +31,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.example.monthlylifebackend.subscribe.model.SubscribeStatus.RETURN_REQUESTED;
@@ -176,4 +178,30 @@ public class SubscribeService {
     }
 
 
+    public void undoCancleSubscription(String userid, Long detailIdx) {
+
+        SubscribeDetail detail = subscribeDetailRepository.findById(detailIdx)
+                .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SUBSCRIBE_DETAIL));
+        if (!detail.getSubscribe().getUser().getId().equals(userid)) {
+            throw new SubcribeHandler(ErrorStatus._AccessDenied_);
+        }
+        if (detail.getStatus() != SubscribeStatus.RETURN_REQUESTED) {
+            throw new SubcribeHandler(ErrorStatus._INVALID_RETURN_STATUS);
+
+        }
+
+        ReturnDelivery delivery = returnDeliveryRepository.findLatestByDetailIdx(detailIdx)
+                .orElseThrow(() -> new SubcribeHandler (ErrorStatus._NOT_FOUND_RETURN_));
+        if (delivery.getStatus() != ReturnDeliveryStatus.REQUESTED) {
+            throw new IllegalStateException("이미 처리된 반납 요청입니다.");
+        }
+
+        subscribeDetailRepository.updateStatus(detailIdx, SubscribeStatus.SUBSCRIBING);
+        returnDeliveryRepository.updateStatusByDetailIdx(detailIdx,
+                ReturnDeliveryStatus.CANCELED,
+                LocalDateTime.now()
+        );
+
+
+    }
 }
