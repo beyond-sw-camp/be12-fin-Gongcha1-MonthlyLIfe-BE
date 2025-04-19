@@ -14,6 +14,7 @@ import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
 import com.example.monthlylifebackend.user.model.User;
+import com.example.monthlylifebackend.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class SubscribeFacade {
     private final SubscribeService subscribeService;
     private final PaymentService paymentService;
     private final BillingKeyService billingKeyService;
+    private final UserService userService;
 
 
     public Page<GetSubscribeListRes> getSubscriptionInfo(User user, Pageable pageable) {
@@ -61,5 +63,8 @@ public class SubscribeFacade {
                 , saleidx, period);
     }
 
-
+    @Transactional
+    public void undoCancleSubscription(User user, Long detailIdx) {
+         subscribeService.undoCancleSubscription(user.getId(), detailIdx);
+    }
 }
