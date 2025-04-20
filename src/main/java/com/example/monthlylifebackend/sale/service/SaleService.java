@@ -17,9 +17,11 @@ import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.sale.repository.SaleHasProductRepository;
 import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
 import com.example.monthlylifebackend.sale.repository.SaleRepository;
+import com.example.monthlylifebackend.sale.spec.SaleSpec;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -103,5 +105,22 @@ public class SaleService {
     public SalePrice getSalePrice(Long salePriceIdx) {
         return salePriceRepository.findById(salePriceIdx)
                 .orElseThrow(() -> new RuntimeException("판매 가격 정보가 없습니다: " + salePriceIdx));
+    }
+
+    public Page<GetSaleListRes> getSaleSearch(
+            Long categoryIdx,
+            int page,
+            int size,
+            String keyword,
+            String grade
+    ) {
+        PageRequest pageable = PageRequest.of(page, size);
+        Specification<Sale> spec = Specification
+                .where(SaleSpec.byCategory(categoryIdx))
+                .and(SaleSpec.byKeyword(keyword))
+                .and(SaleSpec.byGrade(grade));
+
+        return saleRepository.findAll(spec, pageable)
+                .map(saleMapper::toGetSaleListRes);
     }
 }
