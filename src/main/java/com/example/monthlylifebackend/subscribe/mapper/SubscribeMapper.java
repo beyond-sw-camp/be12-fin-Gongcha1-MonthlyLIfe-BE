@@ -43,6 +43,7 @@ public interface SubscribeMapper {
     @Mapping(source = "salePrice.price", target = "price")
     @Mapping(source = "salePrice.period", target = "period")
     @Mapping(source = "salePrice.sale", target = "sale")
+    @Mapping(source = "subscribe", target = "subscribe")
     @Mapping(target = "startAt", expression = "java(java.time.LocalDateTime.now())")  // start_at에 현재 시간 적용
     @Mapping(target = "endAt", expression = "java(calculateEndAt(java.time.LocalDateTime.now(), salePrice.getPeriod()))")  // endAt 계산
     SubscribeDetail tosubscribedetail(Subscribe subscribe, SalePrice salePrice);
@@ -61,15 +62,10 @@ public interface SubscribeMapper {
     @Mapping(source = "dto.postalCode", target = "postalCode")
     @Mapping(source = "dto.address1", target = "address1")
     @Mapping(source = "dto.address2", target = "address2")
-    @Mapping(source = "dto.status", target = "status")
-    @Mapping(source = "dto.courierCompany", target = "courierCompany")
-    @Mapping(source = "dto.trackingNumber", target = "trackingNumber")
     @Mapping(source = "dto.deliveryMemo", target = "deliveryMemo")
-    @Mapping(source = "dto.shippedAt", target = "shippedAt")
-    @Mapping(source = "dto.deliveredAt", target = "deliveredAt")
     @Mapping(source = "subscribeDetail", target = "subscribeDetail") // 예시: subscribeDetail 설정은 별도로 처리
-    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())") // 생성시간 자동 설정
-    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())") // 업데이트 시간 자동 설정
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     RentalDelivery toRentalDelivery(PostRentalDeliveryReq dto , SubscribeDetail subscribeDetail);
 
 
