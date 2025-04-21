@@ -72,7 +72,7 @@ public class SubscribeService {
 
         for (PostSaleReq saleReq : reqDto.getSales()) {
             // 세일 가격 불러오기
-            SalePrice salePrice = salePriceRepository.findBySaleIdxAndPeriod(saleReq.getSale_idx(), saleReq.getPeriod())
+            SalePrice salePrice = salePriceRepository.findBySaleIdxAndPeriod(saleReq.getSaleIdx(), saleReq.getPeriod())
                     .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SALE_PRICE));
 
             SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, salePrice);

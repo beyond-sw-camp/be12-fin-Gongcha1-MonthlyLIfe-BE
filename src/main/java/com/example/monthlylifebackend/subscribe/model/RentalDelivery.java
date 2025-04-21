@@ -52,6 +52,6 @@ public class RentalDelivery extends BaseEntity {
     private LocalDateTime updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "subscribeDetail_idx")
+    @JoinColumn(name = "subscribe_detail_idx")
     private SubscribeDetail subscribeDetail;
 }

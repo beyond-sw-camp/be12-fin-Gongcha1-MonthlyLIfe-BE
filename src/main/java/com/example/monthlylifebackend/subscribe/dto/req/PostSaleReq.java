@@ -16,7 +16,7 @@ public class PostSaleReq {
 
 
     @Schema(description = "세일 ID", example = "1")
-    private Long sale_idx;
+    private Long saleIdx;
 
     @Schema(description = "구독 기간 (개월 수)", example = "3")
     private int period;
