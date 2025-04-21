@@ -2,13 +2,8 @@ package com.example.monthlylifebackend.payment.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Builder
@@ -26,9 +21,10 @@ public class Payment extends BaseEntity {
 
     private Long price;
 
-    public Payment(String paymentId, Long price) {
+    public Payment(String paymentId, Long price, Subscribe subscribe) {
         this.paymentId = paymentId;
         this.price = price;
+        this.subscribe =subscribe;
         isPaid = false;
     }
 
