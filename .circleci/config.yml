@@ -1,42 +1,64 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:java:.,tool:gradle:
 version: 2.1
+
+parameters:
+  tag:
+    type: string
+    default: v1
+
 jobs:
-  test-java:
+  gradle-build:
     docker:
       - image: cimg/openjdk:17.0
+    working_directory: ~/project
     steps:
       - checkout
       - run:
-          name: Calculate cache key
-          command: |-
-            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
-                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
-      - restore_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+          name: Add Permission
+          command: chmod +x gradlew
       - run:
-          command: ./gradlew check
-      - store_test_results:
-          path: build/test-results
-      - save_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
+          name: Gradle Build
+          command: ./gradlew bootJar
+      - persist_to_workspace:
+          root: .
           paths:
-            - ~/.gradle/caches
-      - store_artifacts:
-          path: build/reports
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
+            - build/libs/*.jar
+
+  docker-build-and-push:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/base:2022.09
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    working_directory: ~/project
     steps:
-      # Replace this with steps to deploy to users
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - setup_remote_docker:
+          docker_layer_caching: true
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Build Docker image
+          command: |
+            echo "Using TAG << pipeline.parameters.tag >>"
+            docker build -t $DOCKERHUB_USERNAME/atpback:<< pipeline.parameters.tag >> .
+      - run:
+          name: Push application Docker image
+          command: |
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+            docker push $DOCKERHUB_USERNAME/atpback:<< pipeline.parameters.tag >>
 workflows:
-  build-and-test:
+  version: 2
+  build-and-deploy:
     jobs:
-      - test-java
-    # - deploy:
-    #     requires:
-    #       - test-java
+      - gradle-build:
+          filters:
+            branches:
+              only:
+                - develop
+      - docker-build-and-push:
+          requires:
+            - gradle-build
+          filters:
+            branches:
+              only:
+                - develop
