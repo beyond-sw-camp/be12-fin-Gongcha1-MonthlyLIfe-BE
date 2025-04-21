@@ -38,5 +38,5 @@ public class GetProductListRes {
     private int count;
 
     @Schema(description = "상품 이미지 리스트")
-    private List<PostProductImageReq> productImages;
+    private List<ProductImageRes> productImages;
 }
