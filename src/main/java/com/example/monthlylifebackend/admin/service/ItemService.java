@@ -69,4 +69,9 @@ public class ItemService {
             return itemList;
     }
 
+    /** 상세 페이지용 이미지 조회 */
+    public List<ProductImageRes> getItemImages(String productCode) {
+        return itemRepository.findImageListByProductCode(productCode);
+    }
+
 }
