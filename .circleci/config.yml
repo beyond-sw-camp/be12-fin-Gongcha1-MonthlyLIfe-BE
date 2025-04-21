@@ -40,7 +40,7 @@ jobs:
           name: Build Docker image
           command: |
             echo "Using TAG << pipeline.parameters.tag >>"
-            docker build -t $DOCKERHUB_USERNAME/atpback:<< pipeline.parameters.tag >> .
+            docker build -t $DOCKERHUB_USERNAME/mlback:<< pipeline.parameters.tag >> .
       - run:
           name: Push application Docker image
           command: |
