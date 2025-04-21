@@ -22,16 +22,6 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
 
-//    public Page<GetProductRes> findAllItemsByPage(int page, int size) {
-//        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummaryByPage(PageRequest.of(page,size));
-//        return pagedto;
-//    }
-//
-//    public List<GetProductRes> findAllItems() {
-//        List<GetProductRes> dtoList = itemRepository.findProductStockSummary();
-//        return dtoList;
-//    }
-
     public Page<GetProductRes> findAllItemsByPage(int page, int size) {
         // 기존 조회
         Page<GetProductRes> pagedto =
