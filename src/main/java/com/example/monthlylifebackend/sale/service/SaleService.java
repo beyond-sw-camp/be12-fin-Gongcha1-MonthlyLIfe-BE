@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.sale.service;
 
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
+import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
@@ -18,6 +19,7 @@ import com.example.monthlylifebackend.sale.repository.SaleHasProductRepository;
 import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
 import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.spec.SaleSpec;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -123,4 +125,38 @@ public class SaleService {
         return saleRepository.findAll(spec, pageable)
                 .map(saleMapper::toGetSaleListRes);
     }
+
+    // 삭제
+    @Transactional
+    public void deleteSale(Long saleIdx) {
+        if (!saleRepository.existsById(saleIdx)) {
+            throw new RuntimeException("삭제할 판매상품이 없습니다: " + saleIdx);
+        }
+        saleRepository.deleteById(saleIdx);
+    }
+
+    @Transactional
+    public Long updateSale(Long saleIdx, PatchSaleReq dto) {
+        // 1) 기존 Sale, Category 조회
+        Sale sale = saleRepository.findById(saleIdx)
+                .orElseThrow(() -> new RuntimeException("수정할 판매상품이 없습니다: " + saleIdx));
+        Category category = categoryRepository.findById(dto.getCategoryIdx())
+                .orElseThrow(() -> new RuntimeException("카테고리가 없습니다: " + dto.getCategoryIdx()));
+
+        // 2) 이름·설명·카테고리 직접 변경
+        sale.changeName(dto.getName());
+        sale.changeDescription(dto.getDescription());
+        sale.changeCategory(category);
+
+        // 3) 기존 가격 삭제
+        salePriceRepository.deleteAllBySaleIdx(saleIdx);
+
+        // 4) 새 가격 정보 생성
+        List<SalePrice> newPrices = saleMapper.toSalePriceListForPatch(dto.getSalePrices(), sale);
+        salePriceRepository.saveAll(newPrices);
+
+        return saleIdx;
+    }
+
+
 }

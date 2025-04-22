@@ -3,6 +3,7 @@ package com.example.monthlylifebackend.sale.controller;
 import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.Facade.SaleFacade;
+import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
@@ -80,6 +81,23 @@ public class SaleController {
                 categoryIdx, page, size, keyword, grade
         );
         return BaseResponse.onSuccess(result);
+    }
+
+    @Operation(summary = "판매상품 수정", description = "기존 판매상품의 정보를 수정합니다.")
+    @PutMapping("/{saleIdx}")
+    public ResponseEntity<BaseResponse<Long>> updateSale(
+            @PathVariable Long saleIdx,
+            @RequestBody @Valid PatchSaleReq dto
+    ) {
+        Long updatedIdx = saleFacade.updateSale(saleIdx, dto);
+        return ResponseEntity.ok(BaseResponse.onSuccess(updatedIdx));
+    }
+
+    @Operation(summary = "판매상품 삭제", description = "특정 판매상품을 삭제합니다.")
+    @DeleteMapping("/{saleIdx}")
+    public ResponseEntity<BaseResponse<Void>> deleteSale(@PathVariable Long saleIdx) {
+        saleFacade.deleteSale(saleIdx);
+        return ResponseEntity.ok(BaseResponse.onSuccess(null));
     }
 
 
