@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Modifying;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,6 +24,14 @@ public interface SubscribeDetailRepository extends JpaRepository<SubscribeDetail
     @Modifying
     @Query("UPDATE SubscribeDetail sd SET sd.status = :status WHERE sd.idx = :id")
     void updateStatus(@Param("id") Long id, @Param("status") SubscribeStatus status);
+    @Query("""
+    SELECT d FROM SubscribeDetail d
+    WHERE d.subscribe.idx= :subscribeId
+      AND d.status = 'SUBSCRIBING'
+      AND d.startAt <= CURRENT_TIMESTAMP
+      AND d.endAt > CURRENT_TIMESTAMP
+    ORDER BY d.endAt DESC
+""")
+    Optional<SubscribeDetail> findActiveSubscribeDetail(@Param("subscribeId") Long subscribeId);
 
-
- }
+}

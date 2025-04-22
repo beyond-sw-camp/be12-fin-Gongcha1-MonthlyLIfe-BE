@@ -1,9 +1,7 @@
 package com.example.monthlylifebackend.subscribe.controller;
 
 import com.example.monthlylifebackend.common.BaseResponse;
-import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReq;
-import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
-import com.example.monthlylifebackend.subscribe.dto.req.PostSubscribeReq;
+import com.example.monthlylifebackend.subscribe.dto.req.*;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeListRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
@@ -19,8 +17,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -56,7 +56,22 @@ public class SubscribeController {
     }
 
 
+    @PostMapping("/report")
+    public BaseResponse<?> report(
+            @RequestBody PostRepairOrLostReq req/*@AuthenticationPrincipal User user*/
+    ) {
+        // 간단한 필드 검증
 
+        User user = User.builder().id("1").build();
+
+        System.out.println(req.getImageUrls().size());
+        // Service에 위임
+        subscribeFacade.createReport(
+                req,
+                user
+        );
+        return BaseResponse.onSuccess(null);
+    }
 
 
 
@@ -98,9 +113,12 @@ public class SubscribeController {
     }
 
     @Operation(summary = "구독 연장", description = "구독 기간을 연장하고 계약을 갱신합니다.")
-    @PostMapping("/extend")
-    public void extendSubscription() {
-        // 구독 연장 로직
+    @PostMapping("/{detailIdx}/extend")
+    public BaseResponse extendSubscription(@PathVariable Long detailIdx, @RequestBody PostExtendRequest dto /*, @AuthenticationPrincipal User user*/ ) {
+
+        User user = User.builder().id("1").build();
+        subscribeFacade.extendSubscription(detailIdx, dto , user);
+        return BaseResponse.onSuccess(null);
     }
 
     @Operation(summary = "구독 정보 조회", description = "현재 내가 구독하고있는 목록을 확인합니다.")
