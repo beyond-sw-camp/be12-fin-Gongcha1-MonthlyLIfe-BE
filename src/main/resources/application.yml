@@ -13,7 +13,7 @@ spring:
     static-path-pattern: /uploads/**
   web:
     resources:
-      static-locations: file:///${UPLOAD_DIR}/
+      static-locations: file:${UPLOAD_DIR}/
 jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXP}
