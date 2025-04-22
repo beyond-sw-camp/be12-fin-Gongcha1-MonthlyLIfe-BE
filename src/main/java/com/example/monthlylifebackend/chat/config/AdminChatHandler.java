@@ -43,6 +43,12 @@ public class AdminChatHandler extends TextWebSocketHandler {
             userSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
         } else {
             System.out.println("⚠️ 유저 [" + target + "] 세션이 없거나 닫혀 있음");
+            ChatMessage errorMsg = new ChatMessage();
+            errorMsg.setFrom("system");
+            errorMsg.setTo(chatMessage.getFrom());
+            errorMsg.setText("⚠️ 현재 유저새끼 연결이 되어있지 않습니다. 잠시 후 다시 시도해주세요.");
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(errorMsg)));
+
         }
     }
 

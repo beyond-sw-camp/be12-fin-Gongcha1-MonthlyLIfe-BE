@@ -35,16 +35,18 @@ public class UserChatHandler extends TextWebSocketHandler {
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        if (!session.isOpen()) return;
-
         ChatMessage chatMessage = objectMapper.readValue(message.getPayload(), ChatMessage.class);
 
-        // 관리자 연결 상태 체크
         if (adminSession != null && adminSession.isOpen()) {
             adminSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
         } else {
-            System.out.println("⚠️ 관리자 세션 없음 또는 연결 안 됨. 메시지 저장 또는 전송 불가: " + chatMessage.getText());
-            // 이후에 Redis나 DB 저장 처리도 여기서 가능
+            // 관리자 연결 안 되어있으면 유저에게 에러 메시지 전송
+            ChatMessage errorMsg = new ChatMessage();
+            errorMsg.setFrom("system");
+            errorMsg.setTo(chatMessage.getFrom());  // 유저 본인에게
+            errorMsg.setText("⚠️ 현재 관리자 연결이 되어있지 않습니다. 잠시 후 다시 시도해주세요.");
+
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(errorMsg)));
         }
     }
 
