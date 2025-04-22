@@ -1,7 +1,6 @@
 package com.example.monthlylifebackend.subscribe.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
-import com.example.monthlylifebackend.support.model.RepairImage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,19 +19,25 @@ public class RepairRequest extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
     private String description;
 
-    private String status;
 
+    @Enumerated(EnumType.STRING)
+    private ReportType status;
+
+    private String subscriberName;
+    private String subscriberPhone;
     @ManyToOne
     @JoinColumn(name = "subscribeDetail_idx")
     private SubscribeDetail subscribeDetail;
 
-    @OneToMany(mappedBy = "repairRequest")
+    @OneToMany(mappedBy = "repairRequest",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    @Builder.Default
     private List<RepairImage> repairImageList = new ArrayList<>();
-
 }
+
+
+
+

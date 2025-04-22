@@ -7,6 +7,7 @@ import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRentalDeliveryReq;
+import com.example.monthlylifebackend.subscribe.dto.req.PostRepairOrLostReq;
 import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.res.*;
 import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
@@ -14,8 +15,11 @@ import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.user.model.User;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+
 import java.util.LinkedHashMap;
 
 import java.time.LocalDateTime;
@@ -95,6 +99,11 @@ public interface SubscribeMapper {
     @Mapping(target = "status", constant = "REQUESTED")
     ReturnDelivery toReturnDeliveryEntity(SubscribeDetail detail, PostReturnDeliveryReq postReturnDeliveryReq) ;
 
+    @Mapping(target = "idx", ignore = true)
+    @Mapping(source = "detail", target = "subscribeDetail")
+    @Mapping(target = "status", constant = "REPAIR_REQUESTED")
+    ReturnDelivery toReturnDeliveryRepair(SubscribeDetail detail) ;
+
 
     // 구독 반납
     @Mapping(source = "idx", target = "subscribeDetailIdx")
@@ -146,4 +155,24 @@ public interface SubscribeMapper {
                 })
                 .toList();
     }
+    @Mapping(target = "idx", ignore = true)
+    @Mapping(source = "detail.price", target = "price")
+    @Mapping(source = "detail.period", target = "period")
+    @Mapping(source = "detail.sale", target = "sale")
+    @Mapping(target = "startAt", source = "newStartAt")  // start_at에 현재 시간 적용
+    @Mapping(target = "endAt", source ="newEndAt" )
+    @Mapping(source = "detail.subscribe", target = "subscribe")
+    SubscribeDetail toExtendSubscription(SubscribeDetail detail, LocalDateTime newStartAt, LocalDateTime newEndAt);
+
+
+    @Mapping(target = "idx", ignore = true)
+    @Mapping(target = "status", source = "dto.type")
+    @Mapping(target = "subscriberName", source = "dto.subscriberName")
+    @Mapping(target = "subscriberPhone", source = "dto.subscriberPhone")
+    @Mapping(target = "description", source = "dto.description")
+    @Mapping(target = "subscribeDetail", source = "detail")
+    // repairImageList 는 AfterMapping 에서 builder 로 채울 거니까 무시
+    @Mapping(target = "repairImageList", ignore = true)
+    RepairRequest toEntity(PostRepairOrLostReq dto, SubscribeDetail detail);
+
 }
