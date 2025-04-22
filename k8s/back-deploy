@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-borg
-  namespace: atp
+  namespace: ml
 spec:
   selector:
     matchLabels:
