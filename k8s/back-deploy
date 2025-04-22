@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-borg
+  namespace: atp
+spec:
+  selector:
+    matchLabels:
+      type: backend
+      deployment: borg
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        type: backend
+        deployment: borg
+    spec:
+      containers:
+        - name: backend
+          image: k6kjun/mlback:latest
+          envFrom:
+            - configMapRef:
+                name: back-cm
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 45
+            periodSeconds: 10
