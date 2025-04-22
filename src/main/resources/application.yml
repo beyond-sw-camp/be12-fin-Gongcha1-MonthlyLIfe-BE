@@ -9,6 +9,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  mvc:
+    static-path-pattern: /uploads/**
+  web:
+    resources:
+      static-locations: file:///${UPLOAD_DIR}/
 jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXP}
@@ -20,7 +25,7 @@ aes:
   secret: ${AES_SECRET}
 
 file:
-  upload-dir: ${FILEPATH}
+  upload-dir: ${UPLOAD_DIR}
   
 server:
   servlet:
