@@ -19,6 +19,9 @@ portone:
 aes:
   secret: ${AES_SECRET}
 
+file:
+  upload-dir: ${FILEPATH}
+  
 server:
   servlet:
     encoding:
