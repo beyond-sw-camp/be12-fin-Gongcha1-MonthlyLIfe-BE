@@ -35,4 +35,15 @@ public class SaleFacade {
     public List<GetSaleListRes> getSaleProductList() {
         return saleService.getSaleProductList();
     }
+    public Page<GetSaleListRes> getSaleSearch(
+            Long categoryIdx,
+            int page,
+            int size,
+            String keyword,
+            String grade
+    ) {
+        return saleService.getSaleSearch(
+                categoryIdx, page, size, keyword, grade
+        );
+    }
 }
