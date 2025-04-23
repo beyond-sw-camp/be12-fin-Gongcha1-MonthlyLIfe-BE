@@ -126,8 +126,18 @@ public class AdminController {
 
     @Operation(summary = "사용자 목록 조회", description = "전체 사용자, 렌탈 기록 및 연체 내역을 확인합니다.")
     @GetMapping("/users")
-    public BaseResponse<Page<GetAdminUserRes>> getUsers(int page, int size) {
-        Page<GetAdminUserRes> users = adminFacade.getAdminUserList(page, size);
+    public BaseResponse<Page<GetAdminUserRes>> getUsers(    @RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "10") int size,
+                                                            @RequestParam(required = false) String sort,
+                                                            @RequestParam(required = false) String searchType,
+                                                            @RequestParam(required = false) String searchQuery,
+                                                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+                                                            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
+                                                            @RequestParam(required = false) String tags, // "1인사무실,2인가구"
+                                                            @RequestParam(defaultValue = "false") boolean overdueOnly) {
+        Page<GetAdminUserRes> users = adminFacade.getAdminUserList(page, size, sort, searchType, searchQuery, dateFrom, dateTo,
+                //tags,
+                overdueOnly);
         return BaseResponse.onSuccess(users);
     }
 

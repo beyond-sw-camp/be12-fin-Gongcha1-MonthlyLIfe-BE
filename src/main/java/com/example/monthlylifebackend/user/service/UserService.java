@@ -16,6 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._DUPLICATED_USER;
@@ -48,11 +51,20 @@ public class UserService {
 
     //관리자 사용자 조회
     @Transactional(readOnly = true)
-    public Page<GetAdminUserRes> getAdminUserList(int page, int size) {
+    public Page<GetAdminUserRes> getAdminUserList(int page, int size, String sort,
+                                                  String searchType, String searchQuery,
+                                                  LocalDate dateFrom, LocalDate dateTo,
+                                                  //String tags,
+                                                  boolean overdueOnly) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
-        return userRepository.findAll(pageable)
-                .map(userMapper::toUserInfoRes);
+        return userRepository.findUserListSummary(
+                pageable,
+                searchType,
+                searchQuery != null && !searchQuery.isBlank() ? searchQuery : null,
+                dateFrom != null ? dateFrom.atStartOfDay() : null,
+                dateTo != null ? dateTo.atTime(23, 59, 59) : null,
+                overdueOnly);
     }
 }
 

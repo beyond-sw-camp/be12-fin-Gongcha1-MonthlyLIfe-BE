@@ -80,8 +80,14 @@ public class AdminFacade {
         return pagedto;
     }
 
-    public Page<GetAdminUserRes> getAdminUserList(int page, int size) {
-        Page<GetAdminUserRes> dto = userService.getAdminUserList(page, size);
+    public Page<GetAdminUserRes> getAdminUserList(    int page, int size, String sort,
+                                                      String searchType, String searchQuery,
+                                                      LocalDate dateFrom, LocalDate dateTo,
+                                                      //String tags,
+                                                      boolean overdueOnly) {
+        Page<GetAdminUserRes> dto = userService.getAdminUserList(page, size, sort, searchType, searchQuery, dateFrom, dateTo,
+                //tags,
+                overdueOnly);
         return dto;
     }
 

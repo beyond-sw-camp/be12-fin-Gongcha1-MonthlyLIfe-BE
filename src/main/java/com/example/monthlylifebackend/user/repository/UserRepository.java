@@ -7,7 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
 
 
 @Repository
@@ -32,8 +35,25 @@ SELECT new com.example.monthlylifebackend.user.dto.res.GetAdminUserRes(
     u.createdAt
 )
 FROM User u
+WHERE
+  (:searchType IS NULL OR (
+    (:searchType = 'ID' AND (:searchQuery IS NULL OR u.id LIKE %:searchQuery%)) OR
+    (:searchType = '주소' AND (:searchQuery IS NULL OR u.address1 LIKE %:searchQuery%))
+  ))
+  AND (:overdueOnly = false OR EXISTS (
+    SELECT s FROM Subscribe s WHERE s.user.id = u.id AND s.isDelayed = true
+  ))
+  AND (:dateFrom IS NULL OR u.createdAt >= :dateFrom)
+  AND (:dateTo IS NULL OR u.createdAt <= :dateTo)
 """)
-    Page<GetAdminUserRes> findUserListSummary(Pageable pageable);
+    Page<GetAdminUserRes> findUserListSummary(
+            Pageable pageable,
+            @Param("searchType") String searchType,
+            @Param("searchQuery") String searchQuery,
+            @Param("dateFrom") LocalDateTime dateFrom,
+            @Param("dateTo") LocalDateTime dateTo,
+            @Param("overdueOnly") boolean overdueOnly
+    );
 
 
 
