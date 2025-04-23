@@ -3,15 +3,12 @@ package com.example.monthlylifebackend.user.model;
 import com.example.monthlylifebackend.cart.model.Cart;
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Getter

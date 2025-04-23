@@ -20,11 +20,7 @@ import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
 import com.example.monthlylifebackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -47,7 +43,6 @@ public class AdminFacade {
 
     @Transactional(readOnly = true)
     public Page<GetProductRes> findAllItemsByPage(int page, int size, String productName, String manufacturer, LocalDate startDate, LocalDate endDate) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
         Page<GetProductRes> pagedto = itemService.findAllItemsByPage(page, size, productName, manufacturer, startDate, endDate);
         return pagedto;

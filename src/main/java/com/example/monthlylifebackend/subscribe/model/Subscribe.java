@@ -2,7 +2,6 @@ package com.example.monthlylifebackend.subscribe.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.payment.model.BillingKey;
-import com.example.monthlylifebackend.payment.model.Payment;
 import com.example.monthlylifebackend.user.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
