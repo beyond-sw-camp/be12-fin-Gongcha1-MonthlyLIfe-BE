@@ -54,11 +54,11 @@ workflows:
           filters:
             branches:
               only:
-                - kgj/chore/jenkins
+                - main
       - docker-build-and-push:
           requires:
             - gradle-build
           filters:
             branches:
               only:
-                - kgj/chore/jenkins
+                - main
