@@ -22,8 +22,13 @@ public class Subscribe extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "구독 ID", example = "1")
+    @Schema(description = "구독 ID", example = "false")
     private Long idx;
+
+    @Schema(description = "연체 여부", example = "false")
+    private boolean isDelayed;
+
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
