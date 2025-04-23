@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -30,13 +31,16 @@ public class ItemService {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 
         LocalDateTime from = startDate != null ? startDate.atStartOfDay() : null;
+        String name = productName != null ? "%"+productName+"%" : null;
+        String manu = manufacturer != null ? "%"+manufacturer+"%" : null;
         LocalDateTime to = endDate != null ? endDate.atTime(23, 59, 59) : null;
 
-        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummaryWithConditions(pageable, productName, manufacturer, from, to);
+        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummaryWithConditions(pageable, name, manu, from, to);
         // pagedto 내부의 summaryDto + 이미지 리스트를 매퍼로 합쳐서 재생성
         pagedto = pagedto.map(summaryDto -> {
             List<ProductImageRes> imgs =
-                    itemRepository.findImageListByProductCode(summaryDto.getProductCode());
+                    Optional.ofNullable(itemRepository.findImageListByProductCode(summaryDto.getProductCode()))
+                            .orElse(List.of()); // null이면 빈 리스트 반환
             return itemMapper.toGetProductRes(summaryDto, imgs);
         });
 
