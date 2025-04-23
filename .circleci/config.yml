@@ -55,6 +55,7 @@ workflows:
             branches:
               only:
                 - main
+                - kgj/chore/jenkins
       - docker-build-and-push:
           requires:
             - gradle-build
@@ -62,3 +63,4 @@ workflows:
             branches:
               only:
                 - main
+                - kgj/chore/jenkins
