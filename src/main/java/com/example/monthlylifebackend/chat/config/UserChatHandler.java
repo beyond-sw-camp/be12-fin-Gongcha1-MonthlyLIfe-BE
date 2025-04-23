@@ -50,11 +50,15 @@ public class UserChatHandler extends TextWebSocketHandler {
             errorMsg.setFrom("system");
             errorMsg.setTo(chatMessage.getFrom());  // 유저 본인에게
             errorMsg.setText("⚠️ 현재 관리자 연결이 되어있지 않습니다. 잠시 후 다시 시도해주세요.");
-
+    
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(errorMsg)));
         }
+        
+        
     }
 
+
+    
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         String userId = (String) session.getAttributes().get("userId");
