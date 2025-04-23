@@ -44,7 +44,13 @@ public class GetProductRes {
     private LocalDateTime createdAt;
 
     /**
-     * JPQL 생성자(new GetProductRes(...6 args))용 생성자
+     * JPQL 결과 매핑용 생성자
+     * @param productCode 상품 코드
+     * @param productName 상품명
+     * @param manufacturer 제조사
+     * @param totalStockCount 총 재고 수량
+     * @param availableStockCount 가용 재고 수량
+     * @param createdAt 생성일시
      */
     public GetProductRes(
             String productCode,

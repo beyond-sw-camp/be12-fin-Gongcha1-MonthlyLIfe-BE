@@ -83,7 +83,7 @@ public class SaleController {
         return BaseResponse.onSuccess(result);
     }
 
-    @Operation(summary = "판매상품 수정", description = "기존 판매상품의 정보를 수정합니다.")
+    @Operation(summary = "판매 상품 수정", description = "기존 판매 상품의 정보를 수정합니다.")
     @PutMapping("/{saleIdx}")
     public ResponseEntity<BaseResponse<Long>> updateSale(
             @PathVariable Long saleIdx,
@@ -93,7 +93,7 @@ public class SaleController {
         return ResponseEntity.ok(BaseResponse.onSuccess(updatedIdx));
     }
 
-    @Operation(summary = "판매상품 삭제", description = "특정 판매상품을 삭제합니다.")
+    @Operation(summary = "판매 상품 삭제", description = "특정 판매 상품을 삭제합니다.")
     @DeleteMapping("/{saleIdx}")
     public ResponseEntity<BaseResponse<Void>> deleteSale(@PathVariable Long saleIdx) {
         saleFacade.deleteSale(saleIdx);
