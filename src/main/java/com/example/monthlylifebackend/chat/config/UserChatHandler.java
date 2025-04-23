@@ -3,6 +3,8 @@ package com.example.monthlylifebackend.chat.config;
 
 import com.example.monthlylifebackend.chat.config.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -10,28 +12,31 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
+@Slf4j
 @Component
 public class UserChatHandler extends TextWebSocketHandler {
     private static final Map<String, WebSocketSession> userSessions = new ConcurrentHashMap<>();
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private static WebSocketSession adminSession = null;
+
     public static Map<String, WebSocketSession> getUserSessionMap() {
+
         return userSessions;
     }
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        String nickname = getParam(session, "nickname");
+        String userId = (String) session.getAttributes().get("userId");
 
-        if (nickname == null || nickname.isBlank()) {
-            System.out.println("⚠️ 유저 닉네임이 비어있어 연결 종료됨");
-            session.close(CloseStatus.BAD_DATA);
+        if (userId == null) {
+            session.close(CloseStatus.NOT_ACCEPTABLE.withReason("토큰 인증 실패"));
             return;
         }
 
-        userSessions.put(nickname, session);
-        System.out.println("👤 유저 접속: " + nickname);
+        userSessions.put(userId, session);
+        log.info("✅ WebSocket 접속한 유저 ID: {}", userId);
     }
+
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -52,10 +57,11 @@ public class UserChatHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        String nickname = getParam(session, "nickname");
-        userSessions.remove(nickname);
-        System.out.println("❌ 유저 연결 해제: " + nickname);
+        String userId = (String) session.getAttributes().get("userId");
+        userSessions.remove(userId);
+        System.out.println("❌ 유저 연결 해제: " + userId);
     }
+
 
     public static void setAdminSession(WebSocketSession session) {
         adminSession = session;
