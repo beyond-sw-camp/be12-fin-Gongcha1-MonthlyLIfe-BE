@@ -58,6 +58,8 @@ public class ProductService {
                 }
 
                 for (MultipartFile file : images) {
+                    if (file.isEmpty()) continue; // 👈 이거 꼭 넣어야 함!
+
                     String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
                     Path filePath = uploadPath.resolve(filename);
                     file.transferTo(filePath.toFile());

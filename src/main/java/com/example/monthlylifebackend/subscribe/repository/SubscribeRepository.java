@@ -1,9 +1,12 @@
 package com.example.monthlylifebackend.subscribe.repository;
 
 
+import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeDetailRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeListProjection;
-import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
+import com.example.monthlylifebackend.subscribe.model.SubscribeStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,32 +16,47 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     @Query("""
-                SELECT new com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes(
-                    s.idx,
-                    u.name,
-                            (
-                        SELECT SUM(sd2.price)
-                        FROM SubscribeDetail sd2
-                        WHERE sd2.subscribe.idx = s.idx
-                    ),
-                    rd.status,
-                    u.phoneNumber,
-                    sd.createdAt
+    SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes(
+        s.idx,
+        u.name,
+        (
+            SELECT SUM(sd2.price)
+            FROM SubscribeDetail sd2
+            WHERE sd2.subscribe.idx = s.idx
+        ),
+        rd.status,
+        u.phoneNumber,
+        sd.createdAt
+    )
+    FROM Subscribe s
+    JOIN s.user u
+    JOIN s.subscribeDetailList sd
+    JOIN sd.rentalDeliveryList rd
+    WHERE
+      (:searchType IS NULL OR (
+          (:searchType = '주문번호' AND (:searchQuery IS NULL OR CAST(s.idx AS string) LIKE %:searchQuery%)) OR
+          (:searchType = '주문자명' AND (:searchQuery IS NULL OR u.name LIKE %:searchQuery%)) OR
+          (:searchType = '주문상태' AND (:searchQuery IS NULL OR rd.status LIKE %:searchQuery%))
+      ))
+      AND (:dateFrom IS NULL OR sd.createdAt >= :dateFrom)
+      AND (:dateTo IS NULL OR sd.createdAt <= :dateTo)
+""")
+    Page<GetDeliveryListRes> findDeliveryListByPage(
+            Pageable pageable,
+            @Param("searchType") String searchType,
+            @Param("searchQuery") String searchQuery,
+            @Param("dateFrom") LocalDateTime dateFrom,
+            @Param("dateTo") LocalDateTime dateTo
+    );
 
-                )
-                FROM Subscribe s
-                JOIN s.user u
-                JOIN s.subscribeDetailList sd
-                JOIN sd.rentalDeliveryList rd
-            """)
-    Page<GetDeliveryListRes> findDeliveryListByPage(Pageable pageable);
 
     @Query("""
-                SELECT new com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes(
+                SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes(
                     s.idx,
                     u.name,
                             (
@@ -108,6 +126,52 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
             @Param("subscribeIds") List<Long> subscribeIds
     );
 
+    //Todo: 추후 QueryDsl을 쓴다면 적용하기 좋은 부분
+    @Query("""
+SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeRes(
+    s.idx,
+    u.name,
+    SUM(sd.price),
+    MAX(sd.status),
+    CASE WHEN s.isDelayed = true THEN 'Y' ELSE 'N' END,
+    u.createdAt
+)
+FROM Subscribe s
+JOIN s.user u
+LEFT JOIN SubscribeDetail sd ON sd.subscribe.idx = s.idx
+WHERE (:keyword IS NULL OR u.name LIKE %:keyword% OR CAST(s.idx AS string) LIKE %:keyword%)
+  AND (:status IS NULL OR sd.status = :status)
+GROUP BY s.idx, u.name, s.isDelayed, u.createdAt
+HAVING (:minMonths IS NULL OR COUNT(sd) >= :minMonths)
+   AND (:maxMonths IS NULL OR COUNT(sd) <= :maxMonths)
+""")
+    Page<GetAdminSubscribeRes> findAdminSubscribe(@Param("pageable") Pageable pageable,
+                                                  @Param("keyword") String keyword,
+                                                  @Param("status") SubscribeStatus status,
+                                                  @Param("minMonths") Integer minMonths,
+                                                  @Param("maxMonths") Integer maxMonths);
+
+
+    @Query("""
+SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeDetailRes(
+    sd.idx,
+    u.name,
+    sd.price,
+    SUM(CASE WHEN p.isPaid = true THEN 1 ELSE 0 END),
+       CASE WHEN s.isDelayed = true THEN 'Y' ELSE 'N' END,
+    sd.status,
+    sd.period,
+    sd.startAt,
+    sd.endAt,
+    u.createdAt
+)
+FROM Subscribe s
+JOIN s.user u
+JOIN SubscribeDetail sd ON sd.subscribe.idx = s.idx
+LEFT JOIN Payment p ON p.subscribe.idx = s.idx
+WHERE s.idx = :subscribeId
+""")
+    List<GetAdminSubscribeDetailRes> findAdminSubscribeDetail(@Param("subscribeId") Long subscribeId);
 
 
 }
