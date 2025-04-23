@@ -11,7 +11,7 @@ import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.*;
 import com.example.monthlylifebackend.subscribe.dto.res.*;
 import com.example.monthlylifebackend.subscribe.dto.req.PostSaleReq;
-import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
 import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.subscribe.repository.*;
@@ -20,16 +20,16 @@ import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
+import com.example.monthlylifebackend.subscribe.repository.RentalDeliveryRepository;
 import org.springframework.data.domain.Page;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -55,8 +55,14 @@ public class SubscribeService {
     private final RentalDeliveryRepository rentalDeliveryRepository;
     private final SubscribeDetailRepository subscribeDetailRepository;
 
-    public Page<GetDeliveryListRes> findDeliveryListByPage(int page, int size) {
-        return subscribeRepository.findDeliveryListByPage(PageRequest.of(page, size));
+    public Page<GetDeliveryListRes> findDeliveryListByPage(int page, int size,
+                                                           String searchType, String searchQuery,
+                                                           LocalDate dateFrom, LocalDate dateTo) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        LocalDateTime from = dateFrom != null ? dateFrom.atStartOfDay() : null;
+        LocalDateTime to = dateTo != null ? dateTo.atTime(23, 59, 59) : null;
+
+        return subscribeRepository.findDeliveryListByPage(pageable, searchType, searchQuery, from, to);
     }
     public List<GetDeliveryListRes> findDeliveryList() {
         return subscribeRepository.findDeliveryList();
@@ -201,6 +207,26 @@ public class SubscribeService {
         );
 
 
+    }
+
+    public Page<GetAdminSubscribeRes> getAdminSubscribeByPage(int page, int size,
+                                                              String keyword,
+                                                              String status,
+                                                              Integer minMonths,
+                                                              Integer maxMonths) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        SubscribeStatus statusEnum = null;
+        if (status != null && !status.isBlank()) {
+             statusEnum = SubscribeStatus.valueOf(status);
+        }
+
+        return subscribeRepository.findAdminSubscribe(pageable, keyword, statusEnum, minMonths, maxMonths);
+    }
+
+    public List<GetAdminSubscribeDetailRes> getAdminSubscribeDetail(Long subscribeId) {
+        List<GetAdminSubscribeDetailRes> dto = subscribeRepository.findAdminSubscribeDetail(subscribeId);
+
+        return dto;
     }
 
     public void extendSubscription(Long detailIdx, String userId, PostExtendRequest dto) {
