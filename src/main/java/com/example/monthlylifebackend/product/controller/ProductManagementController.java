@@ -23,14 +23,6 @@ import java.util.List;
 public class ProductManagementController {
     private final ProductFacade productFacade;
 
-    //    @Operation(summary = "상품 등록", description = "신규 상품을 등록합니다.")
-//    @PostMapping("/create")
-//    public ResponseEntity<BaseResponse<String>> registerProduct(@RequestBody @Valid PostProductRegisterReq dto) {
-//        // 상품 등록 처리
-//        BaseResponse<String> result = BaseResponse.created(productFacade.registerProduct(dto));
-//        return ResponseEntity.ok(result);
-//    }
-// 변경 후: multipart/form-data 처리
     @Operation(summary = "상품 등록", description = "신규 상품을 등록합니다.")
     @PostMapping(value = "/create",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -41,7 +33,6 @@ public class ProductManagementController {
         String productCode = productFacade.registerProduct(dto, images);
         return ResponseEntity.ok(BaseResponse.created(productCode));
     }
-
 
     @Operation(summary = "상품 수정", description = "기존 상품 정보를 수정합니다.")
     @PostMapping("/update")

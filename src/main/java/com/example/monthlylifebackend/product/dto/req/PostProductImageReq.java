@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostProductImageReq {
 
-    @Schema(description = "상품 이미지 URL", example = "https://example.com/image1.jpg")
+    @Schema(description = "상품 이미지 URL", example = "https://rentalcdn.lghellovision.net/uploads/product/AgQUzzEBCl.png")
     private String productImgUrl;
 }
