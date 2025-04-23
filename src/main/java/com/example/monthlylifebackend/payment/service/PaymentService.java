@@ -2,6 +2,7 @@ package com.example.monthlylifebackend.payment.service;
 
 import com.example.monthlylifebackend.common.exception.handler.PaymentHandler;
 import com.example.monthlylifebackend.payment.CustomPaymentClient;
+import com.example.monthlylifebackend.payment.dto.res.GetAdminPaymentRes;
 import com.example.monthlylifebackend.payment.repository.PaymentRepository;
 import com.example.monthlylifebackend.payment.dto.req.PostBillingKeyReq;
 import com.example.monthlylifebackend.payment.dto.req.PostWebhookReq;
@@ -11,8 +12,13 @@ import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import io.portone.sdk.server.payment.PayWithBillingKeyResponse;
 import io.portone.sdk.server.payment.billingkey.BillingKeyInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
@@ -87,5 +93,21 @@ public class PaymentService {
     public void checkBillingKey(String billingKey) {
         BillingKeyInfo billingKeyInfo = customPaymentClient.checkBillingKey(billingKey);
 
+    }
+
+    public Page<GetAdminPaymentRes> getPayments(int page, int size, String searchType, String searchQuery, LocalDate dateFrom,LocalDate dateTo, boolean overdueOnly) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        LocalDateTime dateFromTime = null;
+        LocalDateTime dateToTime = null;
+
+        if (dateFrom != null){
+            dateFromTime = dateFrom.atStartOfDay();
+        }
+
+        if (dateTo != null){
+         dateToTime = dateTo.atStartOfDay();
+        }
+
+        return paymentRepository.findAdminPayments(pageable, searchType, searchQuery, dateFromTime, dateToTime, overdueOnly);
     }
 }
