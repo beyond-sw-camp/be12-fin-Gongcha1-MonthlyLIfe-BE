@@ -1,5 +1,6 @@
-package com.example.monthlylifebackend.subscribe.dto.response;
+package com.example.monthlylifebackend.subscribe.dto.res;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,5 +32,6 @@ public class GetDeliveryListRes {
     private String userPhone;
 
     @Schema(description = "구독 상세 생성일", example = "2024-04-11T10:20:30")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime subscribeDetailCreatedAt;
 }

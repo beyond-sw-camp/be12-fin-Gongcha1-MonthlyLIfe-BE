@@ -23,8 +23,6 @@ public class GetSubscribeListRes {
     private LocalDateTime createdAt;
 
 
-
-
     private List<GetSubscribeListDto> details;
 
     public GetSubscribeListRes(Long subscribeIdx, LocalDateTime createdAt,List<GetSubscribeListDto> details) {

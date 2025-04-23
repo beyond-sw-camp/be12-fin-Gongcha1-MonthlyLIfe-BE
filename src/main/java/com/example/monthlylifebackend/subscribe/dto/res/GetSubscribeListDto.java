@@ -19,6 +19,7 @@ public class GetSubscribeListDto {
     private  Long saleidx;
     private Long subscribeDetailIdx;
     private String salename;
+
     private LocalDateTime startAt;
     private LocalDateTime endAt;
     @Schema(description = "구독 기간 (개월)", example = "3")

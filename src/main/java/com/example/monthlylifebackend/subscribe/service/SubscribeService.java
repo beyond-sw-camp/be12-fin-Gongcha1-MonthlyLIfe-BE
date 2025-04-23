@@ -11,7 +11,7 @@ import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.req.*;
 import com.example.monthlylifebackend.subscribe.dto.res.*;
 import com.example.monthlylifebackend.subscribe.dto.req.PostSaleReq;
-import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
 import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.subscribe.repository.ReturnDeliveryRepository;
@@ -22,15 +22,11 @@ import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.subscribe.repository.SubscribeRepository;
 import com.example.monthlylifebackend.user.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import com.example.monthlylifebackend.subscribe.repository.RentalDeliveryRepository;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,7 +54,9 @@ public class SubscribeService {
     private final SubscribeDetailRepository subscribeDetailRepository;
 
     public Page<GetDeliveryListRes> findDeliveryListByPage(int page, int size) {
-        return subscribeRepository.findDeliveryListByPage(PageRequest.of(page, size));
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        return subscribeRepository.findDeliveryListByPage(pageable);
     }
     public List<GetDeliveryListRes> findDeliveryList() {
         return subscribeRepository.findDeliveryList();
@@ -203,5 +201,25 @@ public class SubscribeService {
         );
 
 
+    }
+
+    public Page<GetAdminSubscribeRes> getAdminSubscribeByPage(int page, int size,
+                                                              String keyword,
+                                                              String status,
+                                                              Integer minMonths,
+                                                              Integer maxMonths) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        SubscribeStatus statusEnum = null;
+        if (status != null && !status.isBlank()) {
+             statusEnum = SubscribeStatus.valueOf(status);
+        }
+
+        return subscribeRepository.findAdminSubscribe(pageable, keyword, statusEnum, minMonths, maxMonths);
+    }
+
+    public List<GetAdminSubscribeDetailRes> getAdminSubscribeDetail(Long subscribeId) {
+        List<GetAdminSubscribeDetailRes> dto = subscribeRepository.findAdminSubscribeDetail(subscribeId);
+
+        return dto;
     }
 }
