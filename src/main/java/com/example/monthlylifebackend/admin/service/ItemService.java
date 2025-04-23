@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -25,8 +26,13 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
 
-    public Page<GetProductRes> findAllItemsByPage(int page, int size) {
-        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummaryByPage(PageRequest.of(page,size));
+    public Page<GetProductRes> findAllItemsByPage(int page, int size, String productName, String manufacturer, LocalDate startDate, LocalDate endDate) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+        LocalDateTime from = startDate != null ? startDate.atStartOfDay() : null;
+        LocalDateTime to = endDate != null ? endDate.atTime(23, 59, 59) : null;
+
+        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummaryWithConditions(pageable, productName, manufacturer, from, to);
         // pagedto 내부의 summaryDto + 이미지 리스트를 매퍼로 합쳐서 재생성
         pagedto = pagedto.map(summaryDto -> {
             List<ProductImageRes> imgs =
@@ -34,7 +40,6 @@ public class ItemService {
             return itemMapper.toGetProductRes(summaryDto, imgs);
         });
 
-        return pagedto;
         return pagedto;
     }
 

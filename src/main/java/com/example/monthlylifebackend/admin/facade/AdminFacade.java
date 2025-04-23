@@ -10,6 +10,7 @@ import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.item.dto.ItemDetailDto;
 import com.example.monthlylifebackend.payment.dto.res.GetAdminPaymentRes;
 import com.example.monthlylifebackend.payment.service.PaymentService;
+import com.example.monthlylifebackend.product.dto.res.ProductImageRes;
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.service.ProductService;
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeDetailRes;
