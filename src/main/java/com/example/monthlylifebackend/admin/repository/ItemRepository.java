@@ -3,6 +3,7 @@ package com.example.monthlylifebackend.admin.repository;
 import com.example.monthlylifebackend.admin.dto.response.GetProductRes;
 import com.example.monthlylifebackend.item.dto.ItemDetailDto;
 import com.example.monthlylifebackend.item.model.Item;
+import com.example.monthlylifebackend.product.dto.res.ProductImageRes;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -73,4 +74,12 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         WHERE i.product.code = :productCode
     """)
     List<ItemDetailDto> findStockDetailsByProductCode(@Param("productCode") String productCode);
+
+    @Query("""
+        SELECT new com.example.monthlylifebackend.product.dto.res.ProductImageRes(pi.productImgUrl)
+        FROM ProductImage pi
+        WHERE pi.product.code = :productCode
+    """)
+    List<ProductImageRes> findImageListByProductCode(@Param("productCode") String productCode);
 }
+

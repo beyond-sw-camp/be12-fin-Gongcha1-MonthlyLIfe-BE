@@ -2,6 +2,7 @@ package com.example.monthlylifebackend.sale.Facade;
 
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
+import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
@@ -34,5 +35,24 @@ public class SaleFacade {
 
     public List<GetSaleListRes> getSaleProductList() {
         return saleService.getSaleProductList();
+    }
+    public Page<GetSaleListRes> getSaleSearch(
+            Long categoryIdx,
+            int page,
+            int size,
+            String keyword,
+            String grade
+    ) {
+        return saleService.getSaleSearch(
+                categoryIdx, page, size, keyword, grade
+        );
+    }
+
+    public Long updateSale(Long saleIdx, PatchSaleReq dto) {
+        return saleService.updateSale(saleIdx, dto);
+    }
+
+    public void deleteSale(Long saleIdx) {
+        saleService.deleteSale(saleIdx);
     }
 }

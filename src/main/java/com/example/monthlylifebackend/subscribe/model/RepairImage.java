@@ -1,7 +1,5 @@
-package com.example.monthlylifebackend.support.model;
+package com.example.monthlylifebackend.subscribe.model;
 
-import com.example.monthlylifebackend.subscribe.model.RepairRequest;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 

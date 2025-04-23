@@ -34,7 +34,7 @@ public class Subscribe extends BaseEntity {
     @Schema(description = "구독한 사용자" ,example = "1")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "billing_key_idx")
     @Schema(description = "빌링 키 정보")
     private BillingKey billingKey;
@@ -47,6 +47,10 @@ public class Subscribe extends BaseEntity {
     @Version
     @Schema(description = "버전 (낙관적 락)", example = "0")
     private Long version;
+
+    public void ignoreVersion() {
+        this.version=0L;
+    }
 
 
 

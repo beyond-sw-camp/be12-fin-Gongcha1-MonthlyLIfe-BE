@@ -14,25 +14,26 @@ import com.example.monthlylifebackend.subscribe.dto.req.PostSaleReq;
 import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
 import com.example.monthlylifebackend.subscribe.model.*;
-import com.example.monthlylifebackend.subscribe.repository.ReturnDeliveryRepository;
-import com.example.monthlylifebackend.subscribe.repository.SubscribeDetailRepository;
+import com.example.monthlylifebackend.subscribe.repository.*;
 import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
-import com.example.monthlylifebackend.subscribe.repository.SubscribeRepository;
 import com.example.monthlylifebackend.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import com.example.monthlylifebackend.subscribe.repository.RentalDeliveryRepository;
+import org.springframework.data.domain.Page;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.example.monthlylifebackend.subscribe.model.SubscribeStatus.RETURN_REQUESTED;
+import static com.example.monthlylifebackend.subscribe.model.SubscribeStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class SubscribeService {
 
 
     private final UserRepository userRepository;
-
+    private final RepairRequestRepository repairRequestRepository;
     private final SubscribeMapper subscribeMapper;
 
     private final SaleRepository saleRepository;
@@ -77,7 +78,7 @@ public class SubscribeService {
 
         for (PostSaleReq saleReq : reqDto.getSales()) {
             // 세일 가격 불러오기
-            SalePrice salePrice = salePriceRepository.findBySaleIdxAndPeriod(saleReq.getSale_idx(), saleReq.getPeriod())
+            SalePrice salePrice = salePriceRepository.findBySaleIdxAndPeriod(saleReq.getSaleIdx(), saleReq.getPeriod())
                     .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SALE_PRICE));
 
             SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, salePrice);
@@ -226,5 +227,43 @@ public class SubscribeService {
         List<GetAdminSubscribeDetailRes> dto = subscribeRepository.findAdminSubscribeDetail(subscribeId);
 
         return dto;
+    }
+
+    public void extendSubscription(Long detailIdx, String userId, PostExtendRequest dto) {
+        SubscribeDetail detail = subscribeDetailRepository.findWithProductAndUser(detailIdx, userId)
+                .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SUBSCRIBE_DETAIL));
+        LocalDateTime newStartAt = detail.getEndAt();
+        LocalDateTime newEndAt = newStartAt.plusMonths(dto.getExtentPeriod());
+        detail.updateStatus(RESERVED);
+        SubscribeDetail extended = subscribeMapper.toExtendSubscription(detail, newStartAt, newEndAt);
+        subscribeDetailRepository.save(extended);
+
+
+
+    }
+
+    public void createRepairOrLost(PostRepairOrLostReq req , String userId) {
+        SubscribeDetail detail = subscribeDetailRepository.findWithProductAndUser(req.getSubscribeDetailIdx(), userId)
+                .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SUBSCRIBE_DETAIL));
+
+        RepairRequest rr = subscribeMapper.toEntity(req, detail);
+        if (req.getType() == ReportType.REPAIR) {
+            req.getImageUrls().stream()
+                    .filter(u -> u != null && !u.isBlank())
+                    .map(u -> RepairImage.builder()
+                            .url(u)
+                            .repairRequest(rr)   // rr 을 참조
+                            .build())
+                    .forEach(rr.getRepairImageList()::add);
+            detail.updateStatus(REPAIR_REQUESTED);
+        } else if (req.getType() == ReportType.LOST) {
+            detail.updateStatus(LOST);
+
+        }
+        repairRequestRepository.save(rr);
+
+
+        ReturnDelivery delivery = subscribeMapper.toReturnDeliveryRepair(detail);
+        returnDeliveryRepository.save(delivery);
     }
 }

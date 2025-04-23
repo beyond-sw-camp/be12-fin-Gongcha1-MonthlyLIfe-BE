@@ -2,11 +2,13 @@ package com.example.monthlylifebackend.admin.service;
 
 import com.example.monthlylifebackend.admin.dto.request.PatchItemCountReq;
 import com.example.monthlylifebackend.admin.dto.response.GetProductRes;
+import com.example.monthlylifebackend.admin.mapper.ItemMapper;
 import com.example.monthlylifebackend.admin.repository.ItemRepository;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.ItemHandler;
 import com.example.monthlylifebackend.item.dto.ItemDetailDto;
 import com.example.monthlylifebackend.item.model.Item;
+import com.example.monthlylifebackend.product.dto.res.ProductImageRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,29 +23,32 @@ import java.util.List;
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
+    private final ItemMapper itemMapper;
 
-    public Page<GetProductRes> findAllItemsByPage(int page, int size, String productName, String manufacturer, LocalDate startDate, LocalDate endDate) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+    public Page<GetProductRes> findAllItemsByPage(int page, int size) {
+        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummaryByPage(PageRequest.of(page,size));
+        // pagedto 내부의 summaryDto + 이미지 리스트를 매퍼로 합쳐서 재생성
+        pagedto = pagedto.map(summaryDto -> {
+            List<ProductImageRes> imgs =
+                    itemRepository.findImageListByProductCode(summaryDto.getProductCode());
+            return itemMapper.toGetProductRes(summaryDto, imgs);
+        });
 
-        //--------------------------------------------------------------------
-//        // 검색 조건으로 넘기기 전에 null 체크 + 쿼리 조건에 맞는 형태로 가공
-//        productName     → LIKE 검색을 위해 "%청소기%" 형태로
-//        manufacturer    → LIKE 검색을 위해 "%삼성%" 형태로
-//        startDate       → 날짜 시작 범위 계산을 위해 00:00:00 시간 추가
-//        endDate         → 날짜 종료 범위 계산을 위해 23:59:59 시간 추가
-//          만약에 null이면 쿼리단에서 처리x
-         //-------------------------------------------------------------------
-        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummaryWithConditions(
-                pageable,
-                productName != null ? "%" + productName + "%" : null,
-                manufacturer != null ? "%" + manufacturer + "%" : null,
-                startDate != null ? startDate.atStartOfDay() : null,
-                endDate != null ? endDate.atTime(23, 59, 59) : null);
+        return pagedto;
         return pagedto;
     }
 
     public List<GetProductRes> findAllItems() {
         List<GetProductRes> dtoList = itemRepository.findProductStockSummary();
+
+        // dtoList 내부의 summaryDto + 이미지 리스트를 매퍼로 합쳐서 재생성
+        dtoList = dtoList.stream()
+                .map(summaryDto -> {
+                    List<ProductImageRes> imgs =
+                            itemRepository.findImageListByProductCode(summaryDto.getProductCode());
+                    return itemMapper.toGetProductRes(summaryDto, imgs);
+                })
+                .toList();
         return dtoList;
     }
 
@@ -61,6 +66,11 @@ public class ItemService {
 
         List<ItemDetailDto> itemList = itemRepository.findStockDetailsByProductCode(productCode);
             return itemList;
+    }
+
+    /** 상세 페이지용 이미지 조회 */
+    public List<ProductImageRes> getItemImages(String productCode) {
+        return itemRepository.findImageListByProductCode(productCode);
     }
 
 }

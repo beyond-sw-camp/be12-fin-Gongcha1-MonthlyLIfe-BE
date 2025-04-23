@@ -30,16 +30,33 @@ public class Sale extends BaseEntity {
     @JoinColumn(name = "category_idx", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Category category;
 
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<SaleHasProduct> saleHasProductList = new ArrayList<>();
 
     @OneToMany(mappedBy = "sale")
     private List<SaleHasUserTag> saleHasUserTagList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<SalePrice> salePriceList = new ArrayList<>();
 
     @OneToMany(mappedBy = "sale")
     private List<SubscribeDetail> subscribeDetailList = new ArrayList<>();
+
+    public void changeCategory(Category newCategory) {
+        this.category = newCategory;
+    }
+    // name 변경용
+    public void changeName(String name) {
+        if (name != null) {
+            this.name = name;
+        }
+    }
+
+    // description 변경용
+    public void changeDescription(String description) {
+        if (description != null) {
+            this.description = description;
+        }
+    }
 
 }

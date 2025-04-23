@@ -71,8 +71,11 @@ public class AdminFacade {
         // 상품에 연결된 item 리스트 조회 (엔티티)
         List<ItemDetailDto> itemList = itemService.getItemDetail(productCode);
 
+        // 3) 이미지 리스트 조회 (ItemService에 구현)
+        List<ProductImageRes> imgs = itemService.getItemImages(productCode);
+
         // Mapper로 변환하여 DTO 통합 응답 생성
-        return itemMapper.toResponse(product, itemList);
+        return itemMapper.toResponse(product, itemList,imgs);
     }
 
     public List<GetDeliveryListRes> findAllDelivery() {

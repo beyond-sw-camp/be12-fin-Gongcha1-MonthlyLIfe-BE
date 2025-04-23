@@ -12,15 +12,23 @@ import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
 import com.example.monthlylifebackend.product.mapper.ProductMapper;
 import com.example.monthlylifebackend.product.model.Condition;
 import com.example.monthlylifebackend.product.model.Product;
+import com.example.monthlylifebackend.product.model.ProductImage;
 import com.example.monthlylifebackend.product.repository.ConditionRepository;
 import com.example.monthlylifebackend.product.repository.ItemLocationRepository;
 import com.example.monthlylifebackend.product.repository.ProductRepository;
 import com.example.monthlylifebackend.sale.mapper.SaleMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -33,52 +41,80 @@ public class ProductService {
     private final ItemRepository itemRepository;
     private final SaleMapper saleMapper;
 
-    public String registerProduct(PostProductRegisterReq dto) {
-        // Product 생성
-        Product product = productMapper.toEntityWithImages(dto);
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    public String registerProduct(PostProductRegisterReq dto,
+                                  List<MultipartFile> images) {
+        // 1) 기본 Product 매핑
+        Product product = productMapper.toEntity(dto);
+
+        // 2) 이미지 파일 저장 및 Entity 연결
+        try {
+            if (images != null && !images.isEmpty()) {
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                for (MultipartFile file : images) {
+                    String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                    Path filePath = uploadPath.resolve(filename);
+                    file.transferTo(filePath.toFile());
+
+                    ProductImage img = ProductImage.builder()
+                            .product(product)
+                            .productImgUrl("/uploads/" + filename)
+                            .build();
+                    product.getProductImageList().add(img);
+                }
+            }
+        } catch (IOException e) {
+            throw new ProductHandler(ErrorStatus._FILE_UPLOAD_ERROR);
+        }
+
+        // 3) Product 저장
         productRepository.save(product);
 
-        // Condition 조회
+        // 4) Condition 조회 (예외처리 적용)
         Condition condition = conditionRepository.findByName(dto.getCondition())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 상태 등급입니다: " + dto.getCondition()));
+                .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_CONDITION));
 
-        // ItemLocation 조회
+        // 5) ItemLocation 조회 (예외처리 적용)
         ItemLocation location = itemLocationRepository.findByName(dto.getLocation())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 위치입니다: " + dto.getLocation()));
+                .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_LOCATION));
 
-        // Item 생성
+        // 6) Item 생성 및 저장
         Item item = Item.builder()
                 .product(product)
                 .condition(condition)
                 .itemLocation(location)
-                .count(1)         // 기본 재고 수량 1개로 설정 (필요 시 수정)
+                .count(dto.getCount())
                 .build();
-
         itemRepository.save(item);
 
         return product.getCode();
     }
 
-    // 상품 목록 조회
+    // 상품 목록 조회 (변경 없음)
     public List<GetProductListRes> getProductList() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
+        return productRepository.findAll()
+                .stream()
                 .map(productMapper::toGetProductListRes)
                 .toList();
     }
 
-    // 상품 상세 조회
+    // 상품 상세 조회 (예외처리 적용)
     public GetProductDetailRes getProductDetail(String productCode) {
         Product product = productRepository.findById(productCode)
-                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_PRODUCT));
         return productMapper.toGetProductDetailRes(product);
     }
 
+    // 내부용 상품 조회
     public Product getProduct(String productCode) {
-        Product product = productRepository.findById(productCode)
+        return productRepository.findById(productCode)
                 .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_PRODUCT));
-
-        return product;
     }
 
 

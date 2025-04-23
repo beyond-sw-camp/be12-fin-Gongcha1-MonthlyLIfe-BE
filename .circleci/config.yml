@@ -1,0 +1,66 @@
+version: 2.1
+
+parameters:
+  tag:
+    type: string
+    default: v1
+
+jobs:
+  gradle-build:
+    docker:
+      - image: cimg/openjdk:17.0
+    working_directory: ~/project
+    steps:
+      - checkout
+      - run:
+          name: Add Permission
+          command: chmod +x gradlew
+      - run:
+          name: Gradle Build
+          command: ./gradlew bootJar
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build/libs/*.jar
+
+  docker-build-and-push:
+    docker:
+      - image: cimg/base:2022.09
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    working_directory: ~/project
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Docker image
+          command: |
+            echo "Using TAG << pipeline.parameters.tag >>"
+            docker build -t $DOCKERHUB_USERNAME/mlback:<< pipeline.parameters.tag >> .
+      - run:
+          name: Push application Docker image
+          command: |
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+            docker push $DOCKERHUB_USERNAME/mlback:<< pipeline.parameters.tag >>
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - gradle-build:
+          filters:
+            branches:
+              only:
+                - main
+                - kgj/chore/jenkins
+      - docker-build-and-push:
+          requires:
+            - gradle-build
+          filters:
+            branches:
+              only:
+                - main
+                - kgj/chore/jenkins

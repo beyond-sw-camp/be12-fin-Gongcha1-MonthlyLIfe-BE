@@ -8,11 +8,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/product")
@@ -22,13 +24,15 @@ public class ProductManagementController {
     private final ProductFacade productFacade;
 
     @Operation(summary = "상품 등록", description = "신규 상품을 등록합니다.")
-    @PostMapping("/create")
-    public ResponseEntity<BaseResponse<String>> registerProduct(@RequestBody @Valid PostProductRegisterReq dto) {
-        // 상품 등록 처리
-        BaseResponse<String> result = BaseResponse.created(productFacade.registerProduct(dto));
-        return ResponseEntity.ok(result);
-    }
+    @PostMapping(value = "/create",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public BaseResponse<String> registerProduct(
+            @RequestPart("dto") @Valid PostProductRegisterReq dto,
+            @RequestPart("images") List<MultipartFile> images) throws IOException {
 
+        String productCode = productFacade.registerProduct(dto, images);
+        return BaseResponse.onSuccess(productCode);
+    }
 
     @Operation(summary = "상품 수정", description = "기존 상품 정보를 수정합니다.")
     @PostMapping("/update")

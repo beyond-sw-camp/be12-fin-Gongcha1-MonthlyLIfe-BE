@@ -173,4 +173,5 @@ WHERE s.idx = :subscribeId
 """)
     List<GetAdminSubscribeDetailRes> findAdminSubscribeDetail(@Param("subscribeId") Long subscribeId);
 
+
 }

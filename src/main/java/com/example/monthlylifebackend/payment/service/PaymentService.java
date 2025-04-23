@@ -38,7 +38,7 @@ public class PaymentService {
         //결제 가격 구하기
         long price=0;
         for(SubscribeDetail detail: subscribe.getSubscribeDetailList()) {
-            if(detail.getEndAt().isAfter(LocalDateTime.now())) continue;
+            if(detail.getEndAt().isBefore(LocalDateTime.now())) continue;
             price += detail.getPrice();
         }
 
@@ -85,7 +85,9 @@ public class PaymentService {
 
     private Payment createPayment(Long subscribeIdx, Long price, int cycle) {
         String paymentId = "payment"+"-"+subscribeIdx+"-"+cycle+"-"+UUID.randomUUID();
-        Payment payment = new Payment(paymentId, price);
+        Subscribe s = Subscribe.builder().idx(subscribeIdx).build();
+        s.ignoreVersion();
+        Payment payment = new Payment(paymentId, price, s);
         return paymentRepository.save(payment);
     }
 
