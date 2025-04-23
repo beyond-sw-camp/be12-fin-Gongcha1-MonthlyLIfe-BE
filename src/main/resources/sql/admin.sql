@@ -68,8 +68,8 @@ INSERT INTO sale (name, description, created_at, updated_at)
 VALUES ('프리미엄 노트북 렌탈', '고성능 노트북 월 렌탈 상품', NOW(), NOW());
 
 -- 📦 구독
-INSERT INTO subscribe ( created_at, updated_at, version, user_id, payment_idx)
-VALUES ( NOW(), NOW(), 0, 'user001', 1);
+INSERT INTO subscribe ( created_at, updated_at, version, user_id, is_delayed)
+VALUES ( NOW(), NOW(), 0, 'user001', false);
 
 -- 📄 구독 상세
 INSERT INTO subscribe_detail (price, created_at, updated_at, sale_idx, start_at, end_at, version, subscribe_idx)
@@ -77,14 +77,14 @@ VALUES (99000, NOW(), NOW(), 1, '2025-04-01 00:00:00', '2025-07-01 00:00:00', 0,
 
 -- 🚚 렌탈 배송
 INSERT INTO rental_delivery (
-    created_at, updated_at, subscribe_detail_idx, subscribe_idx,
-    address1, address2, courier_company, delivered_at, delivery_col1,
-    delivery_memo, deliverycol, postal_code, recipient_name, recipient_phone,
+    created_at, updated_at, subscribe_detail_idx,
+    address1, address2, courier_company, delivered_at,
+    delivery_memo, postal_code, recipient_name, recipient_phone,
     shipped_at, status, tracking_number
 )
 VALUES (
-           NOW(), NOW(), 1, 1,
-           '서울시 강남구', '101호', 'CJ대한통운', '2025-04-03 15:00:00', '배송참고1',
-           '문 앞에 놔주세요', '배송정보A', '04524', '홍길동', '010-1234-5678',
+           NOW(), NOW(), 1,
+           '서울시 강남구', '101호', 'CJ대한통운', '2025-04-03 15:00:00',
+           '문 앞에 놔주세요', '04524', '홍길동', '010-1234-5678',
            '2025-04-02 10:00:00', '배송중', 'TRK123456789'
        );
