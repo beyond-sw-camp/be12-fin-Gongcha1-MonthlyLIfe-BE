@@ -25,6 +25,12 @@ jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXP}
 
+portone:
+  api_secret: ${PORT0NE_API_SECRET}
+
+aes:
+  secret: ${AES_SECRET}
+
 logging:
   level:
     org.hibernate.SQL: debug
