@@ -14,30 +14,46 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     @Query("""
-                SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes(
-                    s.idx,
-                    u.name,
-                            (
-                        SELECT SUM(sd2.price)
-                        FROM SubscribeDetail sd2
-                        WHERE sd2.subscribe.idx = s.idx
-                    ),
-                    rd.status,
-                    u.phoneNumber,
-                    sd.createdAt
+    SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes(
+        s.idx,
+        u.name,
+        (
+            SELECT SUM(sd2.price)
+            FROM SubscribeDetail sd2
+            WHERE sd2.subscribe.idx = s.idx
+        ),
+        rd.status,
+        u.phoneNumber,
+        sd.createdAt
+    )
+    FROM Subscribe s
+    JOIN s.user u
+    JOIN s.subscribeDetailList sd
+    JOIN sd.rentalDeliveryList rd
+    WHERE
+      (:searchType IS NULL OR (
+          (:searchType = '주문번호' AND (:searchQuery IS NULL OR CAST(s.idx AS string) LIKE %:searchQuery%)) OR
+          (:searchType = '주문자명' AND (:searchQuery IS NULL OR u.name LIKE %:searchQuery%)) OR
+          (:searchType = '주문상태' AND (:searchQuery IS NULL OR rd.status LIKE %:searchQuery%))
+      ))
+      AND (:dateFrom IS NULL OR sd.createdAt >= :dateFrom)
+      AND (:dateTo IS NULL OR sd.createdAt <= :dateTo)
+""")
+    Page<GetDeliveryListRes> findDeliveryListByPage(
+            Pageable pageable,
+            @Param("searchType") String searchType,
+            @Param("searchQuery") String searchQuery,
+            @Param("dateFrom") LocalDateTime dateFrom,
+            @Param("dateTo") LocalDateTime dateTo
+    );
 
-                )
-                FROM Subscribe s
-                JOIN s.user u
-                JOIN s.subscribeDetailList sd
-                JOIN sd.rentalDeliveryList rd
-            """)
-    Page<GetDeliveryListRes> findDeliveryListByPage(Pageable pageable);
 
     @Query("""
                 SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes(

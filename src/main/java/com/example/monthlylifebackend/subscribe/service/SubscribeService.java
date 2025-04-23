@@ -28,6 +28,7 @@ import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -53,10 +54,14 @@ public class SubscribeService {
     private final RentalDeliveryRepository rentalDeliveryRepository;
     private final SubscribeDetailRepository subscribeDetailRepository;
 
-    public Page<GetDeliveryListRes> findDeliveryListByPage(int page, int size) {
+    public Page<GetDeliveryListRes> findDeliveryListByPage(    int page, int size,
+                                                               String searchType, String searchQuery,
+                                                               LocalDate dateFrom, LocalDate dateTo) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        LocalDateTime from = dateFrom != null ? dateFrom.atStartOfDay() : null;
+        LocalDateTime to = dateTo != null ? dateTo.atTime(23, 59, 59) : null;
 
-        return subscribeRepository.findDeliveryListByPage(pageable);
+        return subscribeRepository.findDeliveryListByPage(pageable, searchType, searchQuery, from, to);
     }
     public List<GetDeliveryListRes> findDeliveryList() {
         return subscribeRepository.findDeliveryList();

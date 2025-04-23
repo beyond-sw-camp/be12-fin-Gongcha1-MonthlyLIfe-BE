@@ -55,8 +55,10 @@ public class AdminFacade {
     }
 
     @Transactional(readOnly = true)
-    public Page<GetDeliveryListRes> findAllDeliveryByPage(int page, int size) {
-        Page<GetDeliveryListRes> pagedto = subscribeService.findDeliveryListByPage(page, size);
+    public Page<GetDeliveryListRes> findAllDeliveryByPage(    int page, int size,
+                                                              String searchType, String searchQuery,
+                                                              LocalDate dateFrom, LocalDate dateTo) {
+        Page<GetDeliveryListRes> pagedto = subscribeService.findDeliveryListByPage(page, size, searchType, searchQuery, dateFrom, dateTo);
         return pagedto;
     }
 

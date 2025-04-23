@@ -30,8 +30,8 @@ public class AdminController {
 
     @Operation(summary = "관리자 전체 페이징 재고 조회", description = "판매 아이템의 재고 관리페이지를 페이징 처리하여 조회합니다.")
     @GetMapping("/product-by-page")
-    public BaseResponse<Page<GetProductRes>> getAllItemsByPage(        @RequestParam int page,
-                                                                       @RequestParam int size,
+    public BaseResponse<Page<GetProductRes>> getAllItemsByPage(        @RequestParam(defaultValue = "0") int page,
+                                                                       @RequestParam(defaultValue = "10") int size,
                                                                        @RequestParam(required = false) String productName,
                                                                        @RequestParam(required = false) String manufacturer,
                                                                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -64,8 +64,14 @@ public class AdminController {
 
     @Operation(summary = "배송 스케줄 관리 조회", description = "페이지 별로 반납 및 배송 예약 일정을 조회합니다.")
     @GetMapping("/delivery-by-page")
-    public BaseResponse getDeliveryScheduleListByPage(int page, int size) {
-        Page<GetDeliveryListRes> dto = adminFacade.findAllDeliveryByPage(page, size);
+    public BaseResponse getDeliveryScheduleListByPage(    @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size,
+                                                          @RequestParam(required = false) String searchType,
+                                                          @RequestParam(required = false) String searchQuery,
+                                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+                                                          @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo
+    ) {
+        Page<GetDeliveryListRes> dto = adminFacade.findAllDeliveryByPage(page, size, searchType, searchQuery, dateFrom, dateTo);
         return BaseResponse.onSuccess(dto);
 
     }
@@ -121,7 +127,6 @@ public class AdminController {
     @Operation(summary = "사용자 목록 조회", description = "전체 사용자, 렌탈 기록 및 연체 내역을 확인합니다.")
     @GetMapping("/users")
     public BaseResponse<Page<GetAdminUserRes>> getUsers(int page, int size) {
-        //public BaseResponse<Page<GetAdminUserRes>> getUsers(@PageableDefault(size = 10) Pageable pageable) {
         Page<GetAdminUserRes> users = adminFacade.getAdminUserList(page, size);
         return BaseResponse.onSuccess(users);
     }
