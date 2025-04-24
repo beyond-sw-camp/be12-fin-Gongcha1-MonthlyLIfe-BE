@@ -4,6 +4,7 @@ package com.example.monthlylifebackend.user.service;
 import com.example.monthlylifebackend.common.exception.handler.UserHandler;
 import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
+import com.example.monthlylifebackend.user.dto.res.GetUserDetailRes;
 import com.example.monthlylifebackend.user.mapper.UserMapper;
 import com.example.monthlylifebackend.user.model.User;
 import com.example.monthlylifebackend.user.repository.UserRepository;
@@ -17,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._DUPLICATED_USER;
@@ -32,8 +31,9 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public User getUser(String id) {
-        return userRepository.findById(id).orElseThrow(() -> new UserHandler(_NOT_FOUND_USER));
+    public GetUserDetailRes getUserDetail(User user) {
+        User result = userRepository.findById(user.getId()).orElseThrow(() -> new UserHandler(_NOT_FOUND_USER));
+        return userMapper.toGetUserDetailRes(result);
     }
 
     @Transactional
@@ -65,6 +65,11 @@ public class UserService {
                 dateFrom != null ? dateFrom.atStartOfDay() : null,
                 dateTo != null ? dateTo.atTime(23, 59, 59) : null,
                 overdueOnly);
+    }
+
+    public boolean deleteUser(User user) {
+        userRepository.delete(user);
+        return true;
     }
 }
 
