@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.user.controller;
 
 import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.user.dto.req.PostCheckIdReq;
 import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
 import com.example.monthlylifebackend.user.dto.res.GetUserDetailRes;
 import com.example.monthlylifebackend.user.facade.UserFacade;
@@ -61,6 +62,13 @@ public class UserController {
     public BaseResponse<GetUserDetailRes> getUserDetail(@AuthenticationPrincipal @Valid @NotNull User user) {
         // 상세 조회 로직
         BaseResponse<GetUserDetailRes> result = BaseResponse.onSuccess(userFacade.getUserDetail(user));
+        return result;
+    }
+
+    @Operation(summary = "아이디 중복 체크", description = "존재하는 아이디인지 확인합니다.")
+    @PostMapping("/checkid")
+    public BaseResponse<Boolean> postCheckId(@RequestBody PostCheckIdReq dto) {
+        BaseResponse<Boolean> result = BaseResponse.onSuccess(userFacade.checkId(dto));
         return result;
     }
 }
