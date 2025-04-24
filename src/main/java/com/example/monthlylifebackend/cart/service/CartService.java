@@ -29,14 +29,14 @@ public class CartService {
     public void addToCart(User user, SalePrice salePrice) {
 
 
+        if (cartRepository.existsByUserAndSalePrice(user, salePrice)) {
+            throw new CartHandler(ErrorStatus._DUPLICATED_CART_ITEM);
+        }
 
         Cart cart =cartMapper.toCartEntity(user,salePrice);
 
         cartRepository.save(cart);
 
-        if (cartRepository.existsByUserAndSalePrice(user, salePrice)) {
-            throw new CartHandler(ErrorStatus._DUPLICATED_CART_ITEM);
-        }
 
     }
 
