@@ -28,6 +28,9 @@ public class GetProductListRes {
     @Schema(description = "상품 설명", example = "초미세먼지 집진 필터로 강력한 공기청정 기능을 제공")
     private String description;
 
+    @Schema(description = "상품 설명 이미지", example = "https://test.png")
+    private String descriptionImageUrl;
+
     @Schema(description = "상품 위치 상태 (창고, 대여중, 수리중 등)", example = "창고")
     private String location;
 

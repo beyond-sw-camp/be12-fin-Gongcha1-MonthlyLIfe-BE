@@ -21,6 +21,7 @@ public class Product extends BaseEntity {
     private String description;
     private String name;
     private String manufacturer;
+    private String descriptionImageUrl;
 
     @OneToMany(mappedBy = "product",  cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default //Builder가 productImageList를 null로 생성했기 때문이며, @Builder.Default 애노테이션을 사용하면 해결됩니다.
