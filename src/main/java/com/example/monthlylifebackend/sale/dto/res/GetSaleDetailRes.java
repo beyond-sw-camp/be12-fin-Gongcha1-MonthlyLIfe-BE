@@ -51,6 +51,9 @@ public class GetSaleDetailRes {
     @AllArgsConstructor
     @Schema(description = "가격 정보")
     public static class PriceInfo {
+        @Schema(description = "가격 PK (SalePrice 테이블의 idx)", example = "42")
+        private Long salePriceIdx;
+
         @Schema(description = "기간 (개월)", example = "12")
         private int period;
 

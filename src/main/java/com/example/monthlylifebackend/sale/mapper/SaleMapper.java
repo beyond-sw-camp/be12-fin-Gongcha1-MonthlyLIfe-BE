@@ -116,6 +116,7 @@ public interface SaleMapper {
     @IterableMapping(elementTargetType = GetSaleDetailRes.PriceInfo.class)
     List<GetSaleDetailRes.PriceInfo> mapDetailPriceInfoList(List<SalePrice> list);
 
+    @Mapping(source = "idx", target = "salePriceIdx")
     @Mapping(source = "period", target = "period")
     @Mapping(source = "price", target = "price")
     GetSaleDetailRes.PriceInfo toDetailPriceInfo(SalePrice price);
