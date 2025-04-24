@@ -66,6 +66,11 @@ public class UserService {
                 dateTo != null ? dateTo.atTime(23, 59, 59) : null,
                 overdueOnly);
     }
+
+    public boolean deleteUser(User user) {
+        userRepository.delete(user);
+        return true;
+    }
 }
 
 

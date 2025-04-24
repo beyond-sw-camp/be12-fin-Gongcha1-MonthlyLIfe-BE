@@ -44,8 +44,10 @@ public class UserController {
 
     @Operation(summary = "회원 탈퇴", description = "현재 로그인한 회원을 탈퇴 처리합니다.")
     @GetMapping("/withdraw")
-    public void withdrawUser() {
+    public  BaseResponse<Boolean> withdrawUser(@AuthenticationPrincipal @Valid @NotNull User user) {
         // 회원 탈퇴 로직
+        BaseResponse<Boolean> result = BaseResponse.onSuccess(userFacade.deleteUser(user));
+        return result;
     }
 
     @Operation(summary = "회원 정보 수정", description = "회원의 개인정보를 수정합니다.")

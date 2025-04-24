@@ -17,4 +17,6 @@ public class UserFacade {
     }
 
     public GetUserDetailRes getUserDetail(User user) {return userService.getUserDetail(user); }
+
+    public boolean deleteUser(User user) { return userService.deleteUser(user); }
 }
