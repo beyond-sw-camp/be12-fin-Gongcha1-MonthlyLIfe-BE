@@ -96,7 +96,7 @@ public interface SubscribeMapper {
 
     @Mapping(target = "idx", ignore = true)
     @Mapping(source = "detail", target = "subscribeDetail")
-    @Mapping(target = "status", constant = "REQUESTED")
+    @Mapping(target = "status", constant = "RETURN_REQUESTED")
     ReturnDelivery toReturnDeliveryEntity(SubscribeDetail detail, PostReturnDeliveryReq postReturnDeliveryReq) ;
 
     @Mapping(target = "idx", ignore = true)

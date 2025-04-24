@@ -42,7 +42,7 @@ public class ReturnDelivery extends BaseEntity {
     @Schema(description = "반납 요청 상태", example = "REQUESTED")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ReturnDeliveryStatus status = ReturnDeliveryStatus.REQUESTED;
+    private ReturnDeliveryStatus status = ReturnDeliveryStatus.RETURN_REQUESTED;
 
     @ManyToOne
     @JoinColumn(name = "subscribeDetail_idx")
