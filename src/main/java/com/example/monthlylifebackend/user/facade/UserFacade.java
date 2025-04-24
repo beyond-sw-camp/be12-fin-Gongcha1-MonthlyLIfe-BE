@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.user.facade;
 
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
+import com.example.monthlylifebackend.user.dto.req.PostCheckIdReq;
 import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
 import com.example.monthlylifebackend.user.dto.res.GetUserDetailRes;
 import com.example.monthlylifebackend.user.model.User;
@@ -19,4 +20,6 @@ public class UserFacade {
     public GetUserDetailRes getUserDetail(User user) {return userService.getUserDetail(user); }
 
     public boolean deleteUser(User user) { return userService.deleteUser(user); }
+
+    public boolean checkId(PostCheckIdReq dto) {return userService.checkId(dto);}
 }

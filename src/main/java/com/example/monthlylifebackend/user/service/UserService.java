@@ -2,6 +2,7 @@ package com.example.monthlylifebackend.user.service;
 
 
 import com.example.monthlylifebackend.common.exception.handler.UserHandler;
+import com.example.monthlylifebackend.user.dto.req.PostCheckIdReq;
 import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
 import com.example.monthlylifebackend.user.dto.res.GetUserDetailRes;
@@ -70,6 +71,11 @@ public class UserService {
     public boolean deleteUser(User user) {
         userRepository.delete(user);
         return true;
+    }
+
+    public boolean checkId(PostCheckIdReq dto) {
+        Optional<User> result = userRepository.findById(dto.getId());
+        return result.isEmpty();
     }
 }
 
