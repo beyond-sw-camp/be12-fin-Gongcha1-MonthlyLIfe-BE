@@ -56,6 +56,7 @@ public class SubscribeController {
     }
 
 
+    @Operation(summary = "수리/분실 신청", description = "현재 구독을 취소 신청합니다.")
     @PostMapping("/report")
     public BaseResponse<?> report(
             @RequestBody PostRepairOrLostReq req/*@AuthenticationPrincipal User user*/

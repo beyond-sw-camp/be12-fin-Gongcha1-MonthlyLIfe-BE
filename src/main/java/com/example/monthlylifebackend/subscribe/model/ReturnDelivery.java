@@ -39,7 +39,7 @@ public class ReturnDelivery extends BaseEntity {
     private LocalDateTime pickupDate;
 
 
-    @Schema(description = "반납 요청 상태", example = "2025-04-14T15:00:00")
+    @Schema(description = "반납 요청 상태", example = "REQUESTED")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReturnDeliveryStatus status = ReturnDeliveryStatus.REQUESTED;
