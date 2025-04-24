@@ -22,6 +22,7 @@ public interface ItemMapper {
     @Mapping(source = "product.name", target = "productName")
     @Mapping(source = "product.code", target = "productCode")
     @Mapping(source = "product.description", target = "productDescription")
+    @Mapping(source = "product.descriptionImageUrl", target = "productDescriptionImageUrl")
     @Mapping(source = "product.manufacturer", target = "manufacturer")
     @Mapping(source = "images",               target = "productImages")
     GetProductDetailDto toProductDetailDto(Product product, List<ProductImageRes> images);
