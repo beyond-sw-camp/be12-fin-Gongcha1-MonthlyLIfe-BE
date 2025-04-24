@@ -13,6 +13,8 @@ import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
+
+    @Mapping(target = "role", expression = "java(Role.ROLE_USER)")
     User toEntity(PostSignupReq dto);
 
 

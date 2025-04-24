@@ -45,6 +45,9 @@ public class User extends BaseEntity   {
     
     private LocalDate birth;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToMany(mappedBy = "user")
     private List<Subscribe> subscribeList = new ArrayList<>();
 
