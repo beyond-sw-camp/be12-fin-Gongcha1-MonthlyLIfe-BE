@@ -5,6 +5,7 @@ import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.common.code.BaseErrorCode;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.user.dto.req.PostLoginReq;
+import com.example.monthlylifebackend.user.dto.res.PostLoginRes;
 import com.example.monthlylifebackend.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -12,8 +13,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,7 +24,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import jakarta.validation.Validator;
 import java.io.IOException;
 import java.util.Set;
 
@@ -78,7 +78,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType("application/json");
 
         // 만약 로그인 시 정보가 필요하다면 반환
-        BaseResponse<String> dto = BaseResponse.onSuccess(aUser.getUser().getId());
+        PostLoginRes res = PostLoginRes.builder()
+                .id(aUser.getUser().getId())
+                .role(aUser.getUser().getRole())
+                .expired(System.currentTimeMillis() + 3600000)
+                .build();
+
+        BaseResponse<PostLoginRes> dto = BaseResponse.onSuccess(res);
         response.getWriter().write(new ObjectMapper().writeValueAsString(dto));
     }
 

@@ -28,9 +28,9 @@ public class ProductQueryController {
 
     @Operation(summary = "상품 목록 조회", description = "상품 목록을 조회합니다.")
     @GetMapping("/list")
-    public ResponseEntity<BaseResponse<List<GetProductListRes>>> getProductList() {
+    public BaseResponse<List<GetProductListRes>> getProductList() {
         List<GetProductListRes> productList = productFacade.getProductList();
-        return ResponseEntity.ok(BaseResponse.created(productList));
+        return BaseResponse.created(productList);
     }
 
 
@@ -49,8 +49,8 @@ public class ProductQueryController {
 
     @Operation(summary = "상품 상세 조회", description = "상품 ID로 상세 정보를 조회합니다.")
     @GetMapping("/{id}")
-    public ResponseEntity<BaseResponse<GetProductDetailRes>> getProductDetail(@PathVariable("id") String productCode) {
+    public BaseResponse<GetProductDetailRes> getProductDetail(@PathVariable("id") String productCode) {
         GetProductDetailRes detail = productFacade.getProductDetail(productCode);
-        return ResponseEntity.ok(BaseResponse.created(detail));
+        return BaseResponse.onSuccess(detail);
     }
 }

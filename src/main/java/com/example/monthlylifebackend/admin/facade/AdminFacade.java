@@ -8,15 +8,22 @@ import com.example.monthlylifebackend.admin.mapper.ItemMapper;
 import com.example.monthlylifebackend.admin.service.ItemService;
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.item.dto.ItemDetailDto;
+import com.example.monthlylifebackend.payment.dto.res.GetAdminPaymentRes;
+import com.example.monthlylifebackend.payment.service.PaymentService;
 import com.example.monthlylifebackend.product.dto.res.ProductImageRes;
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.service.ProductService;
-import com.example.monthlylifebackend.subscribe.dto.response.GetDeliveryListRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeDetailRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeRes;
+import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
+import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
+import com.example.monthlylifebackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Facade
@@ -26,6 +33,8 @@ public class AdminFacade {
     private final ItemService itemService;
     private final ItemMapper itemMapper;
     private final ProductService productService;
+    private final UserService userService;
+    private final PaymentService paymentService;
 
     @Transactional(readOnly = true)
     public List<GetProductRes> findAllItems() {
@@ -34,20 +43,23 @@ public class AdminFacade {
     }
 
     @Transactional(readOnly = true)
-    public Page<GetProductRes> findAllItemsByPage(int page, int size) {
-        Page<GetProductRes> pagedto = itemService.findAllItemsByPage(page, size);
+    public Page<GetProductRes> findAllItemsByPage(int page, int size, String productName, String manufacturer, LocalDate startDate, LocalDate endDate) {
+
+        Page<GetProductRes> pagedto = itemService.findAllItemsByPage(page, size, productName, manufacturer, startDate, endDate);
         return pagedto;
     }
 
     @Transactional
-    public void modifyItemCount(PatchItemCountReq dto) {
-         itemService.modifyItemCount(dto);
+    public void modifyItemCount(Long idx, int count) {
+        itemService.modifyItemCount(idx, count);
 
     }
 
     @Transactional(readOnly = true)
-    public Page<GetDeliveryListRes> findAllDeliveryByPage(int page, int size) {
-        Page<GetDeliveryListRes> pagedto = subscribeService.findDeliveryListByPage(page,size);
+    public Page<GetDeliveryListRes> findAllDeliveryByPage(    int page, int size,
+                                                              String searchType, String searchQuery,
+                                                              LocalDate dateFrom, LocalDate dateTo) {
+        Page<GetDeliveryListRes> pagedto = subscribeService.findDeliveryListByPage(page, size, searchType, searchQuery, dateFrom, dateTo);
         return pagedto;
     }
 
@@ -72,4 +84,31 @@ public class AdminFacade {
         return pagedto;
     }
 
+    public Page<GetAdminUserRes> getAdminUserList(    int page, int size, String sort,
+                                                      String searchType, String searchQuery,
+                                                      LocalDate dateFrom, LocalDate dateTo,
+                                                      //String tags,
+                                                      boolean overdueOnly) {
+        Page<GetAdminUserRes> dto = userService.getAdminUserList(page, size, sort, searchType, searchQuery, dateFrom, dateTo,
+                //tags,
+                overdueOnly);
+        return dto;
+    }
+
+    public Page<GetAdminPaymentRes> getPayments(int page, int size,String searchType,String searchQuery,LocalDate dateFrom, LocalDate dateTo, boolean overdueOnly) {
+        return paymentService.getPayments(page, size, searchType, searchQuery, dateFrom,dateTo, overdueOnly);
+    }
+    public Page<GetAdminSubscribeRes> getSubscibeByPage(int page, int size,
+                                                          String keyword,
+                                                          String status,
+                                                          Integer minMonths,
+                                                          Integer maxMonths) {
+        return subscribeService.getAdminSubscribeByPage(page, size, keyword, status, minMonths, maxMonths);
+    }
+    public List<GetAdminSubscribeDetailRes> getAdminSubscribeDetail(Long subscribeId){
+        return subscribeService.getAdminSubscribeDetail(subscribeId);
+    }
+
 }
+
+

@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,103 +45,93 @@ public class ProductService {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-//    public String registerProduct(PostProductRegisterReq dto) {
-//        // Product 생성
-//        Product product = productMapper.toEntityWithImages(dto);
-//        productRepository.save(product);
-//
-//        // Condition 조회
-//        Condition condition = conditionRepository.findByName(dto.getCondition())
-//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 상태 등급입니다: " + dto.getCondition()));
-//
-//        // ItemLocation 조회
-//        ItemLocation location = itemLocationRepository.findByName(dto.getLocation())
-//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 위치입니다: " + dto.getLocation()));
-//
-//        // Item 생성
-//        Item item = Item.builder()
-//                .product(product)
-//                .condition(condition)
-//                .itemLocation(location)
-//                .count(1)         // 기본 재고 수량 1개로 설정 (필요 시 수정)
-//                .build();
-//
-//        itemRepository.save(item);
-//
-//        return product.getCode();
-//    }
-public String registerProduct(PostProductRegisterReq dto,
-                              List<MultipartFile> images) throws IOException {
-    // 1) 기본 Product 매핑
-    Product product = productMapper.toEntity(dto);
-    // 2) 이미지 파일 저장 및 Entity 연결
-    if (images != null && !images.isEmpty()) {
-        // 업로드 폴더가 없으면 생성
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
+    public String registerProduct(PostProductRegisterReq dto,
+                                  List<MultipartFile> images) {
+        // 1) Product 매핑
+        Product product = productMapper.toEntity(dto);
+
+        // 2) 이미지 파일 저장 및 Entity 연결 (인라인)
+        try {
+            if (images != null && !images.isEmpty()) {
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+                for (MultipartFile file : images) {
+                    if (file.isEmpty()) continue;
+                    String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
+                    Path filePath = uploadPath.resolve(filename);
+                    file.transferTo(filePath.toFile());
+                    product.getProductImageList().add(
+                            ProductImage.builder()
+                                    .product(product)
+                                    .productImgUrl("/uploads/" + filename)
+                                    .build()
+                    );
+                }
+            }
+        } catch (IOException e) {
+            throw new ProductHandler(ErrorStatus._FILE_UPLOAD_ERROR);
         }
 
-        for (MultipartFile file : images) {
-            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-            Path filePath = uploadPath.resolve(filename);
-            file.transferTo(filePath.toFile());
+        // 3) Product 저장
+        productRepository.save(product);
 
-            ProductImage img = ProductImage.builder()
-                    .product(product)
-                    .productImgUrl("/uploads/" + filename) // 정적 리소스 매핑 경로
-                    .build();
+        // 4) 기존 Item 삭제 (중복 방지)
+        itemRepository.deleteAllByProduct(product);
 
-            product.getProductImageList().add(img);
+        List<String> condNames = List.of("S급","A급","B급","C급");
+        List<String> locNames  = List.of("창고","대여중","수리중");
+
+        // 3) 조합별 Item 생성
+        List<Item> items = new ArrayList<>();
+        for (String cn : condNames) {
+            Condition cond = conditionRepository
+                    .findFirstByName(cn)
+                    .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_CONDITION));
+
+            for (String ln : locNames) {
+                ItemLocation loc = itemLocationRepository
+                        .findFirstByName(ln)
+                        .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_LOCATION));
+
+                int cnt = cn.equals(dto.getCondition()) && ln.equals(dto.getLocation())
+                        ? dto.getCount() : 0;
+
+                items.add(Item.builder()
+                        .product(product)
+                        .condition(cond)
+                        .itemLocation(loc)
+                        .count(cnt)
+                        .build());
+            }
         }
+
+        // 4) 삭제 → 저장
+        itemRepository.deleteAllByProduct(product);
+        itemRepository.saveAll(items);
+
+        return product.getCode();
     }
-
-    // 3) Product 저장
-    productRepository.save(product);
-
-//     Condition 조회
-        Condition condition = conditionRepository.findByName(dto.getCondition())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 상태 등급입니다: " + dto.getCondition()));
-
-        // ItemLocation 조회
-        ItemLocation location = itemLocationRepository.findByName(dto.getLocation())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 위치입니다: " + dto.getLocation()));
-
-        // Item 생성
-        Item item = Item.builder()
-                .product(product)
-                .condition(condition)
-                .itemLocation(location)
-                .count(dto.getCount())         // 기본 재고 수량 1개로 설정 (필요 시 수정)
-                .build();
-
-        itemRepository.save(item);
-    // 4) 기존 Item 생성 로직
-    // … condition, location 조회, Item 저장
-
-    return product.getCode();
-}
-
-    // 상품 목록 조회
+    // 상품 목록 조회 (변경 없음)
     public List<GetProductListRes> getProductList() {
-        List<Product> products = productRepository.findAll();
-        return products.stream()
+        return productRepository.findAll()
+                .stream()
                 .map(productMapper::toGetProductListRes)
                 .toList();
     }
 
-    // 상품 상세 조회
+    // 상품 상세 조회 (예외처리 적용)
     public GetProductDetailRes getProductDetail(String productCode) {
         Product product = productRepository.findById(productCode)
-                .orElseThrow(() -> new RuntimeException("상품을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_PRODUCT));
         return productMapper.toGetProductDetailRes(product);
     }
 
+    // 내부용 상품 조회
     public Product getProduct(String productCode) {
-        Product product = productRepository.findById(productCode)
+        return productRepository.findById(productCode)
                 .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_PRODUCT));
-
-        return product;
     }
 
 

@@ -3,19 +3,15 @@ package com.example.monthlylifebackend.user.model;
 import com.example.monthlylifebackend.cart.model.Cart;
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Getter
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,6 +36,8 @@ public class User extends BaseEntity   {
     @ColumnDefault("true")
     private boolean isDelayed;
 
+    @Column(length = 10)
+    private String postalCode;
 
     @Column(length = 100)
     private String address1;
@@ -48,6 +46,9 @@ public class User extends BaseEntity   {
     private String address2;
     
     private LocalDate birth;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Subscribe> subscribeList = new ArrayList<>();

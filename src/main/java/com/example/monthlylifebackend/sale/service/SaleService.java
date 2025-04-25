@@ -1,5 +1,7 @@
 package com.example.monthlylifebackend.sale.service;
 
+import com.example.monthlylifebackend.common.code.status.ErrorStatus;
+import com.example.monthlylifebackend.common.exception.handler.SaleHandler;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
@@ -42,38 +44,38 @@ public class SaleService {
     private final ConditionRepository conditionRepository;
     private final SaleMapper saleMapper;
 
-    public Long registerSale(PostSaleRegisterReq dto) {
-        Category category = categoryRepository.findById(dto.getCategoryIdx())
-                .orElseThrow(() -> new RuntimeException("카테고리 없음"));
 
-        // Sale 생성
+    public Long registerSale(PostSaleRegisterReq dto) {
+        // 1) Category 조회
+        Category category = categoryRepository.findById(dto.getCategoryIdx())
+                .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE_CATEGORY));
+
+        // 2) Sale 생성
         Sale sale = saleMapper.toEntity(dto, category);
         saleRepository.save(sale);
 
-        // 연관 엔티티 SaleHasProduct 생성
-        List<Product> products = productRepository.findAllByCodeIn(
+        // 3) Product 연결
+        Map<String, Product> productMap = productRepository.findAllByCodeIn(
                 dto.getSaleProducts().stream()
                         .map(PostSaleRegisterReq.SaleProductInfo::getProductCode)
                         .distinct()
                         .toList()
-        );
-        Map<String, Product> productMap = products.stream()
-                .collect(Collectors.toMap(Product::getCode, p -> p));
+        ).stream().collect(Collectors.toMap(Product::getCode, p -> p));
 
-        List<SaleHasProduct> productLinks = dto.getSaleProducts().stream()
+        List<SaleHasProduct> links = dto.getSaleProducts().stream()
                 .map(sp -> {
                     Product product = productMap.get(sp.getProductCode());
                     if (product == null) {
-                        throw new RuntimeException("등록되지 않은 상품 코드: " + sp.getProductCode());
+                        throw new SaleHandler(ErrorStatus._NOT_FOUND_SALE_PRODUCT);
                     }
                     Condition condition = conditionRepository.findById(sp.getConditionIdx())
-                            .orElseThrow(() -> new RuntimeException("Condition 없음"));
+                            .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE_CONDITION));
                     return new SaleHasProduct(null, sale, product, condition);
                 })
                 .toList();
-        saleHasProductRepository.saveAll(productLinks);
+        saleHasProductRepository.saveAll(links);
 
-        // SalePrice 생성
+        // 4) SalePrice 생성
         List<SalePrice> prices = saleMapper.toSalePriceList(dto.getSalePrices(), sale);
         salePriceRepository.saveAll(prices);
 
@@ -81,14 +83,13 @@ public class SaleService {
     }
 
     public Page<GetSaleListRes> getSalesByCategory(Long categoryIdx, int page, int size) {
-        PageRequest pr = PageRequest.of(page, size);
-        return saleRepository.findByCategoryIdx(categoryIdx, pr)
+        return saleRepository.findByCategoryIdx(categoryIdx, PageRequest.of(page, size))
                 .map(saleMapper::toGetSaleListRes);
     }
 
     public GetSaleDetailRes getSaleDetailInCategory(Long categoryIdx, Long saleIdx) {
         Sale sale = saleRepository.findByIdxAndCategoryIdx(saleIdx, categoryIdx)
-                .orElseThrow(() -> new RuntimeException("해당 카테고리에 판매상품이 없음"));
+                .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE_IN_CATEGORY));
         return saleMapper.toGetSaleDetailRes(sale);
     }
 
@@ -106,9 +107,8 @@ public class SaleService {
 
     public SalePrice getSalePrice(Long salePriceIdx) {
         return salePriceRepository.findById(salePriceIdx)
-                .orElseThrow(() -> new RuntimeException("판매 가격 정보가 없습니다: " + salePriceIdx));
+                .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE_PRICE));
     }
-
     public Page<GetSaleListRes> getSaleSearch(
             Long categoryIdx,
             int page,
@@ -125,33 +125,31 @@ public class SaleService {
         return saleRepository.findAll(spec, pageable)
                 .map(saleMapper::toGetSaleListRes);
     }
-
-    // 삭제
     @Transactional
     public void deleteSale(Long saleIdx) {
         if (!saleRepository.existsById(saleIdx)) {
-            throw new RuntimeException("삭제할 판매상품이 없습니다: " + saleIdx);
+            throw new SaleHandler(ErrorStatus._NOT_FOUND_SALE_FOR_DELETE);
         }
         saleRepository.deleteById(saleIdx);
     }
 
     @Transactional
     public Long updateSale(Long saleIdx, PatchSaleReq dto) {
-        // 1) 기존 Sale, Category 조회
+        // 1) Sale 조회
         Sale sale = saleRepository.findById(saleIdx)
-                .orElseThrow(() -> new RuntimeException("수정할 판매상품이 없습니다: " + saleIdx));
-        Category category = categoryRepository.findById(dto.getCategoryIdx())
-                .orElseThrow(() -> new RuntimeException("카테고리가 없습니다: " + dto.getCategoryIdx()));
+                .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE));
 
-        // 2) 이름·설명·카테고리 직접 변경
+        // 2) Category 조회
+        Category category = categoryRepository.findById(dto.getCategoryIdx())
+                .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE_CATEGORY));
+
+        // 3) 필드 수정
         sale.changeName(dto.getName());
         sale.changeDescription(dto.getDescription());
         sale.changeCategory(category);
 
-        // 3) 기존 가격 삭제
+        // 4) 가격 정보 교체
         salePriceRepository.deleteAllBySaleIdx(saleIdx);
-
-        // 4) 새 가격 정보 생성
         List<SalePrice> newPrices = saleMapper.toSalePriceListForPatch(dto.getSalePrices(), sale);
         salePriceRepository.saveAll(newPrices);
 

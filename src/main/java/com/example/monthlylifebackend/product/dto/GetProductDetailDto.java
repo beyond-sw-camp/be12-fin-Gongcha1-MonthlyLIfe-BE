@@ -17,6 +17,7 @@ public class GetProductDetailDto {
     private String productName;
     private String productCode;
     private String productDescription;
+    private String productDescriptionImageUrl;
     private String manufacturer;
     private List<ProductImageRes> productImages;
 

@@ -40,11 +40,17 @@ public class GetProductRes {
     private Long availableStockCount;
 
     @Schema(description = "최초 등록일", example = "2024-04-10T10:15:30")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime createdAt;
 
     /**
-     * JPQL 생성자(new GetProductRes(...6 args))용 생성자
+     * JPQL 결과 매핑용 생성자
+     * @param productCode 상품 코드
+     * @param productName 상품명
+     * @param manufacturer 제조사
+     * @param totalStockCount 총 재고 수량
+     * @param availableStockCount 가용 재고 수량
+     * @param createdAt 생성일시
      */
     public GetProductRes(
             String productCode,

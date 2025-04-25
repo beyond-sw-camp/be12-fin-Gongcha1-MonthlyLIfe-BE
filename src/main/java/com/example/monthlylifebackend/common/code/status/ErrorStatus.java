@@ -20,10 +20,12 @@ public enum ErrorStatus implements BaseErrorCode {
     // User 에러
     _NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER4000", "사용자가 존재하지 않습니다."),
     _DUPLICATED_USER(HttpStatus.BAD_REQUEST, "USER4001", "중복된 ID 입니다."),
+    _NOT_ALLOWED_USER(HttpStatus.BAD_REQUEST, "USER4002", "권한이 없는 사용자입니다."),
 
 
     //Item 에러
     _NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "ITEM4004", "아이템이 존재하지 않습니다."),
+    _OUT_OF_STOCK(HttpStatus.CONFLICT, "ITEM4090", "아이템이 품절되었습니다."),
 
     //Payment 에러
     _PAYMENT_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT4000", "결제 실패했습니다."),
@@ -32,6 +34,18 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //Product 에러
     _NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "PRODUCT4004", "상품이 존재하지 않습니다."),
+    _NOT_FOUND_CONDITION(HttpStatus.NOT_FOUND, "PRODUCT4005", "상품 상태 등급 정보가 존재하지 않습니다."),
+    _NOT_FOUND_LOCATION(HttpStatus.NOT_FOUND, "PRODUCT4006", "상품 위치 정보가 존재하지 않습니다."),
+    _FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "PRODUCT5001", "파일 업로드에 실패했습니다."),
+
+    //Sale 에러
+    _NOT_FOUND_SALE(HttpStatus.NOT_FOUND,         "SALE4001", "판매 상품 정보를 찾을 수 없습니다."),
+    _NOT_FOUND_SALE_CATEGORY(HttpStatus.NOT_FOUND,"SALE4002", "카테고리 정보를 찾을 수 없습니다."),
+    _NOT_FOUND_SALE_PRODUCT(HttpStatus.NOT_FOUND, "SALE4003", "등록되지 않은 상품 코드입니다."),
+    _NOT_FOUND_SALE_CONDITION(HttpStatus.NOT_FOUND,"SALE4004","Condition 정보를 찾을 수 없습니다."),
+    _NOT_FOUND_SALE_IN_CATEGORY(HttpStatus.NOT_FOUND,"SALE4005","해당 카테고리에 판매상품이 없습니다."),
+    _NOT_FOUND_SALE_PRICE(HttpStatus.NOT_FOUND,   "SALE4006", "판매 가격 정보를 찾을 수 없습니다."),
+    _NOT_FOUND_SALE_FOR_DELETE(HttpStatus.NOT_FOUND,"SALE4007","삭제할 판매상품이 없습니다."),
 
     //Subscribe 에러
     // Subscribe 에러
@@ -40,8 +54,6 @@ public enum ErrorStatus implements BaseErrorCode {
     _DUPLICATED_SUBSCRIBE(HttpStatus.BAD_REQUEST, "SUBSCRIBE4002", "이미 구독된 상품입니다."),
     _NOT_FOUND_SUBSCRIBE_DETAIL(HttpStatus.NOT_FOUND, "SUBSCRIBE4005", "구독 상세 정보가 존재하지 않습니다."),
     _UNAUTHORIZED_SUBSCRIBE_ACCESS(HttpStatus.FORBIDDEN, "SUBSCRIBE4006", "구독에 대한 접근 권한이 없습니다."),
-    _NOT_FOUND_SALE(HttpStatus.NOT_FOUND, "SUBSCRIBE4007", "해당 세일 정보를 찾을 수 없습니다."),
-    _NOT_FOUND_SALE_PRICE(HttpStatus.NOT_FOUND, "SUBSCRIBE4008", "해당 기간의 세일 가격 정보를 찾을 수 없습니다."),
     _ALREADY_RETURN_REQUESTED(HttpStatus.BAD_REQUEST, "SUBSCRIBE4009", "이미 반납 요청된 구독입니다."),
     _ALREADY_SUBSCRIBED(HttpStatus.CONFLICT, "SUBSCRIBE4010", "이미 동일한 조건으로 구독 중입니다."),
     _INVALID_SUBSCRIBE_PERIOD(HttpStatus.BAD_REQUEST, "SUBSCRIBE4011", "잘못된 구독 기간입니다."),

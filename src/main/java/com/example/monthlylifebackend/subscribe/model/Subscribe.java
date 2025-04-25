@@ -2,7 +2,6 @@ package com.example.monthlylifebackend.subscribe.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.payment.model.BillingKey;
-import com.example.monthlylifebackend.payment.model.Payment;
 import com.example.monthlylifebackend.user.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -22,8 +21,13 @@ public class Subscribe extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "구독 ID", example = "1")
+    @Schema(description = "구독 ID", example = "false")
     private Long idx;
+
+    @Schema(description = "연체 여부", example = "false")
+    private boolean isDelayed;
+
+
 
     @ManyToOne
     @JoinColumn(name = "user_id")
