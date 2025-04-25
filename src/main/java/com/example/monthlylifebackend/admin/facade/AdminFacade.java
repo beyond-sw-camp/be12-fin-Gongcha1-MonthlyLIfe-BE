@@ -57,8 +57,8 @@ public class AdminFacade {
     }
 
     @Transactional
-    public void modifyItemCount(PatchItemCountReq dto) {
-        itemService.modifyItemCount(dto);
+    public void modifyItemCount(Long idx, int count) {
+        itemService.modifyItemCount(idx, count);
 
     }
 

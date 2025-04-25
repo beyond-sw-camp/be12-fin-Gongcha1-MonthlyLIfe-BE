@@ -20,10 +20,12 @@ public enum ErrorStatus implements BaseErrorCode {
     // User 에러
     _NOT_FOUND_USER(HttpStatus.NOT_FOUND, "USER4000", "사용자가 존재하지 않습니다."),
     _DUPLICATED_USER(HttpStatus.BAD_REQUEST, "USER4001", "중복된 ID 입니다."),
+    _NOT_ALLOWED_USER(HttpStatus.BAD_REQUEST, "USER4002", "권한이 없는 사용자입니다."),
 
 
     //Item 에러
     _NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "ITEM4004", "아이템이 존재하지 않습니다."),
+    _OUT_OF_STOCK(HttpStatus.CONFLICT, "ITEM4090", "아이템이 품절되었습니다."),
 
     //Payment 에러
     _PAYMENT_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT4000", "결제 실패했습니다."),
@@ -44,6 +46,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _NOT_FOUND_SALE_IN_CATEGORY(HttpStatus.NOT_FOUND,"SALE4005","해당 카테고리에 판매상품이 없습니다."),
     _NOT_FOUND_SALE_PRICE(HttpStatus.NOT_FOUND,   "SALE4006", "판매 가격 정보를 찾을 수 없습니다."),
     _NOT_FOUND_SALE_FOR_DELETE(HttpStatus.NOT_FOUND,"SALE4007","삭제할 판매상품이 없습니다."),
+    _INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "SALE4008", "재고가 부족하여 등록할 수 없습니다."),
 
     //Subscribe 에러
     // Subscribe 에러

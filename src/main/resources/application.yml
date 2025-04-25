@@ -58,3 +58,6 @@ management:
       show-details: always
   security:
     enabled: false
+  health:
+    db:
+      enabled: true

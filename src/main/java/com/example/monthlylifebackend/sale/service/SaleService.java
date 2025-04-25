@@ -1,5 +1,6 @@
 package com.example.monthlylifebackend.sale.service;
 
+import com.example.monthlylifebackend.admin.repository.ItemRepository;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.SaleHandler;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
@@ -42,6 +43,7 @@ public class SaleService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ConditionRepository conditionRepository;
+    private final ItemRepository itemRepository;
     private final SaleMapper saleMapper;
 
 
@@ -70,6 +72,13 @@ public class SaleService {
                     }
                     Condition condition = conditionRepository.findById(sp.getConditionIdx())
                             .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE_CONDITION));
+                    // 여기가 핵심: 재고 존재 여부 확인
+                    boolean hasStock = itemRepository.existsByProductAndConditionAndCountGreaterThan(
+                            product, condition, 0
+                    );
+                    if (!hasStock) {
+                        throw new SaleHandler(ErrorStatus._INSUFFICIENT_STOCK);
+                    }
                     return new SaleHasProduct(null, sale, product, condition);
                 })
                 .toList();
