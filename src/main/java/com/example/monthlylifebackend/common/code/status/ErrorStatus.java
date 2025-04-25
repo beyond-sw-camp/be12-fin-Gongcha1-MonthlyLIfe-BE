@@ -46,6 +46,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _NOT_FOUND_SALE_IN_CATEGORY(HttpStatus.NOT_FOUND,"SALE4005","해당 카테고리에 판매상품이 없습니다."),
     _NOT_FOUND_SALE_PRICE(HttpStatus.NOT_FOUND,   "SALE4006", "판매 가격 정보를 찾을 수 없습니다."),
     _NOT_FOUND_SALE_FOR_DELETE(HttpStatus.NOT_FOUND,"SALE4007","삭제할 판매상품이 없습니다."),
+    _INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "SALE4008", "재고가 부족하여 등록할 수 없습니다."),
 
     //Subscribe 에러
     // Subscribe 에러
