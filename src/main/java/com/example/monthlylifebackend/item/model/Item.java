@@ -43,6 +43,10 @@ public class Item extends BaseEntity {
         this.count = count;
     }
 
+    public void reduceOneCount() { this.count--; }
+    public void increaseOneCount() { this.count++; }
+
+
 
 }
 
