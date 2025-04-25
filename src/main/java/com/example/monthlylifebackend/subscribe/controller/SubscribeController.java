@@ -59,11 +59,9 @@ public class SubscribeController {
     @Operation(summary = "수리/분실 신청", description = "현재 구독을 취소 신청합니다.")
     @PostMapping("/report")
     public BaseResponse<?> report(
-            @RequestBody PostRepairOrLostReq req/*@AuthenticationPrincipal User user*/
+            @RequestBody PostRepairOrLostReq req, @AuthenticationPrincipal User user
     ) {
         // 간단한 필드 검증
-
-        User user = User.builder().id("1").build();
 
         System.out.println(req.getImageUrls().size());
         // Service에 위임

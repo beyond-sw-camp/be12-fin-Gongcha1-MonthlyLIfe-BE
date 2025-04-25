@@ -5,14 +5,19 @@ import com.example.monthlylifebackend.admin.dto.response.GetProductItemRes;
 import com.example.monthlylifebackend.admin.dto.response.GetProductRes;
 import com.example.monthlylifebackend.admin.facade.AdminFacade;
 import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.subscribe.dto.req.PostAdminReturnDeliveryReq;
+import com.example.monthlylifebackend.subscribe.dto.res.GetAdminReturnDeliveryRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeDetailRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
+import com.example.monthlylifebackend.subscribe.model.ReturnDeliveryStatus;
+import com.example.monthlylifebackend.subscribe.model.ReturnLocation;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -148,23 +153,55 @@ public class AdminController {
         // 로직
     }
 
-    @Operation(summary = "수리/분실 요청 조회", description = "수리 요청 및 분실 신고 목록을 조회합니다.")
-    @GetMapping("/repair-requests")
-    public void getRepairRequests() {
-        // 로직
+
+
+    @Operation(summary = "관리자 반납 요청 조회", description = "반납 및 수리 요청 목록을 조회합니다.")
+    @GetMapping("/return-request")
+        public BaseResponse<Page<GetAdminReturnDeliveryRes>> getReturnRequestList(
+        @RequestParam int page,
+        @RequestParam int size,
+        @RequestParam(required = false) ReturnDeliveryStatus status,
+        @RequestParam(required = false) LocalDate dateFrom,
+        @RequestParam(required = false) LocalDate dateTo
+    ) {
+            return BaseResponse.onSuccess(adminFacade.getReturnRequestList(PageRequest.of(page, size), status, dateFrom, dateTo));
+        }
+
+    @Operation(summary = "관리자 수리 요청 조회", description = "반납 및 수리 요청 목록을 조회합니다.")
+    @GetMapping("/repair-request")
+    public BaseResponse<Page<GetAdminReturnDeliveryRes>> getRepairRequestList(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam(required = false) ReturnDeliveryStatus status,
+            @RequestParam(required = false) LocalDate dateFrom,
+            @RequestParam(required = false) LocalDate dateTo
+    ) {
+        return BaseResponse.onSuccess(adminFacade.getRepairRequestList(PageRequest.of(page, size), status, dateFrom, dateTo));
     }
 
-    @Operation(summary = "수리/분실 상태 업데이트", description = "요청된 수리 또는 분실 상태를 갱신합니다.")
-    @PostMapping("/repair-requests")
-    public void updateRepairRequest() {
-        // 로직
+
+
+
+
+    @Operation(summary = "관리자 반납 상태 업데이트 (수락/거절)", description = "관리자가 반납 요청의 상태를 업데이트 합니다.")
+    @PostMapping("/return/{returnDeliveryIdx}")
+    public BaseResponse updateReturnRequest(@PathVariable Long returnDeliveryIdx,
+                                            @RequestBody PostAdminReturnDeliveryReq dto) {
+        adminFacade.updateReturnRequest(returnDeliveryIdx, dto);
+        return BaseResponse.onSuccess(null);
+
     }
 
-    @Operation(summary = "정비 이력 등록", description = "제품 정비 내역을 신규 등록합니다.")
-    @PostMapping("/maintenance")
-    public void registerMaintenanceHistory() {
-        // 로직
+    @Operation(summary = "관리자 수리 상태 업데이트 (수락/거절)", description = "관리자가 반납 요청의 상태를 업데이트 합니다.")
+    @PostMapping("/repair/{returnDeliveryIdx}")
+    public BaseResponse updateRepairRequest(@PathVariable Long returnDeliveryIdx,
+                                            @RequestBody PostAdminReturnDeliveryReq dto) {
+        adminFacade.updateRepairRequest(returnDeliveryIdx,dto);
+
+        return BaseResponse.onSuccess(null);
     }
+
+
 
 
     @Operation(summary = "배송 스케줄 관리 조회", description = "반납 및 배송 예약 일정을 조회합니다.")

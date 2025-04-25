@@ -13,14 +13,20 @@ import com.example.monthlylifebackend.payment.service.PaymentService;
 import com.example.monthlylifebackend.product.dto.res.ProductImageRes;
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.service.ProductService;
+import com.example.monthlylifebackend.subscribe.dto.req.PostAdminReturnDeliveryReq;
+import com.example.monthlylifebackend.subscribe.dto.res.GetAdminReturnDeliveryRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeDetailRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
+import com.example.monthlylifebackend.subscribe.model.ReturnDeliveryStatus;
+import com.example.monthlylifebackend.subscribe.model.ReturnLocation;
+import com.example.monthlylifebackend.subscribe.service.ReturnDeliveryService;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
 import com.example.monthlylifebackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -35,6 +41,7 @@ public class AdminFacade {
     private final ProductService productService;
     private final UserService userService;
     private final PaymentService paymentService;
+    private final ReturnDeliveryService returnDeliveryService;
 
     @Transactional(readOnly = true)
     public List<GetProductRes> findAllItems() {
@@ -109,6 +116,27 @@ public class AdminFacade {
         return subscribeService.getAdminSubscribeDetail(subscribeId);
     }
 
+
+
+    public Page<GetAdminReturnDeliveryRes> getReturnRequestList(Pageable pageable, ReturnDeliveryStatus status, LocalDate dateFrom, LocalDate dateTo) {
+
+        return returnDeliveryService.getReturnRequestList(pageable,status,dateFrom, dateTo);
+    }
+
+    public Page<GetAdminReturnDeliveryRes> getRepairRequestList(Pageable pageable, ReturnDeliveryStatus status, LocalDate dateFrom, LocalDate dateTo) {
+            return returnDeliveryService.getRePairRequestList(pageable,status,dateFrom, dateTo);
+    }
+
+    @Transactional
+    public void updateReturnRequest(Long returnDeliveryIdx, PostAdminReturnDeliveryReq dto) {
+        returnDeliveryService.updateReturnRequst(returnDeliveryIdx, dto);
+
+    }
+
+    @Transactional
+    public void updateRepairRequest(Long returnDeliveryIdx, PostAdminReturnDeliveryReq dto) {
+        returnDeliveryService.updateRepairRequest(returnDeliveryIdx, dto);
+    }
 }
 
 

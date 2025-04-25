@@ -15,10 +15,10 @@ import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.user.model.User;
-import org.mapstruct.AfterMapping;
+import com.example.monthlylifebackend.subscribe.model.ReturnLocation;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 
 import java.util.LinkedHashMap;
 
@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring") // Spring Bean으로 등록
+
+@Mapper(componentModel = "spring",imports={ReturnLocation.class, ReturnDeliveryStatus.class}) // Spring Bean으로 등록
 public interface SubscribeMapper {
 
     @Mapping(source = "sale.name", target = "saleName")
@@ -96,12 +97,15 @@ public interface SubscribeMapper {
 
     @Mapping(target = "idx", ignore = true)
     @Mapping(source = "detail", target = "subscribeDetail")
-    @Mapping(target = "status", constant = "RETURN_REQUESTED")
+    @Mapping(target = "status", expression = "java(ReturnDeliveryStatus.RETURN_REQUESTED)")
+    @Mapping(target = "returnLocation", expression ="java(ReturnLocation.BEFORE_RETURN)" )
     ReturnDelivery toReturnDeliveryEntity(SubscribeDetail detail, PostReturnDeliveryReq postReturnDeliveryReq) ;
 
     @Mapping(target = "idx", ignore = true)
     @Mapping(source = "detail", target = "subscribeDetail")
-    @Mapping(target = "status", constant = "REPAIR_REQUESTED")
+    @Mapping(target = "status", expression = "java(ReturnDeliveryStatus.REPAIR_REQUESTED)")
+    @Mapping(target = "returnLocation", constant ="BEFORE_RETURN" )
+
     ReturnDelivery toReturnDeliveryRepair(SubscribeDetail detail) ;
 
 

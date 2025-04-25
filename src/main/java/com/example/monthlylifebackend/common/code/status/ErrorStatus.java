@@ -70,7 +70,12 @@ public enum ErrorStatus implements BaseErrorCode {
     _DUPLICATED_CART_ITEM(HttpStatus.BAD_REQUEST, "CART4001", "이미 장바구니에 존재하는 상품입니다."), // 중복 추가 방지
     _UNAUTHORIZED_CART_ACCESS(HttpStatus.FORBIDDEN, "CART4002", "장바구니에 대한 접근 권한이 없습니다."), // 다른 유저의 장바구니 접근 시
     _EMPTY_CART(HttpStatus.BAD_REQUEST, "CART4003", "장바구니가 비어 있습니다."), // 주문 전에 비어 있을 때
-    _CART_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "CART4005", "장바구니 저장에 실패했습니다."); // 예상치 못한 저장 오류
+    _CART_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "CART4005", "장바구니 저장에 실패했습니다."), // 예상치 못한 저장 오류
+
+//ReturnDelivery 에러
+    _NOT_FOUND_RETURNDELIVERY(HttpStatus.NOT_FOUND, "ReturnDelivery4004", "해당 반납을 찾을 수 없습니다."); // ReturnDelivery에 해당 ID가 없음
+
+
 
 
     private final HttpStatus httpStatus;

@@ -6,4 +6,5 @@ public enum ReturnDeliveryStatus {
     RETURN_CANCELED,
     REPAIR_CANCELED,
     RETURN_ACCEPT, // 요청 수락
+    REPAIR_ACCEPT,
 }
