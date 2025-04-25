@@ -196,13 +196,13 @@ public class SubscribeService {
 
         ReturnDelivery delivery = returnDeliveryRepository.findLatestByDetailIdx(detailIdx)
                 .orElseThrow(() -> new SubcribeHandler (ErrorStatus._NOT_FOUND_RETURN_));
-        if (delivery.getStatus() != ReturnDeliveryStatus.REQUESTED) {
+        if (delivery.getStatus() != ReturnDeliveryStatus.RETURN_REQUESTED) {
             throw new IllegalStateException("이미 처리된 반납 요청입니다.");
         }
 
         subscribeDetailRepository.updateStatus(detailIdx, SubscribeStatus.SUBSCRIBING);
         returnDeliveryRepository.updateStatusByDetailIdx(detailIdx,
-                ReturnDeliveryStatus.CANCELED,
+                ReturnDeliveryStatus.RETURN_CANCELED,
                 LocalDateTime.now()
         );
 

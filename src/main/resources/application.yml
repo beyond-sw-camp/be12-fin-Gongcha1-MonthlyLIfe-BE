@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active: dev  # ⭐️ 현재 실행 프로파일 (dev / prod)
-
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
