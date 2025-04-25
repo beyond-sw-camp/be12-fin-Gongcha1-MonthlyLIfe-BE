@@ -91,5 +91,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findByConditionAndProduct(Condition condition, Product product);
 
     void deleteAllByProduct(Product product);
+
+    boolean existsByProductAndConditionAndCountGreaterThan(
+            Product product, Condition condition, int count
+    );
 }
 
