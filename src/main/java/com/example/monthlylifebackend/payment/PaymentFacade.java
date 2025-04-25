@@ -53,7 +53,7 @@ public class PaymentFacade {
         Subscribe subscribe = subscribeService.getSubscribeByIdx(subscribeIdx);
 
         //빌링 키 조회
-        String billingKey = billingKeyService.getBillingKey(subscribe.getBillingKey().getIdx());
+        String billingKey = billingKeyService.getBillingKey(subscribe.getBillingKey().getIdx(), subscribe.getUser());
 
         //결제 가격 조회
         Long nextPrice = subscribeService.calcPriceCycle(subscribe, cycle);

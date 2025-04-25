@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.awt.print.Pageable;
 import java.util.Objects;
 
+import static com.example.monthlylifebackend.common.code.status.ErrorStatus._NOT_ALLOWED_USER;
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._UNSUPPORTED_PAYMENT_METHOD;
 
 @Service
@@ -50,8 +51,11 @@ public class BillingKeyService {
     }
 
     // 디코딩된 빌링키가 필요할 때
-    public String getBillingKey(Long idx) {
+    public String getBillingKey(Long idx, User user) {
         BillingKey entity = billingKeyRepository.findById(idx).orElseThrow();
+
+        if(!entity.getUser().getId().equals(user.getId()))
+            throw new PaymentHandler(_NOT_ALLOWED_USER);
 
         String billingKey = aesUtil.decrypt(entity.getBillingKey());
         return billingKey;
