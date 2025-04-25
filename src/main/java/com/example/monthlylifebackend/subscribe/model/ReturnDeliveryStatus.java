@@ -1,10 +1,10 @@
 package com.example.monthlylifebackend.subscribe.model;
 
 public enum ReturnDeliveryStatus {
-    REQUESTED, // 요청
-    CANCELED, // 요청 취소
-    COMPLETED, // 요청 완료
-    REPAIR_REQUESTED
-
-
+    RETURN_REQUESTED, // 요청
+    REPAIR_REQUESTED,
+    RETURN_CANCELED,
+    REPAIR_CANCELED,
+    RETURN_ACCEPT, // 요청 수락
+    REPAIR_ACCEPT,
 }
