@@ -33,7 +33,6 @@ public class CartController {
     @PostMapping("/{salePriceIdx}")
     public BaseResponse addToCart(@PathVariable Long salePriceIdx,
                                   @AuthenticationPrincipal @Valid @NotNull User user) {
-
         cartFacade.addToCart(salePriceIdx , user);
         return BaseResponse.onSuccess(null);
     }

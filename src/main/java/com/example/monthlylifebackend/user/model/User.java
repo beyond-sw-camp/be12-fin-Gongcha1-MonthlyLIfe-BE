@@ -36,6 +36,8 @@ public class User extends BaseEntity   {
     @ColumnDefault("true")
     private boolean isDelayed;
 
+    @Column(length = 10)
+    private String postalCode;
 
     @Column(length = 100)
     private String address1;

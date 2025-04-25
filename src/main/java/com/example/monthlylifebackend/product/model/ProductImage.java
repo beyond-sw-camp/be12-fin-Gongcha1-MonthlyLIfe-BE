@@ -18,8 +18,7 @@ public class ProductImage extends BaseEntity {
     private String productImgUrl;
 
     @ManyToOne
-    @JoinColumn(name = "product_idx")
-//    TODO product_code로 해야되는데 잘못했다
+    @JoinColumn(name = "product_code")
     private Product product;
 
 }

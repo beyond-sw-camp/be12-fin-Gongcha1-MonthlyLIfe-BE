@@ -3,6 +3,7 @@ package com.example.monthlylifebackend.user.mapper;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
+import com.example.monthlylifebackend.user.dto.res.GetUserDetailRes;
 import com.example.monthlylifebackend.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -16,6 +17,8 @@ public interface UserMapper {
 
     @Mapping(target = "role", expression = "java(Role.ROLE_USER)")
     User toEntity(PostSignupReq dto);
+
+    GetUserDetailRes toGetUserDetailRes(User user);
 
 
     @Mapping(target = "overdue", expression = "java(checkOverdue(user))")

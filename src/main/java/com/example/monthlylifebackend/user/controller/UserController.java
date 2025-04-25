@@ -1,13 +1,18 @@
 package com.example.monthlylifebackend.user.controller;
 
 import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.user.dto.req.PostCheckIdReq;
 import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
+import com.example.monthlylifebackend.user.dto.res.GetUserDetailRes;
 import com.example.monthlylifebackend.user.facade.UserFacade;
+import com.example.monthlylifebackend.user.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,8 +45,10 @@ public class UserController {
 
     @Operation(summary = "회원 탈퇴", description = "현재 로그인한 회원을 탈퇴 처리합니다.")
     @GetMapping("/withdraw")
-    public void withdrawUser() {
+    public  BaseResponse<Boolean> withdrawUser(@AuthenticationPrincipal @Valid @NotNull User user) {
         // 회원 탈퇴 로직
+        BaseResponse<Boolean> result = BaseResponse.onSuccess(userFacade.deleteUser(user));
+        return result;
     }
 
     @Operation(summary = "회원 정보 수정", description = "회원의 개인정보를 수정합니다.")
@@ -52,7 +59,16 @@ public class UserController {
 
     @Operation(summary = "회원 상세 정보 조회", description = "회원의 상세 정보를 조회합니다.")
     @GetMapping("/detail")
-    public void getUserDetail() {
+    public BaseResponse<GetUserDetailRes> getUserDetail(@AuthenticationPrincipal @Valid @NotNull User user) {
         // 상세 조회 로직
+        BaseResponse<GetUserDetailRes> result = BaseResponse.onSuccess(userFacade.getUserDetail(user));
+        return result;
+    }
+
+    @Operation(summary = "아이디 중복 체크", description = "존재하는 아이디인지 확인합니다.")
+    @PostMapping("/checkid")
+    public BaseResponse<Boolean> postCheckId(@RequestBody PostCheckIdReq dto) {
+        BaseResponse<Boolean> result = BaseResponse.onSuccess(userFacade.checkId(dto));
+        return result;
     }
 }
