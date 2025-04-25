@@ -72,11 +72,11 @@ public class ItemService {
         return dtoList;
     }
 
-    public Item modifyItemCount(PatchItemCountReq dto) {
-        Item entity = itemRepository.findById(dto.getIdx()).orElseThrow(() -> new ItemHandler(_NOT_FOUND_ITEM));
-        entity.updateCount(dto.getCount());
-        Item item = itemRepository.save(entity);
-        return item;
+    public void modifyItemCount(Long idx, int count) {
+        Item entity = itemRepository.findById(idx)
+                .orElseThrow(() -> new ItemHandler(ErrorStatus._NOT_FOUND_ITEM));
+        entity.updateCount(count);
+        itemRepository.save(entity);
     }
 
 

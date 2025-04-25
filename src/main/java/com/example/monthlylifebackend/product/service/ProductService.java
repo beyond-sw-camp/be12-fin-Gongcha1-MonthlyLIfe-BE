@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,29 +47,27 @@ public class ProductService {
 
     public String registerProduct(PostProductRegisterReq dto,
                                   List<MultipartFile> images) {
-        // 1) 기본 Product 매핑
+        // 1) Product 매핑
         Product product = productMapper.toEntity(dto);
 
-        // 2) 이미지 파일 저장 및 Entity 연결
+        // 2) 이미지 파일 저장 및 Entity 연결 (인라인)
         try {
             if (images != null && !images.isEmpty()) {
                 Path uploadPath = Paths.get(uploadDir);
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
                 }
-
                 for (MultipartFile file : images) {
-                    if (file.isEmpty()) continue; // 👈 이거 꼭 넣어야 함!
-
+                    if (file.isEmpty()) continue;
                     String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
                     Path filePath = uploadPath.resolve(filename);
                     file.transferTo(filePath.toFile());
-
-                    ProductImage img = ProductImage.builder()
-                            .product(product)
-                            .productImgUrl("/uploads/" + filename)
-                            .build();
-                    product.getProductImageList().add(img);
+                    product.getProductImageList().add(
+                            ProductImage.builder()
+                                    .product(product)
+                                    .productImgUrl("/uploads/" + filename)
+                                    .build()
+                    );
                 }
             }
         } catch (IOException e) {
@@ -78,26 +77,42 @@ public class ProductService {
         // 3) Product 저장
         productRepository.save(product);
 
-        // 4) Condition 조회 (예외처리 적용)
-        Condition condition = conditionRepository.findByName(dto.getCondition())
-                .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_CONDITION));
+        // 4) 기존 Item 삭제 (중복 방지)
+        itemRepository.deleteAllByProduct(product);
 
-        // 5) ItemLocation 조회 (예외처리 적용)
-        ItemLocation location = itemLocationRepository.findByName(dto.getLocation())
-                .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_LOCATION));
+        List<String> condNames = List.of("S급","A급","B급","C급");
+        List<String> locNames  = List.of("창고","대여중","수리중");
 
-        // 6) Item 생성 및 저장
-        Item item = Item.builder()
-                .product(product)
-                .condition(condition)
-                .itemLocation(location)
-                .count(dto.getCount())
-                .build();
-        itemRepository.save(item);
+        // 3) 조합별 Item 생성
+        List<Item> items = new ArrayList<>();
+        for (String cn : condNames) {
+            Condition cond = conditionRepository
+                    .findFirstByName(cn)
+                    .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_CONDITION));
+
+            for (String ln : locNames) {
+                ItemLocation loc = itemLocationRepository
+                        .findFirstByName(ln)
+                        .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_LOCATION));
+
+                int cnt = cn.equals(dto.getCondition()) && ln.equals(dto.getLocation())
+                        ? dto.getCount() : 0;
+
+                items.add(Item.builder()
+                        .product(product)
+                        .condition(cond)
+                        .itemLocation(loc)
+                        .count(cnt)
+                        .build());
+            }
+        }
+
+        // 4) 삭제 → 저장
+        itemRepository.deleteAllByProduct(product);
+        itemRepository.saveAll(items);
 
         return product.getCode();
     }
-
     // 상품 목록 조회 (변경 없음)
     public List<GetProductListRes> getProductList() {
         return productRepository.findAll()

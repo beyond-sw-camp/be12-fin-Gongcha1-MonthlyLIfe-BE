@@ -56,9 +56,9 @@ public class AdminController {
 
     @Operation(summary = "관리자 재고 변경", description = "판매 아이템의 재고를 관리페이지를 변경합니다.")
     @PatchMapping("/item-detail/{idx}")
-    public BaseResponse changeItemCount(@PathVariable String idx,
+    public BaseResponse changeItemCount(@PathVariable Long idx,
                                         @RequestBody PatchItemCountReq req) {
-        adminFacade.modifyItemCount(req);
+        adminFacade.modifyItemCount(idx, req.getCount());
         return BaseResponse.onSuccess(null);
     }
 

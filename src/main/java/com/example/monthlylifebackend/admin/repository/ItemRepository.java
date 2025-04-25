@@ -7,6 +7,7 @@ import com.example.monthlylifebackend.item.model.ItemLocation;
 import com.example.monthlylifebackend.product.dto.res.ProductImageRes;
 import com.example.monthlylifebackend.product.model.Condition;
 import com.example.monthlylifebackend.product.model.Product;
+import com.example.monthlylifebackend.product.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -88,5 +89,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<ProductImageRes> findImageListByProductCode(@Param("productCode") String productCode);
 
     List<Item> findByConditionAndProduct(Condition condition, Product product);
+
+    void deleteAllByProduct(Product product);
 }
 
