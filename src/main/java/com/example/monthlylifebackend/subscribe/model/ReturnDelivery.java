@@ -16,7 +16,7 @@ public class ReturnDelivery extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idx;
+    private Long idx;
 
     @Schema(description = "구독자 이름", example = "홍길동")
     private String subscribeName;
@@ -38,11 +38,16 @@ public class ReturnDelivery extends BaseEntity {
     @Schema(description = "회수 가능 시간", example = "2025-04-14T15:00:00")
     private LocalDateTime pickupDate;
 
-
-    @Schema(description = "반납 요청 상태", example = "2025-04-14T15:00:00")
+    @Schema(description = "반환 장소", example = "BEFORE_RETURN")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ReturnDeliveryStatus status = ReturnDeliveryStatus.REQUESTED;
+    private ReturnLocation returnLocation;
+
+
+    @Schema(description = "반납 요청 상태", example = "RETURN_REQUESTED")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ReturnDeliveryStatus status = ReturnDeliveryStatus.RETURN_REQUESTED;
 
     @ManyToOne
     @JoinColumn(name = "subscribeDetail_idx")
@@ -51,6 +56,9 @@ public class ReturnDelivery extends BaseEntity {
 
     public void updateStatus(ReturnDeliveryStatus status) {
         this.status = status;
+    }
+    public void updateReturnLocation(ReturnLocation returnLocation) {
+        this.returnLocation = returnLocation;
     }
 
 }

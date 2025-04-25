@@ -25,6 +25,7 @@ public class RepairRequest extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ReportType status;
 
+
     private String subscriberName;
     private String subscriberPhone;
     @ManyToOne

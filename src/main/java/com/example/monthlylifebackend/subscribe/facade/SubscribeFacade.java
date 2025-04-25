@@ -35,7 +35,7 @@ public class SubscribeFacade {
 
 
     public Page<GetSubscribeListRes> getSubscriptionInfo(User user, Pageable pageable) {
-        return subscribeService.getSubscriptionInfo(user.getId() ,pageable);
+        return subscribeService.getSubscriptionInfo(user.getId(), pageable);
     }
 
 

@@ -1,8 +1,11 @@
 package com.example.monthlylifebackend.subscribe.repository;
 
 
+import com.example.monthlylifebackend.subscribe.dto.res.GetAdminReturnDeliveryRes;
 import com.example.monthlylifebackend.subscribe.model.ReturnDelivery;
 import com.example.monthlylifebackend.subscribe.model.ReturnDeliveryStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +21,7 @@ public interface ReturnDeliveryRepository  extends JpaRepository<ReturnDelivery,
               SELECT rd
                 FROM ReturnDelivery rd
                 WHERE rd.subscribeDetail.idx = :id
-                AND rd.status = 'REQUESTED'
+                AND rd.status = 'RETURN_REQUESTED'
             """)
     Optional<ReturnDelivery> findLatestByDetailIdx(@Param("id") Long detailIdx);
     @Modifying
@@ -31,4 +34,42 @@ public interface ReturnDeliveryRepository  extends JpaRepository<ReturnDelivery,
             @Param("updatedAt") LocalDateTime updatedAt
     );
 
+    @Query("""
+    SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetAdminReturnDeliveryRes(
+        r.idx,
+        r.subscribeName,
+        r.description,
+        r.createdAt,
+        r.status,
+        r.returnLocation
+    )
+    FROM ReturnDelivery r
+    WHERE (:status IS NULL OR str(r.status) LIKE CONCAT(:status, '%'))
+      AND (:dateFrom IS NULL OR r.createdAt >= :dateFrom)
+      AND (:dateTo IS NULL OR r.createdAt <= :dateTo)
+""")
+    Page<GetAdminReturnDeliveryRes> findReturnRequestByFilter(Pageable pageable,
+                                                           @Param("status") String part,
+                                                           @Param("dateFrom") LocalDateTime dateFrom,
+                                                           @Param("dateTo") LocalDateTime dateTo);
+
+
+    @Query("""
+    SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetAdminReturnDeliveryRes(
+        r.idx,
+        r.subscribeName,
+        r.description,
+        r.createdAt,
+        r.status,
+        r.returnLocation
+    )
+    FROM ReturnDelivery r
+    WHERE (:status IS NULL OR str(r.status) LIKE CONCAT(:status, '%'))
+      AND (:dateFrom IS NULL OR r.createdAt >= :dateFrom)
+      AND (:dateTo IS NULL OR r.createdAt <= :dateTo)
+""")
+    Page<GetAdminReturnDeliveryRes> findRepairRequestByFilter(Pageable pageable,
+                                                         @Param("status") String part,
+                                                         @Param("dateFrom") LocalDateTime dateFrom,
+                                                         @Param("dateTo") LocalDateTime dateTo);
 }
