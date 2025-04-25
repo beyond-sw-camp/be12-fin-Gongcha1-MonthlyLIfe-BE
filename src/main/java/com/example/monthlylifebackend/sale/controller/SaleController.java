@@ -84,7 +84,7 @@ public class SaleController {
     }
 
     @Operation(summary = "판매 상품 수정", description = "기존 판매 상품의 정보를 수정합니다.")
-    @PutMapping("/{saleIdx}")
+    @PostMapping("/{saleIdx}/update")
     public BaseResponse<Long> updateSale(
             @PathVariable Long saleIdx,
             @RequestBody @Valid PatchSaleReq dto
@@ -94,12 +94,9 @@ public class SaleController {
     }
 
     @Operation(summary = "판매 상품 삭제", description = "특정 판매 상품을 삭제합니다.")
-    @DeleteMapping("/{saleIdx}")
-    public ResponseEntity<BaseResponse<Void>> deleteSale(@PathVariable Long saleIdx) {
+    @PostMapping("/{saleIdx}/delete")
+    public BaseResponse<Void> deleteSale(@PathVariable Long saleIdx) {
         saleFacade.deleteSale(saleIdx);
-        return ResponseEntity.ok(BaseResponse.onSuccess(null));
+        return BaseResponse.onSuccess(null);
     }
-
-
-
 }
