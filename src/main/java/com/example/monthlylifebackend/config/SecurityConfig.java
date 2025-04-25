@@ -38,7 +38,7 @@ public class SecurityConfig {
         http.sessionManagement(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/admin/**", "/sale/**/update", "sale/**/delete"
+                                "/admin/**", "/sale/*/update", "sale/*/delete"
                         ).hasRole("ADMIN")
                         .requestMatchers(
                                 "/user/register", "user/find-account", "/user/checkid"
