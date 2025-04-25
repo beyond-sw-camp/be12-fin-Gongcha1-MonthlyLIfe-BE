@@ -38,10 +38,10 @@ public class SecurityConfig {
         http.sessionManagement(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/admin/**"
+                                "/admin/**", "/sale/**/update", "sale/**/delete"
                         ).hasRole("ADMIN")
                         .requestMatchers(
-                                "/user/register", "user/find-account"
+                                "/user/register", "user/find-account", "/user/checkid"
                         ).permitAll()
                         .requestMatchers(
                                 "/user/**", "/subscribe/**"
