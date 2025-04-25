@@ -24,6 +24,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //Item 에러
     _NOT_FOUND_ITEM(HttpStatus.NOT_FOUND, "ITEM4004", "아이템이 존재하지 않습니다."),
+    _OUT_OF_STOCK(HttpStatus.CONFLICT, "ITEM4090", "아이템이 품절되었습니다."),
 
     //Payment 에러
     _PAYMENT_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT4000", "결제 실패했습니다."),

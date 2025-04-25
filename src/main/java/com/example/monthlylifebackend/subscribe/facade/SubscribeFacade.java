@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.subscribe.facade;
 
 
+import com.example.monthlylifebackend.admin.service.ItemService;
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.payment.service.BillingKeyService;
 import com.example.monthlylifebackend.payment.service.PaymentService;
@@ -27,7 +28,7 @@ public class SubscribeFacade {
     private final SubscribeService subscribeService;
     private final PaymentService paymentService;
     private final BillingKeyService billingKeyService;
-    private final UserService userService;
+    private final ItemService itemService;
 
 
     public Page<GetSubscribeListRes> getSubscriptionInfo(User user, Pageable pageable) {
@@ -48,6 +49,8 @@ public class SubscribeFacade {
     @Transactional
     public Long createSubscription(PostSubscribeReq reqDto, User user) {
         Subscribe subscribe = subscribeService.createSubscription(reqDto,user);
+
+        itemService.subscribeItem(subscribe);
 
         String key = billingKeyService.getBillingKey(subscribe.getBillingKey().getIdx());
 
