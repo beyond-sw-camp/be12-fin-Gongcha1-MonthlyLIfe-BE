@@ -3,6 +3,7 @@ package com.example.monthlylifebackend.subscribe.facade;
 
 import com.example.monthlylifebackend.admin.service.ItemService;
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
+import com.example.monthlylifebackend.common.exception.handler.PaymentHandler;
 import com.example.monthlylifebackend.payment.service.BillingKeyService;
 import com.example.monthlylifebackend.payment.service.PaymentService;
 import com.example.monthlylifebackend.subscribe.dto.req.*;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static com.example.monthlylifebackend.common.code.status.ErrorStatus._NOT_ALLOWED_USER;
 
 @Facade
 @RequiredArgsConstructor
@@ -48,12 +51,16 @@ public class SubscribeFacade {
 
     @Transactional
     public Long createSubscription(PostSubscribeReq reqDto, User user) {
+
+        //구독 생성
         Subscribe subscribe = subscribeService.createSubscription(reqDto,user);
-
+        //재고 수량 변경
         itemService.subscribeItem(subscribe);
+        //결제 생성
+        String key = billingKeyService.getBillingKey(subscribe.getBillingKey().getIdx(), user);
 
-        String key = billingKeyService.getBillingKey(subscribe.getBillingKey().getIdx());
 
+        //결제 시작
         paymentService.startPayment(key, subscribe);
 
         return subscribe.getIdx();
