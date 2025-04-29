@@ -123,5 +123,19 @@ public class SaleController {
         return BaseResponse.onSuccess(pkgs);
     }
 
+    @Operation(
+            summary     = "판매 상품 키워드 검색",
+            description = "검색어에 매칭되는 모든 판매상품을 페이징 조회합니다."
+    )
+    @GetMapping("/searchall")
+    public BaseResponse<Page<GetSaleListRes>> searchByKeyword(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam String keyword
+    ) {
+        Page<GetSaleListRes> result = saleFacade.searchByKeyword(keyword, page, size);
+        return BaseResponse.onSuccess(result);
+    }
+
 
 }

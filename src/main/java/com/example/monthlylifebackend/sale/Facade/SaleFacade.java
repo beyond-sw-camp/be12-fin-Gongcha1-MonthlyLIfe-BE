@@ -73,4 +73,8 @@ public class SaleFacade {
         return saleService.getPackageSales(page, size);
     }
 
+    public Page<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
+        return saleService.searchByKeyword(keyword, page, size);
+    }
+
 }
