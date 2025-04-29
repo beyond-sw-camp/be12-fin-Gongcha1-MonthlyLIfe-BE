@@ -6,8 +6,10 @@ import com.example.monthlylifebackend.common.exception.handler.SaleHandler;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
+import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
+import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
 import com.example.monthlylifebackend.sale.mapper.SaleMapper;
 import com.example.monthlylifebackend.product.model.Category;
 import com.example.monthlylifebackend.product.model.Condition;
@@ -170,6 +172,86 @@ public class SaleService {
         salePriceRepository.saveAll(newPrices);
 
         return saleIdx;
+    }
+
+    public List<BestSaleListRes> getBestSales(int limit) {
+        var pageReq = PageRequest.of(0, limit);
+        List<Object[]> rows = saleRepository.findBestSalesWithCount(pageReq);
+
+        return rows.stream().map(row -> {
+            Sale sale = (Sale) row[0];
+            Long count = (Long) row[1];
+
+            // SaleProductInfo 매핑
+            List<BestSaleListRes.SaleProductInfo> prods = sale.getSaleHasProductList().stream()
+                    .map(sp -> new BestSaleListRes.SaleProductInfo(
+                            sp.getProduct().getCode(),
+                            sp.getCondition().getIdx()
+                    )).toList();
+
+            // SalePriceInfo 매핑
+            List<BestSaleListRes.SalePriceInfo> prices = sale.getSalePriceList().stream()
+                    .map(p -> new BestSaleListRes.SalePriceInfo(
+                            p.getPeriod(), p.getPrice()
+                    )).toList();
+
+            return new BestSaleListRes(
+                    sale.getIdx(),
+                    sale.getName(),
+                    sale.getDescription(),
+                    sale.getCategory().getIdx(),
+                    prods,
+                    prices,
+                    count
+            );
+
+        }).toList();
+    }
+
+
+
+
+    public Page<PackageSaleRes> getPackageSales(int page, int size) {
+        Page<Sale> pkgPage = saleRepository.findPackageSales(
+                PageRequest.of(page, size, Sort.by("idx").descending())
+        );
+
+        return pkgPage.map(sale -> {
+            // 상품 리스트(DTO)로 변환
+            List<PackageSaleRes.ProductInfo> prods = sale.getSaleHasProductList().stream()
+                    .map(sp -> new PackageSaleRes.ProductInfo(
+                            sp.getProduct().getCode(),
+                            sp.getProduct().getProductImageList().stream()
+                                    .findFirst()
+                                    .map(pi -> pi.getProductImgUrl())
+                                    .orElse("/assets/images/placeholder.png"),
+                            sp.getCondition().getName()
+                    ))
+                    .toList();
+
+            // 가격 리스트(DTO)로 변환
+            List<PackageSaleRes.PriceInfo> prices = sale.getSalePriceList().stream()
+                    .map(p -> new PackageSaleRes.PriceInfo(p.getPeriod(), p.getPrice()))
+                    .toList();
+
+            return new PackageSaleRes(
+                    sale.getIdx(),
+                    sale.getName(),
+                    sale.getDescription(),
+                    sale.getCategory().getIdx(),
+                    prods,
+                    prices
+            );
+        });
+    }
+
+    public Page<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        Specification<Sale> spec = Specification
+                .where(SaleSpec.byKeyword(keyword));         // 오직 키워드 조건만
+
+        return saleRepository.findAll(spec, pageable)
+                .map(saleMapper::toGetSaleListRes);
     }
 
 

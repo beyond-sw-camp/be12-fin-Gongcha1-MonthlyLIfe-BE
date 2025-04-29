@@ -6,8 +6,10 @@ import com.example.monthlylifebackend.sale.Facade.SaleFacade;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
+import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
+import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
 import com.example.monthlylifebackend.sale.service.SaleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -102,4 +104,38 @@ public class SaleController {
         saleFacade.deleteSale(saleIdx);
         return BaseResponse.onSuccess(null);
     }
+
+    @Operation(summary = "Best 상품 조회", description = "구독 수 기준 상위 N개의 상품을 조회합니다.")
+    @GetMapping("/best")
+    public BaseResponse<List<BestSaleListRes>> getBestSales(
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        List<BestSaleListRes> bestList = saleFacade.getBestSales(limit);
+        return BaseResponse.onSuccess(bestList);
+    }
+
+    @GetMapping("/packages")
+    public BaseResponse<Page<PackageSaleRes>> getPackageSales(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        Page<PackageSaleRes> pkgs = saleFacade.getPackageSales(page, size);
+        return BaseResponse.onSuccess(pkgs);
+    }
+
+    @Operation(
+            summary     = "판매 상품 키워드 검색",
+            description = "검색어에 매칭되는 모든 판매상품을 페이징 조회합니다."
+    )
+    @GetMapping("/searchall")
+    public BaseResponse<Page<GetSaleListRes>> searchByKeyword(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size,
+            @RequestParam String keyword
+    ) {
+        Page<GetSaleListRes> result = saleFacade.searchByKeyword(keyword, page, size);
+        return BaseResponse.onSuccess(result);
+    }
+
+
 }

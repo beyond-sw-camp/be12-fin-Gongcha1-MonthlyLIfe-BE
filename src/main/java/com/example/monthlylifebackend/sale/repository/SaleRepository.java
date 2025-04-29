@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.sale.repository;
 
 
+import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import org.springframework.data.domain.Page;
@@ -23,11 +24,34 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
     Optional<Sale> findWithSalePricesByIdx(@Param("idx") Long idx);
 
     @Query("""
-    SELECT sp FROM SalePrice sp
-    WHERE sp.sale.idx = :saleIdx AND sp.period = :period
-""")
+                SELECT sp FROM SalePrice sp
+                WHERE sp.sale.idx = :saleIdx AND sp.period = :period
+            """)
     Optional<SalePrice> findBySaleIdxAndPeriod(@Param("saleIdx") Long saleIdx, @Param("period") int period);
 
     Page<Sale> findByCategoryIdx(Long categoryIdx, Pageable pageable);
+
     Optional<Sale> findByIdxAndCategoryIdx(Long saleIdx, Long categoryIdx);
+
+    @Query("""
+              SELECT s, SUM(CASE WHEN sd.status = 'SUBSCRIBING' THEN 1 ELSE 0 END)
+              FROM Sale s
+              LEFT JOIN s.subscribeDetailList sd
+              GROUP BY s
+              ORDER BY SUM(CASE WHEN sd.status = 'SUBSCRIBING' THEN 1 ELSE 0 END) DESC
+            """)
+    List<Object[]> findBestSalesWithCount(Pageable pageable);
+
+    /**
+     * sale_has_product 에 매핑된 상품 개수가 2개 이상인 Sale(=패키지)만 페이징 조회
+     */
+    @Query("""
+    SELECT s
+    FROM Sale s
+    WHERE (SELECT COUNT(sp) 
+             FROM SaleHasProduct sp 
+            WHERE sp.sale = s) > 1
+  """)
+    Page<Sale> findPackageSales(Pageable pageable);
+
 }
