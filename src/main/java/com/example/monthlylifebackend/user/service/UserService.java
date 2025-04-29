@@ -77,6 +77,11 @@ public class UserService {
         Optional<User> result = userRepository.findById(dto.getId());
         return result.isEmpty();
     }
+
+    public Long countByUser() {
+        Long userCount = userRepository.count();
+        return userCount;
+    }
 }
 
 

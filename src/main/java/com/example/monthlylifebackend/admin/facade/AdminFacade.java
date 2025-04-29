@@ -1,7 +1,7 @@
 package com.example.monthlylifebackend.admin.facade;
 
 
-import com.example.monthlylifebackend.admin.dto.request.PatchItemCountReq;
+import com.example.monthlylifebackend.admin.dto.response.GetAdminHomeCardRes;
 import com.example.monthlylifebackend.admin.dto.response.GetProductItemRes;
 import com.example.monthlylifebackend.admin.dto.response.GetProductRes;
 import com.example.monthlylifebackend.admin.mapper.ItemMapper;
@@ -19,8 +19,8 @@ import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeDetailR
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.model.ReturnDeliveryStatus;
-import com.example.monthlylifebackend.subscribe.model.ReturnLocation;
 import com.example.monthlylifebackend.subscribe.service.ReturnDeliveryService;
+import com.example.monthlylifebackend.subscribe.service.SubscribeDetailService;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
 import com.example.monthlylifebackend.user.service.UserService;
@@ -42,6 +42,7 @@ public class AdminFacade {
     private final UserService userService;
     private final PaymentService paymentService;
     private final ReturnDeliveryService returnDeliveryService;
+    private final SubscribeDetailService subscribeDetailService;
 
     @Transactional(readOnly = true)
     public List<GetProductRes> findAllItems() {
@@ -136,6 +137,13 @@ public class AdminFacade {
     @Transactional
     public void updateRepairRequest(Long returnDeliveryIdx, PostAdminReturnDeliveryReq dto) {
         returnDeliveryService.updateRepairRequest(returnDeliveryIdx, dto);
+    }
+
+    public GetAdminHomeCardRes findCardView() {
+        return GetAdminHomeCardRes.builder()
+                .userCount(userService.countByUser())
+                .revenue(subscribeDetailService.SumOfMothlyPrice())
+                .build();
     }
 }
 
