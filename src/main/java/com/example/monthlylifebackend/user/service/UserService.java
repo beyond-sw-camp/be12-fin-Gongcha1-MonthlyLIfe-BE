@@ -4,6 +4,7 @@ package com.example.monthlylifebackend.user.service;
 import com.example.monthlylifebackend.common.exception.handler.UserHandler;
 import com.example.monthlylifebackend.user.dto.req.PostCheckIdReq;
 import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
+import com.example.monthlylifebackend.user.dto.res.GetAdminRecentUserRes;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
 import com.example.monthlylifebackend.user.dto.res.GetUserDetailRes;
 import com.example.monthlylifebackend.user.mapper.UserMapper;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._DUPLICATED_USER;
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._NOT_FOUND_USER;
@@ -81,6 +82,36 @@ public class UserService {
     public Long countByUser() {
         Long userCount = userRepository.count();
         return userCount;
+    }
+
+    public static List<Integer> fillMonthlyIntData(Map<Integer, Long> raw) {
+        List<Integer> result = new ArrayList<>(Collections.nCopies(12, 0));
+        for (Map.Entry<Integer, Long> entry : raw.entrySet()) {
+            int month = entry.getKey(); // 1~12
+            result.set(month - 1, Math.toIntExact(entry.getValue()));
+        }
+        return result;
+    }
+
+
+
+    public List<Integer> getAdminStatistics() {
+        //올해
+        int thisYear = LocalDate.now().getYear();
+
+        List<Object[]> rawData = userRepository.getMonthlyNewUsersRaw(thisYear);
+        Map<Integer, Long> map = new HashMap<>();
+
+        for (Object[] row : rawData) {
+            Integer month = Integer.parseInt(row[0].toString());
+            Long count = Long.parseLong(row[1].toString());
+            map.put(month, count);
+        }
+                return fillMonthlyIntData(map);
+    }
+
+    public List<GetAdminRecentUserRes> getAdminRecentUserRes(){
+        return userRepository.findRecentUsers(PageRequest.of(0, 5));
     }
 }
 

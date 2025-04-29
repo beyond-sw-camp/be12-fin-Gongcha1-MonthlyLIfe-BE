@@ -1,8 +1,8 @@
 package com.example.monthlylifebackend.admin.mapper;
 
 import com.example.monthlylifebackend.admin.dto.req.PatchItemCountReq;
-import com.example.monthlylifebackend.admin.dto.response.GetProductItemRes;
-import com.example.monthlylifebackend.admin.dto.response.GetProductRes;
+import com.example.monthlylifebackend.admin.dto.res.GetProductItemRes;
+import com.example.monthlylifebackend.admin.dto.res.GetProductRes;
 import com.example.monthlylifebackend.item.dto.ItemDetailDto;
 import com.example.monthlylifebackend.item.model.Item;
 import com.example.monthlylifebackend.product.dto.GetProductDetailDto;
