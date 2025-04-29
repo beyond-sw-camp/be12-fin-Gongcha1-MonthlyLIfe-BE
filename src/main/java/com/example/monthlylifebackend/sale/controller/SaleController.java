@@ -6,6 +6,7 @@ import com.example.monthlylifebackend.sale.Facade.SaleFacade;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
+import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.service.SaleService;
@@ -102,4 +103,14 @@ public class SaleController {
         saleFacade.deleteSale(saleIdx);
         return BaseResponse.onSuccess(null);
     }
+
+    @Operation(summary = "Best 상품 조회", description = "구독 수 기준 상위 N개의 상품을 조회합니다.")
+    @GetMapping("/best")
+    public BaseResponse<List<BestSaleListRes>> getBestSales(
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        List<BestSaleListRes> bestList = saleFacade.getBestSales(limit);
+        return BaseResponse.onSuccess(bestList);
+    }
+
 }

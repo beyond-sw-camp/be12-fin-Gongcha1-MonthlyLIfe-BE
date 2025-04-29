@@ -6,6 +6,7 @@ import com.example.monthlylifebackend.common.exception.handler.SaleHandler;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
+import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.mapper.SaleMapper;
@@ -170,6 +171,40 @@ public class SaleService {
         salePriceRepository.saveAll(newPrices);
 
         return saleIdx;
+    }
+
+    public List<BestSaleListRes> getBestSales(int limit) {
+        var pageReq = PageRequest.of(0, limit);
+        List<Object[]> rows = saleRepository.findBestSalesWithCount(pageReq);
+
+        return rows.stream().map(row -> {
+            Sale sale = (Sale) row[0];
+            Long count = (Long) row[1];
+
+            // SaleProductInfo 매핑
+            List<BestSaleListRes.SaleProductInfo> prods = sale.getSaleHasProductList().stream()
+                    .map(sp -> new BestSaleListRes.SaleProductInfo(
+                            sp.getProduct().getCode(),
+                            sp.getCondition().getIdx()
+                    )).toList();
+
+            // SalePriceInfo 매핑
+            List<BestSaleListRes.SalePriceInfo> prices = sale.getSalePriceList().stream()
+                    .map(p -> new BestSaleListRes.SalePriceInfo(
+                            p.getPeriod(), p.getPrice()
+                    )).toList();
+
+            return new BestSaleListRes(
+                    sale.getIdx(),
+                    sale.getName(),
+                    sale.getDescription(),
+                    sale.getCategory().getIdx(),
+                    prods,
+                    prices,
+                    count
+            );
+
+        }).toList();
     }
 
 

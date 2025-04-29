@@ -4,6 +4,7 @@ import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
+import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.service.SaleService;
@@ -62,4 +63,9 @@ public class SaleFacade {
     public void deleteSale(Long saleIdx) {
         saleService.deleteSale(saleIdx);
     }
+
+    public List<BestSaleListRes> getBestSales(int limit) {
+        return saleService.getBestSales(limit);
+    }
+
 }
