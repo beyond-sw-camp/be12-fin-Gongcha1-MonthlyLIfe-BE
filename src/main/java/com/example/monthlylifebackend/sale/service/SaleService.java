@@ -9,6 +9,7 @@ import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
+import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
 import com.example.monthlylifebackend.sale.mapper.SaleMapper;
 import com.example.monthlylifebackend.product.model.Category;
 import com.example.monthlylifebackend.product.model.Condition;
@@ -205,6 +206,43 @@ public class SaleService {
             );
 
         }).toList();
+    }
+
+
+
+
+    public Page<PackageSaleRes> getPackageSales(int page, int size) {
+        Page<Sale> pkgPage = saleRepository.findPackageSales(
+                PageRequest.of(page, size, Sort.by("idx").descending())
+        );
+
+        return pkgPage.map(sale -> {
+            // 상품 리스트(DTO)로 변환
+            List<PackageSaleRes.ProductInfo> prods = sale.getSaleHasProductList().stream()
+                    .map(sp -> new PackageSaleRes.ProductInfo(
+                            sp.getProduct().getCode(),
+                            sp.getProduct().getProductImageList().stream()
+                                    .findFirst()
+                                    .map(pi -> pi.getProductImgUrl())
+                                    .orElse("/assets/images/placeholder.png"),
+                            sp.getCondition().getName()
+                    ))
+                    .toList();
+
+            // 가격 리스트(DTO)로 변환
+            List<PackageSaleRes.PriceInfo> prices = sale.getSalePriceList().stream()
+                    .map(p -> new PackageSaleRes.PriceInfo(p.getPeriod(), p.getPrice()))
+                    .toList();
+
+            return new PackageSaleRes(
+                    sale.getIdx(),
+                    sale.getName(),
+                    sale.getDescription(),
+                    sale.getCategory().getIdx(),
+                    prods,
+                    prices
+            );
+        });
     }
 
 

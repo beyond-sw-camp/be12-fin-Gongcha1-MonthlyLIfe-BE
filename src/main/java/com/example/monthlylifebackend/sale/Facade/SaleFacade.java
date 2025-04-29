@@ -7,6 +7,7 @@ import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
+import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
 import com.example.monthlylifebackend.sale.service.SaleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -66,6 +67,10 @@ public class SaleFacade {
 
     public List<BestSaleListRes> getBestSales(int limit) {
         return saleService.getBestSales(limit);
+    }
+
+    public Page<PackageSaleRes> getPackageSales(int page, int size) {
+        return saleService.getPackageSales(page, size);
     }
 
 }

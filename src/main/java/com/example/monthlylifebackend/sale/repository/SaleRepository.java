@@ -42,4 +42,16 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
             """)
     List<Object[]> findBestSalesWithCount(Pageable pageable);
 
+    /**
+     * sale_has_product 에 매핑된 상품 개수가 2개 이상인 Sale(=패키지)만 페이징 조회
+     */
+    @Query("""
+    SELECT s
+    FROM Sale s
+    WHERE (SELECT COUNT(sp) 
+             FROM SaleHasProduct sp 
+            WHERE sp.sale = s) > 1
+  """)
+    Page<Sale> findPackageSales(Pageable pageable);
+
 }

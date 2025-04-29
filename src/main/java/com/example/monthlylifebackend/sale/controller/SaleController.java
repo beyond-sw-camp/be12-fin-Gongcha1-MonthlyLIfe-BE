@@ -9,6 +9,7 @@ import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
 import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
+import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
 import com.example.monthlylifebackend.sale.service.SaleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -112,5 +113,15 @@ public class SaleController {
         List<BestSaleListRes> bestList = saleFacade.getBestSales(limit);
         return BaseResponse.onSuccess(bestList);
     }
+
+    @GetMapping("/packages")
+    public BaseResponse<Page<PackageSaleRes>> getPackageSales(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        Page<PackageSaleRes> pkgs = saleFacade.getPackageSales(page, size);
+        return BaseResponse.onSuccess(pkgs);
+    }
+
 
 }
