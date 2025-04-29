@@ -36,8 +36,11 @@ public class SaleController {
 
     @Operation(summary = "판매 상품 목록 조회", description = "판매 상품 목록을 조회합니다.")
     @GetMapping("/list")
-    public BaseResponse<List<GetSaleListRes>> getProductList() {
-        List<GetSaleListRes> saleProductList = saleFacade.getSaleProductList();
+    public BaseResponse<Page<GetSaleListRes>> getProductList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        Page<GetSaleListRes> saleProductList = saleFacade.getSaleProductList(page, size);
         return BaseResponse.onSuccess(saleProductList);
     }
 
@@ -47,7 +50,7 @@ public class SaleController {
             @PathVariable Long categoryIdx,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size) {
-        Page<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx,page,size);
+        Page<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx, page, size);
         return BaseResponse.onSuccess(salesByCategory);
     }
 
