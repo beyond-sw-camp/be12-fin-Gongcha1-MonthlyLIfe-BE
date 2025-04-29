@@ -41,6 +41,7 @@ public interface SubscribeMapper {
 
     @Mapping(target = "idx", ignore = true)
     @Mapping(source = "billingKey", target = "billingKey")
+    @Mapping(source = "user", target = "user")
     Subscribe tosubscribe(User user , BillingKey billingKey);
 
 
