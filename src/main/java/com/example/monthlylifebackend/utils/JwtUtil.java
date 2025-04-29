@@ -1,5 +1,6 @@
 package com.example.monthlylifebackend.utils;
 
+import com.example.monthlylifebackend.user.model.Role;
 import com.example.monthlylifebackend.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -28,6 +29,7 @@ public class JwtUtil {
     public static String generateToken(User user) {
         Claims claims = Jwts.claims();
         claims.put("userId", user.getId());
+        claims.put("userRole", user.getRole());
         return Jwts.builder().setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
@@ -47,7 +49,8 @@ public class JwtUtil {
     public static User buildUserDataFromToken(String token) {
         try {
             Claims claim = Jwts.parserBuilder().setSigningKey(SECRET).build().parseClaimsJws(token).getBody();
-            return User.builder().id(claim.get("userId", String.class)).build();
+            Role role = Role.valueOf(claim.get("userRole" , String.class));
+            return User.builder().id(claim.get("userId", String.class)).role(role).build();
 
         } catch (Exception e) {
             return null;

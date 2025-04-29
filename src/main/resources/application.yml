@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active: dev  # ⭐️ 현재 실행 프로파일 (dev / prod)
-
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
@@ -56,8 +53,25 @@ management:
   endpoint:
     health:
       show-details: always
+      show-components: always
   security:
     enabled: false
   health:
     db:
       enabled: true
+    mail:
+      enabled: false
+    diskspace:
+      enabled: false
+    ping:
+      enabled: false
+    ssl:
+      enabled: false
+
+springdoc:
+  api-docs:
+    path: /docs/v3/api-docs
+
+  swagger-ui:
+    url: /docs/v3/api-docs
+    path: /docs/swagger-ui
