@@ -36,8 +36,11 @@ public class SaleController {
 
     @Operation(summary = "판매 상품 목록 조회", description = "판매 상품 목록을 조회합니다.")
     @GetMapping("/list")
-    public BaseResponse<List<GetSaleListRes>> getProductList() {
-        List<GetSaleListRes> saleProductList = saleFacade.getSaleProductList();
+    public BaseResponse<Page<GetSaleListRes>> getProductList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
+    ) {
+        Page<GetSaleListRes> saleProductList = saleFacade.getSaleProductList(page, size);
         return BaseResponse.onSuccess(saleProductList);
     }
 
@@ -47,7 +50,7 @@ public class SaleController {
             @PathVariable Long categoryIdx,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size) {
-        Page<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx,page,size);
+        Page<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx, page, size);
         return BaseResponse.onSuccess(salesByCategory);
     }
 
@@ -84,7 +87,7 @@ public class SaleController {
     }
 
     @Operation(summary = "판매 상품 수정", description = "기존 판매 상품의 정보를 수정합니다.")
-    @PutMapping("/{saleIdx}")
+    @PostMapping("/{saleIdx}/update")
     public BaseResponse<Long> updateSale(
             @PathVariable Long saleIdx,
             @RequestBody @Valid PatchSaleReq dto
@@ -94,12 +97,9 @@ public class SaleController {
     }
 
     @Operation(summary = "판매 상품 삭제", description = "특정 판매 상품을 삭제합니다.")
-    @DeleteMapping("/{saleIdx}")
-    public ResponseEntity<BaseResponse<Void>> deleteSale(@PathVariable Long saleIdx) {
+    @PostMapping("/{saleIdx}/delete")
+    public BaseResponse<Void> deleteSale(@PathVariable Long saleIdx) {
         saleFacade.deleteSale(saleIdx);
-        return ResponseEntity.ok(BaseResponse.onSuccess(null));
+        return BaseResponse.onSuccess(null);
     }
-
-
-
 }

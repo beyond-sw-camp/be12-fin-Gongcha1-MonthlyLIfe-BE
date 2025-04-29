@@ -26,6 +26,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -108,16 +110,20 @@ public class SaleService {
                 .toList();
     }
 
-    public List<GetSaleListRes> getSaleProductList() {
-        return saleRepository.findAll().stream()
-                .map(saleMapper::toGetSaleListRes)
-                .toList();
+    public Page<GetSaleListRes> getSaleProductList(int page, int size) {
+        // 필요에 따라 정렬도 추가 가능 (예: 최신순)
+        Pageable pageable = PageRequest.of(page, size, Sort.by("idx").descending());
+
+        // repository 가 JpaRepository<Sale, Long> 라 가정
+        return saleRepository.findAll(pageable)
+                .map(saleMapper::toGetSaleListRes);
     }
 
     public SalePrice getSalePrice(Long salePriceIdx) {
         return salePriceRepository.findById(salePriceIdx)
                 .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE_PRICE));
     }
+
     public Page<GetSaleListRes> getSaleSearch(
             Long categoryIdx,
             int page,
@@ -134,6 +140,7 @@ public class SaleService {
         return saleRepository.findAll(spec, pageable)
                 .map(saleMapper::toGetSaleListRes);
     }
+
     @Transactional
     public void deleteSale(Long saleIdx) {
         if (!saleRepository.existsById(saleIdx)) {
