@@ -37,9 +37,15 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.sessionManagement(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/**" // 전체 허용
-                        ).permitAll()
+//                        .requestMatchers(
+//                                "/admin/**", "/sale/*/update", "sale/*/delete"
+//                        ).hasRole("ADMIN")
+//                        .requestMatchers(
+//                                "/user/register", "user/find-account", "/user/checkid"
+//                        ).permitAll()
+//                        .requestMatchers(
+//                                "/user/**", "/subscribe/**"
+//                        ).hasAnyRole("USER", "ADMIN")
                         .anyRequest().permitAll() // 모든 요청 허용
                 );
 

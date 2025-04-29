@@ -4,33 +4,26 @@ package com.example.monthlylifebackend.subscribe.service;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.SubcribeHandler;
 import com.example.monthlylifebackend.payment.model.BillingKey;
-import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
-import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
+import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
+import com.example.monthlylifebackend.sale.repository.SaleRepository;
+import com.example.monthlylifebackend.subscribe.dto.SubscribeAndSalesDto;
 import com.example.monthlylifebackend.subscribe.dto.req.*;
 import com.example.monthlylifebackend.subscribe.dto.res.*;
-import com.example.monthlylifebackend.subscribe.dto.req.PostSaleReq;
-import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
 import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.subscribe.repository.*;
-import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
-import com.example.monthlylifebackend.subscribe.model.Subscribe;
-import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.user.model.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
-import com.example.monthlylifebackend.subscribe.repository.RentalDeliveryRepository;
-import org.springframework.data.domain.Page;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.monthlylifebackend.subscribe.model.SubscribeStatus.*;
@@ -70,25 +63,27 @@ public class SubscribeService {
 
     //구독 할때
     @Transactional
-    public Subscribe createSubscription(PostSubscribeReq reqDto, User user) {
+    public SubscribeAndSalesDto createSubscription(PostSubscribeReq reqDto, User user) {
         //결제 수단
         BillingKey billingKey = BillingKey.builder().idx(reqDto.getBillingKeyIdx()).build();
 
         Subscribe subscribe = subscribeMapper.tosubscribe(user, billingKey);
-
+        List<SalePrice> salePriceList = new ArrayList<>();
         for (PostSaleReq saleReq : reqDto.getSales()) {
             // 세일 가격 불러오기
             SalePrice salePrice = salePriceRepository.findBySaleIdxAndPeriod(saleReq.getSaleIdx(), saleReq.getPeriod())
                     .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SALE_PRICE));
-
+            salePriceList.add(salePrice);
             SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, salePrice);
             subscribe.getSubscribeDetailList().add(subscribeDetail);
 
             RentalDelivery delivery = subscribeMapper.toRentalDelivery(reqDto.getRentalDelivery(), subscribeDetail);
             rentalDeliveryRepository.save(delivery);
         }
-        Subscribe ret = subscribeRepository.save(subscribe);
 
+        SubscribeAndSalesDto ret = new SubscribeAndSalesDto();
+        ret.setSubscribe(subscribeRepository.save(subscribe));
+        ret.setSalePriceList(salePriceList);
         return ret;
     }
 

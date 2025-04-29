@@ -1,11 +1,13 @@
 package com.example.monthlylifebackend.subscribe.controller;
 
 import com.example.monthlylifebackend.common.BaseResponse;
-import com.example.monthlylifebackend.subscribe.dto.req.*;
+import com.example.monthlylifebackend.subscribe.dto.req.PostExtendRequest;
+import com.example.monthlylifebackend.subscribe.dto.req.PostRepairOrLostReq;
+import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
+import com.example.monthlylifebackend.subscribe.dto.req.PostSubscribeReq;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeListRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
-import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeRes;
 import com.example.monthlylifebackend.subscribe.facade.SubscribeFacade;
 import com.example.monthlylifebackend.user.model.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,12 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/subscribe")
@@ -47,7 +45,7 @@ public class SubscribeController {
 
     @Operation(summary = "상품 구독 생성", description = "상품을 구독하고 계약을 시작합니다.")
     @PostMapping("/subscribe")
-    public BaseResponse<Long> createSubscription(@RequestBody PostSubscribeReq reqDto,
+    public BaseResponse<Long> createSubscription(@RequestBody @Valid PostSubscribeReq reqDto,
                                            @AuthenticationPrincipal User user) {
 
         Long idx = subscribeFacade.createSubscription(reqDto, user);

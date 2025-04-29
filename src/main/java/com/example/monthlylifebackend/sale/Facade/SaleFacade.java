@@ -4,8 +4,10 @@ import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
+import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
+import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
 import com.example.monthlylifebackend.sale.service.SaleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,13 +31,20 @@ public class SaleFacade {
     public GetSaleDetailRes getSaleDetailInCategory(Long categoryIdx, Long saleIdx) {
         return saleService.getSaleDetailInCategory(categoryIdx, saleIdx);
     }
+
     public List<GetCategoryRes> getSaleCategoryList() {
         return saleService.getSaleCategoryList();
     }
 
-    public List<GetSaleListRes> getSaleProductList() {
-        return saleService.getSaleProductList();
+    public Page<GetSaleListRes> getSaleProductList(
+            int page,
+            int size
+    ) {
+        return saleService.getSaleProductList(
+                page,
+                size);
     }
+
     public Page<GetSaleListRes> getSaleSearch(
             Long categoryIdx,
             int page,
@@ -55,4 +64,17 @@ public class SaleFacade {
     public void deleteSale(Long saleIdx) {
         saleService.deleteSale(saleIdx);
     }
+
+    public List<BestSaleListRes> getBestSales(int limit) {
+        return saleService.getBestSales(limit);
+    }
+
+    public Page<PackageSaleRes> getPackageSales(int page, int size) {
+        return saleService.getPackageSales(page, size);
+    }
+
+    public Page<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
+        return saleService.searchByKeyword(keyword, page, size);
+    }
+
 }

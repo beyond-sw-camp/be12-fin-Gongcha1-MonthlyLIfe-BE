@@ -4,6 +4,7 @@ import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.user.dto.req.PostSignupReq;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
 import com.example.monthlylifebackend.user.dto.res.GetUserDetailRes;
+import com.example.monthlylifebackend.user.model.Role;
 import com.example.monthlylifebackend.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -12,8 +13,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", imports = Role.class)
 public interface UserMapper {
+
+    @Mapping(target = "role", expression = "java(Role.ROLE_USER)")
     User toEntity(PostSignupReq dto);
 
     GetUserDetailRes toGetUserDetailRes(User user);

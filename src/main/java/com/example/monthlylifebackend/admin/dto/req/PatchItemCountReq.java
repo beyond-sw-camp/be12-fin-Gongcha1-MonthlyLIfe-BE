@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.admin.dto.request;
+package com.example.monthlylifebackend.admin.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
@@ -18,9 +18,6 @@ public class PatchItemCountReq {
     @NotNull(message = "변경할 재고 수량은 필수입니다.")
     @Min(value = 0, message = "재고 수량은 0 이상이어야 합니다.")
     @Schema(description = "변경할 재고 수량", example = "50")
-    private int count;
+    private Integer count;
 
-    public Integer getCount() {
-        return count;
-    }
 }
