@@ -1,6 +1,5 @@
 package com.example.monthlylifebackend.admin.service;
 
-import com.example.monthlylifebackend.admin.dto.request.PatchItemCountReq;
 import com.example.monthlylifebackend.admin.dto.response.GetProductRes;
 import com.example.monthlylifebackend.admin.mapper.ItemMapper;
 import com.example.monthlylifebackend.admin.repository.ItemRepository;
@@ -117,12 +116,12 @@ public class ItemService {
                 boolean subChanged = false;
                 boolean wareChanged = false;
                 for(Item item : itemList) {
-                    if(Objects.equals(item.getItemLocation().getIdx(), subscribing.getIdx())) {
+                    if(Objects.equals(item.getItemLocation().getIdx(), warehouse.getIdx())) {
                         if(item.getCount() <= 0) throw new ItemHandler(_OUT_OF_STOCK);
                         item.reduceOneCount();
                         subChanged = true;
                     }
-                    if(Objects.equals(item.getItemLocation().getIdx(), warehouse.getIdx())) {
+                    if(Objects.equals(item.getItemLocation().getIdx(), subscribing.getIdx())) {
                         item.increaseOneCount();
                         wareChanged = true;
                     }

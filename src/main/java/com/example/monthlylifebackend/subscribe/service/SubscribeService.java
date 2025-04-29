@@ -8,6 +8,7 @@ import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
 import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
+ㄴimport com.example.monthlylifebackend.subscribe.dto.SubscribeAndSalesDto;
 import com.example.monthlylifebackend.subscribe.dto.req.*;
 import com.example.monthlylifebackend.subscribe.dto.res.*;
 import com.example.monthlylifebackend.subscribe.dto.req.PostSaleReq;
@@ -31,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.monthlylifebackend.subscribe.model.SubscribeStatus.*;
@@ -70,25 +72,27 @@ public class SubscribeService {
 
     //구독 할때
     @Transactional
-    public Subscribe createSubscription(PostSubscribeReq reqDto, User user) {
+    public SubscribeAndSalesDto createSubscription(PostSubscribeReq reqDto, User user) {
         //결제 수단
         BillingKey billingKey = BillingKey.builder().idx(reqDto.getBillingKeyIdx()).build();
 
         Subscribe subscribe = subscribeMapper.tosubscribe(user, billingKey);
-
+        List<SalePrice> salePriceList = new ArrayList<>();
         for (PostSaleReq saleReq : reqDto.getSales()) {
             // 세일 가격 불러오기
             SalePrice salePrice = salePriceRepository.findBySaleIdxAndPeriod(saleReq.getSaleIdx(), saleReq.getPeriod())
                     .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SALE_PRICE));
-
+            salePriceList.add(salePrice);
             SubscribeDetail subscribeDetail = subscribeMapper.tosubscribedetail(subscribe, salePrice);
             subscribe.getSubscribeDetailList().add(subscribeDetail);
 
             RentalDelivery delivery = subscribeMapper.toRentalDelivery(reqDto.getRentalDelivery(), subscribeDetail);
             rentalDeliveryRepository.save(delivery);
         }
-        Subscribe ret = subscribeRepository.save(subscribe);
 
+        SubscribeAndSalesDto ret = new SubscribeAndSalesDto();
+        ret.setSubscribe(subscribeRepository.save(subscribe));
+        ret.setSalePriceList(salePriceList);
         return ret;
     }
 
