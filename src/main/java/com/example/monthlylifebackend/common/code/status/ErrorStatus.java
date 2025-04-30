@@ -76,10 +76,13 @@ public enum ErrorStatus implements BaseErrorCode {
     _CART_SAVE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "CART4005", "장바구니 저장에 실패했습니다."), // 예상치 못한 저장 오류
 
     //ReturnDelivery 에러
-    _NOT_FOUND_RETURNDELIVERY(HttpStatus.NOT_FOUND, "ReturnDelivery4004", "해당 반납을 찾을 수 없습니다."), // ReturnDelivery에 해당 ID가 없음
+    _NOT_FOUND_RETURNDELIVERY(HttpStatus.NOT_FOUND, "RETURNDELIVERY4004", "해당 반납을 찾을 수 없습니다."), // ReturnDelivery에 해당 ID가 없음
 
     //RentalDelibery에러
-    _NOT_FOUND_RENTALDELIVERY(HttpStatus.NOT_FOUND, "RentalDelivery4004", "해당 반납을 찾을 수 없습니다.");
+    _NOT_FOUND_RENTALDELIVERY(HttpStatus.NOT_FOUND, "RETURNDELIVERY4004", "해당 반납을 찾을 수 없습니다."),
+
+    //ItemLocation에러
+    _NOT_FOUND_ITEMLOCATION(HttpStatus.NOT_FOUND, "ITEMLOCATION4004", "해당 반납을 찾을 수 없습니다.");
 
 
     private final HttpStatus httpStatus;

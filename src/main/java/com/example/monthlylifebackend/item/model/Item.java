@@ -27,7 +27,7 @@ public class Item extends BaseEntity {
     private int count;
 
     @ManyToOne
-    @JoinColumn(name = "product_idx")
+    @JoinColumn(name = "product_code")
     private Product product;
 
     @ManyToOne

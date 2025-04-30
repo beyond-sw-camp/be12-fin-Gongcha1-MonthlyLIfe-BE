@@ -106,7 +106,7 @@ INSERT INTO item_location (name, created_at, updated_at) VALUES
                                                              ('대여중', NOW(), NOW()),
                                                              ('수리중', NOW(), NOW());
 
-INSERT INTO item (product_idx, condition_idx, itemlocation_idx, count, created_at) VALUES
+INSERT INTO item (product_code, condition_idx, itemlocation_idx, count, created_at) VALUES
                                                                                        ('P1001', 1, 1, 5, '2024-01-10'),
                                                                                        ('P1002', 1, 1, 4, '2024-01-10'),
                                                                                        ('P1003', 2, 1, 3, '2024-01-10'),
