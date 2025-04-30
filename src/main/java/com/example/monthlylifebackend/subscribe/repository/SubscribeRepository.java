@@ -106,7 +106,7 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
       (
         SELECT pi.product_img_url
         FROM product_image pi
-        WHERE pi.product_idx = p.code
+        WHERE pi.product_code = p.code
         LIMIT 1
       ) AS productImgUrl,
       (
