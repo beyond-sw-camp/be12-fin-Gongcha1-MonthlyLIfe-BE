@@ -1,6 +1,6 @@
 package com.example.monthlylifebackend.admin.service;
 
-import com.example.monthlylifebackend.admin.dto.response.GetProductRes;
+import com.example.monthlylifebackend.admin.dto.res.GetProductRes;
 import com.example.monthlylifebackend.admin.mapper.ItemMapper;
 import com.example.monthlylifebackend.admin.repository.ItemRepository;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;

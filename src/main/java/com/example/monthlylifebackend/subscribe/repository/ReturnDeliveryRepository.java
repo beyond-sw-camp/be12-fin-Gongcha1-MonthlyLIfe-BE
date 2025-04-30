@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -72,4 +73,8 @@ public interface ReturnDeliveryRepository  extends JpaRepository<ReturnDelivery,
                                                          @Param("status") String part,
                                                          @Param("dateFrom") LocalDateTime dateFrom,
                                                          @Param("dateTo") LocalDateTime dateTo);
+
+    @Query("SELECT COUNT(r) FROM ReturnDelivery r WHERE r.status IN (:statuses)")
+    int countByStatuses(@Param("statuses") List<ReturnDeliveryStatus> statuses);
+
 }

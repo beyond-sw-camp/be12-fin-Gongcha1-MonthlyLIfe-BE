@@ -1,18 +1,18 @@
 package com.example.monthlylifebackend.admin.controller;
 
 import com.example.monthlylifebackend.admin.dto.req.PatchItemCountReq;
-import com.example.monthlylifebackend.admin.dto.response.GetAdminHomeCardRes;
-import com.example.monthlylifebackend.admin.dto.response.GetProductItemRes;
-import com.example.monthlylifebackend.admin.dto.response.GetProductRes;
+import com.example.monthlylifebackend.admin.dto.res.*;
 import com.example.monthlylifebackend.admin.facade.AdminFacade;
 import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.payment.dto.res.GetAdminPaymentRes;
+import com.example.monthlylifebackend.payment.dto.res.GetAdminRecentPaymentRes;
 import com.example.monthlylifebackend.subscribe.dto.req.PostAdminReturnDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminReturnDeliveryRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeDetailRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.model.ReturnDeliveryStatus;
+import com.example.monthlylifebackend.user.dto.res.GetAdminRecentUserRes;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -63,8 +63,8 @@ public class AdminController {
 
     @Operation(summary = "관리자 재고 변경", description = "판매 아이템의 재고를 관리페이지를 변경합니다.")
     @PatchMapping("/item-detail/{idx}")
-    public BaseResponse changeItemCount(@PathVariable Long idx,
-                                        @RequestBody @Valid PatchItemCountReq req) {
+    public BaseResponse<?> changeItemCount(@PathVariable Long idx,
+                                        @RequestBody PatchItemCountReq req) {
         adminFacade.modifyItemCount(idx, req.getCount());
         return BaseResponse.onSuccess(null);
     }
@@ -187,7 +187,7 @@ public class AdminController {
 
     @Operation(summary = "관리자 반납 상태 업데이트 (수락/거절)", description = "관리자가 반납 요청의 상태를 업데이트 합니다.")
     @PostMapping("/return/{returnDeliveryIdx}")
-    public BaseResponse updateReturnRequest(@PathVariable Long returnDeliveryIdx,
+    public BaseResponse<?> updateReturnRequest(@PathVariable Long returnDeliveryIdx,
                                             @RequestBody @Valid PostAdminReturnDeliveryReq dto) {
         adminFacade.updateReturnRequest(returnDeliveryIdx, dto);
         return BaseResponse.onSuccess(null);
@@ -196,7 +196,7 @@ public class AdminController {
 
     @Operation(summary = "관리자 수리 상태 업데이트 (수락/거절)", description = "관리자가 반납 요청의 상태를 업데이트 합니다.")
     @PostMapping("/repair/{returnDeliveryIdx}")
-    public BaseResponse updateRepairRequest(@PathVariable Long returnDeliveryIdx,
+    public BaseResponse<?> updateRepairRequest(@PathVariable Long returnDeliveryIdx,
                                             @RequestBody PostAdminReturnDeliveryReq dto) {
         adminFacade.updateRepairRequest(returnDeliveryIdx,dto);
 
@@ -208,7 +208,7 @@ public class AdminController {
 
     @Operation(summary = "배송 스케줄 관리 조회", description = "반납 및 배송 예약 일정을 조회합니다.")
     @GetMapping("/delivery")
-    public BaseResponse getDeliveryScheduleList() {
+    public BaseResponse<List<GetDeliveryListRes>> getDeliveryScheduleList() {
         List<GetDeliveryListRes> dto = adminFacade.findAllDelivery();
         return BaseResponse.onSuccess(dto);
 
@@ -216,8 +216,36 @@ public class AdminController {
 
     @Operation(summary = "관리자 대시보드 카드뷰 조회", description = "총 사용자 수, 이번달 예상 매출액을 조회합니다.")
     @GetMapping("/cardview")
-    public BaseResponse getCardView() {
+    public BaseResponse<GetAdminHomeCardRes> getCardView() {
         GetAdminHomeCardRes dto = adminFacade.findCardView();
+        return BaseResponse.onSuccess(dto);
+    }
+
+    @Operation(summary = "관리자 통계페이지 카드뷰 조회", description = "관리자 통계페이지 카드뷰를 조회합니다.")
+    @GetMapping("/statistics/cardview")
+    public BaseResponse<GetAdminStatisticsCardRes> getStatisticsCardView() {
+        GetAdminStatisticsCardRes dto = adminFacade.findStatisticsCardView();
+        return BaseResponse.onSuccess(dto);
+    }
+
+    @Operation(summary = "관리자 통계페이지 차트 조회", description = "관리자 통계페이지 차트 데이터를 조회합니다.")
+    @GetMapping("/statistics")
+    public BaseResponse<GetAdminStatisticsRes> getStatistics() {
+        GetAdminStatisticsRes dto = adminFacade.findStatistics();
+        return BaseResponse.onSuccess(dto);
+    }
+
+
+    @Operation(summary = "관리자 통계페이지 최근 가입 유저 조회", description = "관리자 통계페이지에서 최근 가입한 5명의 유저를 조회합니다.")
+    @GetMapping("/statistics/recent-users")
+    public BaseResponse<List<GetAdminRecentUserRes>> getAdminRecentUsers() {
+        List<GetAdminRecentUserRes> dto = adminFacade.getAdminRecentUsers();
+        return BaseResponse.onSuccess(dto);
+    }
+    @Operation(summary = "관리자 통계페이지 최근 결제 조회", description = "관리자 통계페이지에서 최근 결제한 5명의 유저를 조회합니다.")
+    @GetMapping("/statistics/recent-payments")
+    public BaseResponse<List<GetAdminRecentPaymentRes>> getAdminRecentPayments() {
+        List<GetAdminRecentPaymentRes> dto = adminFacade.getAdminRecentPayments();
         return BaseResponse.onSuccess(dto);
     }
 

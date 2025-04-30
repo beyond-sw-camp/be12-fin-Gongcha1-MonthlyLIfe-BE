@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class ReturnDeliveryService {
     private final ReturnDeliveryRepository returnDeliveryRepository;
-    private final RepairRequestRepository repairRequestRepository;
 
     public Page<GetAdminReturnDeliveryRes> getReturnRequestList(Pageable pageable, ReturnDeliveryStatus status, LocalDate dateFrom, LocalDate dateTo) {
         LocalDateTime from = dateFrom != null ? dateFrom.atStartOfDay() : null;
@@ -55,5 +55,9 @@ public class ReturnDeliveryService {
         delivery.updateReturnLocation(ReturnLocation.valueOf(dto.getReturnLocation()));
         delivery.updateStatus(ReturnDeliveryStatus.REPAIR_ACCEPT);
         returnDeliveryRepository.save(delivery);
+    }
+
+    public int countByStatuses(List<ReturnDeliveryStatus> returnRequested) {
+        return returnDeliveryRepository.countByStatuses(returnRequested);
     }
 }

@@ -3,6 +3,7 @@ package com.example.monthlylifebackend.payment.service;
 import com.example.monthlylifebackend.common.exception.handler.PaymentHandler;
 import com.example.monthlylifebackend.payment.CustomPaymentClient;
 import com.example.monthlylifebackend.payment.dto.res.GetAdminPaymentRes;
+import com.example.monthlylifebackend.payment.dto.res.GetAdminRecentPaymentRes;
 import com.example.monthlylifebackend.payment.repository.PaymentRepository;
 import com.example.monthlylifebackend.payment.dto.req.PostWebhookReq;
 import com.example.monthlylifebackend.payment.model.Payment;
@@ -19,12 +20,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._PAYMENT_FAILED;
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._NOT_FOUND_PAYMENT;
+import static com.example.monthlylifebackend.user.service.UserService.fillMonthlyIntData;
 
 @Service
 @RequiredArgsConstructor
@@ -110,5 +111,33 @@ public class PaymentService {
         }
 
         return paymentRepository.findAdminPayments(pageable, searchType, searchQuery, dateFromTime, dateToTime, overdueOnly);
+    }
+
+    public Long sumTotalPaid() {
+        int thisYear = LocalDate.now().getYear();
+
+        return paymentRepository.sumTotalPaid(thisYear);
+
+    }
+
+    public List<Integer> getAdminStatistics() {
+        //올해
+        int thisYear = LocalDate.now().getYear();
+
+        List<Object[]> rawData = paymentRepository.getMonthlySalesRaw(thisYear);
+        Map<Integer, Long> salesMap = new HashMap<>();
+
+        for (Object[] row : rawData) {
+            Integer month = Integer.parseInt(row[0].toString()); // "3" → 3
+            Long total = Long.parseLong(row[1].toString()); // "100000" → 100000
+            salesMap.put(month, total);
+        }
+
+
+        return fillMonthlyIntData(salesMap);
+    }
+
+    public List<GetAdminRecentPaymentRes> getAdminRecentPaymentRes() {
+        return paymentRepository.findRecentPayments(PageRequest.of(0, 5));
     }
 }
