@@ -22,7 +22,7 @@ import java.util.List;
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     @Query("""
     SELECT new com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes(
-        s.idx,
+        rd.idx,
         u.name,
         (
             SELECT SUM(sd2.price)

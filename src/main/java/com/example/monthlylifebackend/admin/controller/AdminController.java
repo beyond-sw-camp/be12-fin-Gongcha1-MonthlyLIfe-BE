@@ -97,11 +97,6 @@ public class AdminController {
         return BaseResponse.onSuccess(adminFacade.getPayments(page, size, searchType,searchQuery, dateFrom, dateTo, overdueOnly));
     }
 
-    @Operation(summary = "예약 스케줄 업데이트", description = "반납/배송 스케줄을 수정합니다.")
-    @PostMapping("/schedule")
-    public void updateSchedule() {
-        // 로직
-    }
 
 
     @Operation(summary = "전체 구독 조회", description = "주문, 결제, 연체 관리용 전체 구독 내역을 조회합니다.")
@@ -249,4 +244,11 @@ public class AdminController {
         return BaseResponse.onSuccess(dto);
     }
 
+    @Operation(summary = "관리자 배송 상태 업데이트 (배송준비중->배송중)", description = "관리자가 배송 요청의 상태를 업데이트 합니다.")
+    @GetMapping("/delivery/reparing-complete/{deliveryIdx}")
+    public BaseResponse<?> updateDeliveryStatus(@PathVariable Long deliveryIdx) {
+        adminFacade.updateDeliveryStatus(deliveryIdx);
+
+        return BaseResponse.onSuccess(null);
+    }
 }

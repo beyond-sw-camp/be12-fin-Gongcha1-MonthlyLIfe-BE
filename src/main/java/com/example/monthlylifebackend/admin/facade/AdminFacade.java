@@ -18,6 +18,7 @@ import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeDetailR
 import com.example.monthlylifebackend.subscribe.dto.res.GetAdminSubscribeRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.model.ReturnDeliveryStatus;
+import com.example.monthlylifebackend.subscribe.service.RentalDeliveryService;
 import com.example.monthlylifebackend.subscribe.service.ReturnDeliveryService;
 import com.example.monthlylifebackend.subscribe.service.SubscribeDetailService;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
@@ -45,6 +46,7 @@ public class AdminFacade {
     private final PaymentService paymentService;
     private final ReturnDeliveryService returnDeliveryService;
     private final SubscribeDetailService subscribeDetailService;
+    private final RentalDeliveryService rentalDeliveryService;
 
     @Transactional(readOnly = true)
     public List<GetProductRes> findAllItems() {
@@ -89,11 +91,13 @@ public class AdminFacade {
         return itemMapper.toResponse(product, itemList,imgs);
     }
 
+    @Transactional(readOnly=true)
     public List<GetDeliveryListRes> findAllDelivery() {
         List<GetDeliveryListRes> pagedto = subscribeService.findDeliveryList();
         return pagedto;
     }
 
+    @Transactional(readOnly=true)
     public Page<GetAdminUserRes> getAdminUserList(    int page, int size, String sort,
                                                       String searchType, String searchQuery,
                                                       LocalDate dateFrom, LocalDate dateTo,
@@ -105,6 +109,7 @@ public class AdminFacade {
         return dto;
     }
 
+    @Transactional(readOnly=true)
     public Page<GetAdminPaymentRes> getPayments(int page, int size,String searchType,String searchQuery,LocalDate dateFrom, LocalDate dateTo, boolean overdueOnly) {
         return paymentService.getPayments(page, size, searchType, searchQuery, dateFrom,dateTo, overdueOnly);
     }
@@ -115,17 +120,21 @@ public class AdminFacade {
                                                           Integer maxMonths) {
         return subscribeService.getAdminSubscribeByPage(page, size, keyword, status, minMonths, maxMonths);
     }
+
+    @Transactional(readOnly=true)
     public List<GetAdminSubscribeDetailRes> getAdminSubscribeDetail(Long subscribeId){
         return subscribeService.getAdminSubscribeDetail(subscribeId);
     }
 
 
 
+    @Transactional(readOnly=true)
     public Page<GetAdminReturnDeliveryRes> getReturnRequestList(Pageable pageable, ReturnDeliveryStatus status, LocalDate dateFrom, LocalDate dateTo) {
 
         return returnDeliveryService.getReturnRequestList(pageable,status,dateFrom, dateTo);
     }
 
+    @Transactional(readOnly=true)
     public Page<GetAdminReturnDeliveryRes> getRepairRequestList(Pageable pageable, ReturnDeliveryStatus status, LocalDate dateFrom, LocalDate dateTo) {
             return returnDeliveryService.getRePairRequestList(pageable,status,dateFrom, dateTo);
     }
@@ -141,6 +150,7 @@ public class AdminFacade {
         returnDeliveryService.updateRepairRequest(returnDeliveryIdx, dto);
     }
 
+    @Transactional(readOnly=true)
     public GetAdminHomeCardRes findCardView() {
         return GetAdminHomeCardRes.builder()
                 .userCount(userService.countByUser())
@@ -148,6 +158,7 @@ public class AdminFacade {
                 .build();
     }
 
+    @Transactional(readOnly=true)
     public GetAdminStatisticsCardRes findStatisticsCardView() {
         Long userCount = userService.countByUser();
         Long totalRevenue = paymentService.sumTotalPaid(); // is_paid = true만
@@ -165,6 +176,7 @@ public class AdminFacade {
                 .build();
     }
 
+    @Transactional(readOnly=true)
     public GetAdminStatisticsRes findStatistics() {
         List<Integer> monthlySales = paymentService.getAdminStatistics();
         List<Integer> monthlyNewUsers = userService.getAdminStatistics();
@@ -175,12 +187,19 @@ public class AdminFacade {
                 .build();
     }
 
+    @Transactional(readOnly=true)
     public List<GetAdminRecentUserRes> getAdminRecentUsers() {
         return userService.getAdminRecentUserRes();
     }
 
+    @Transactional(readOnly=true)
     public List<GetAdminRecentPaymentRes> getAdminRecentPayments() {
         return paymentService.getAdminRecentPaymentRes();
+    }
+
+
+    public void updateDeliveryStatus(Long deliveryIdx) {
+        rentalDeliveryService.updateDeliveryStatus(deliveryIdx);
     }
 }
 

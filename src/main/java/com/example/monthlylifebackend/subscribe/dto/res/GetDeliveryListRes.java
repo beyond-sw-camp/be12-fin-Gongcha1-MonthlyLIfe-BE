@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "구독 요약 정보")
+@Schema(description = "배송 요약 정보")
 public class GetDeliveryListRes {
 
-    @Schema(description = "구독 ID", example = "1")
-    private Long subscribeIdx;
+    @Schema(description = "배송 ID", example = "1")
+    private Long deliveryIdx;
 
     @Schema(description = "회원 이름", example = "홍길동")
     private String userName;
