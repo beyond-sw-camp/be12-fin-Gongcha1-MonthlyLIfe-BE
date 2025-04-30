@@ -274,6 +274,13 @@ public class SubscribeService {
         returnDeliveryRepository.save(delivery);
     }
 
+    public void changeSubscriberNull(User user) {
+        List<Subscribe> subscribeList = subscribeRepository.findAllByUser(user);
+        for(Subscribe subscribe : subscribeList) {
+            subscribe.setUser(null);
+        }
+        subscribeRepository.saveAll(subscribeList);
+      
     public GetRentalDeliveryInfoRes getSubsribeDelivery(String userId, Long subscribeDetailIdx) {
 
 
