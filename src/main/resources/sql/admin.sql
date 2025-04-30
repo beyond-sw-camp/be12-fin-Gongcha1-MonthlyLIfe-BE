@@ -32,6 +32,11 @@ INSERT INTO `condition` (name, created_at, updated_at) VALUES
                                                            ('A', NOW(), NOW()),
                                                            ('B', NOW(), NOW());
 
+-- ✅ 5. product_image
+INSERT INTO product_image (product_idx, product_img_url, created_at, updated_at)
+VALUES ('P001', 'https://example.com/image1.jpg', NOW(), NOW()),
+       ('P002', 'https://example.com/image2.jpg', NOW(), NOW()),
+       ('P003', 'https://example.com/image3.jpg', NOW(), NOW());
 
 INSERT INTO sale (name, description, created_at)
 VALUES
@@ -47,18 +52,14 @@ VALUES
     ('프리미엄렌탈10', '프리미엄 구독 상품 10', NOW());
 
 
-INSERT INTO sale_price (sale_idx, period, price, created_at)
-VALUES
-    (1, 3, 30000, NOW()),
-    (2, 6, 55000, NOW()),
-    (3, 12, 99000, NOW()),
-    (4, 1, 10000, NOW()),
-    (5, 3, 27000, NOW()),
-    (6, 6, 48000, NOW()),
-    (7, 12, 88000, NOW()),
-    (8, 1, 12000, NOW()),
-    (9, 3, 31000, NOW()),
-    (10, 6, 53000, NOW());
+-- ✅ 8. item
+INSERT INTO item (count, condition_idx, itemlocation_idx, product_idx, created_at, updated_at)
+VALUES (50, 1, 1, 'P001', NOW(), NOW()),
+       (30, 2, 2, 'P001', NOW(), NOW()),
+       (40, 1, 1, 'P002', NOW(), NOW()),
+       (20, 2, 2, 'P002', NOW(), NOW()),
+       (60, 1, 1, 'P003', NOW(), NOW()),
+       (10, 2, 2, 'P003', NOW(), NOW());
 
 
 INSERT INTO subscribe (user_id, is_delayed, billing_key_idx, created_at)
@@ -74,6 +75,13 @@ VALUES
     ('user09', b'0', 9, NOW()),
     ('user10', b'1', 10, NOW());
 
+INSERT INTO item (count, condition_idx, itemlocation_idx, product_idx, created_at, updated_at)
+VALUES (10, 2, 3, 'P001', NOW(), NOW()),
+       (30, 1, 3, 'P002', NOW(), NOW()),
+       (70, 2, 3, 'P003', NOW(), NOW());
+-- 👤 유저
+INSERT INTO user (id, phone_number, password, name, email, is_delayed, address1, address2, birth, created_at, updated_at)
+VALUES ('user001', '010-1234-5678', 'securePassword123!', '홍길동', 'hong@example.com', b'1', '서울시 강남구', '101호', '1990-05-01', NOW(), NOW());
 
 INSERT INTO subscribe_detail (subscribe_idx, sale_idx, period, price, start_at, end_at, status, created_at)
 VALUES
