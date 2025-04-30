@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.user.repository;
 
 
+import com.example.monthlylifebackend.user.dto.res.GetAdminRecentUserRes;
 import com.example.monthlylifebackend.user.dto.res.GetAdminUserRes;
 import com.example.monthlylifebackend.user.model.User;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Repository
@@ -56,5 +58,23 @@ WHERE
     );
 
 
+    @Query("""
+    SELECT FUNCTION('MONTH', u.createdAt), COUNT(u)
+    FROM User u
+    WHERE FUNCTION('YEAR', u.createdAt) = :year
+    GROUP BY FUNCTION('MONTH', u.createdAt)
+""")
+    List<Object[]> getMonthlyNewUsersRaw(@Param("year") int year);
+
+    @Query("""
+    SELECT new com.example.monthlylifebackend.user.dto.res.GetAdminRecentUserRes(
+        u.id,
+        u.name,
+        u.createdAt
+    )
+    FROM User u
+    ORDER BY u.createdAt DESC
+""")
+    List<GetAdminRecentUserRes> findRecentUsers(Pageable pageable);
 
 }

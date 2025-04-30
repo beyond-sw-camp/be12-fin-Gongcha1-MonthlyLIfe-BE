@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.admin.dto.response;
+package com.example.monthlylifebackend.admin.dto.res;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

@@ -4,22 +4,34 @@ package com.example.monthlylifebackend.subscribe.service;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.SubcribeHandler;
 import com.example.monthlylifebackend.payment.model.BillingKey;
-import com.example.monthlylifebackend.sale.model.Sale;
-import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
 import com.example.monthlylifebackend.sale.repository.SaleRepository;
+import com.example.monthlylifebackend.sale.model.Sale;
+import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.subscribe.dto.SubscribeAndSalesDto;
 import com.example.monthlylifebackend.subscribe.dto.req.*;
 import com.example.monthlylifebackend.subscribe.dto.res.*;
+import com.example.monthlylifebackend.subscribe.dto.req.PostSaleReq;
+import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
+import com.example.monthlylifebackend.subscribe.mapper.RentalMapper;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
 import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.subscribe.repository.*;
+import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
+import com.example.monthlylifebackend.subscribe.model.Subscribe;
+import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.user.model.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
+import com.example.monthlylifebackend.subscribe.repository.RentalDeliveryRepository;
+import org.springframework.data.domain.Page;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,7 +51,7 @@ public class SubscribeService {
     private final UserRepository userRepository;
     private final RepairRequestRepository repairRequestRepository;
     private final SubscribeMapper subscribeMapper;
-
+    private final RentalMapper rentalMapper;
     private final SaleRepository saleRepository;
 
     private final SalePriceRepository salePriceRepository;
@@ -268,5 +280,36 @@ public class SubscribeService {
             subscribe.setUser(null);
         }
         subscribeRepository.saveAll(subscribeList);
+      
+    public GetRentalDeliveryInfoRes getSubsribeDelivery(String userId, Long subscribeDetailIdx) {
+
+
+
+        // 검증 통과했으면 배송정보 가져오기
+        RentalDelivery rs = rentalDeliveryRepository.findLatestRentalDeliveryByUserIdAndDetailIdx(userId,subscribeDetailIdx);
+
+        if (rs == null) {
+            throw new SubcribeHandler(ErrorStatus._NOT_FOUND_ACCESS_RENTAL_INFO_);
+        }
+
+        LocalDateTime shippedAt = rs.getShippedAt(); // 출발 시각
+        LocalDateTime estimatedDeliveredAt = null;
+        if (shippedAt != null) {
+            estimatedDeliveredAt = shippedAt.plusHours(2);
+        }
+
+        // 3) 현재 상태 판단
+        String currentStatus;
+        LocalDateTime now = LocalDateTime.now();
+        if (shippedAt == null) {
+
+        } else if (now.isBefore(estimatedDeliveredAt)) {
+            rs.updatedstatus(RentalStatus.SHIPPING);
+        } else {
+            rs.updatedstatus(RentalStatus.DELIVERED);
+        }
+
+
+        return rentalMapper.toDto(rs);
     }
 }

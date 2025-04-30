@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.subscribe.dto.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +25,6 @@ public class PostSubscribeReq {
 
     @Schema(description = "결제 수단")
     @NotNull
+    @Min(value = 1, message = "결제수단을 선택해주세요.")
     private Long billingKeyIdx;
 }

@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.payment.repository;
 
 import com.example.monthlylifebackend.payment.dto.res.GetAdminPaymentRes;
+import com.example.monthlylifebackend.payment.dto.res.GetAdminRecentPaymentRes;
 import com.example.monthlylifebackend.payment.model.Payment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -46,6 +48,36 @@ WHERE
             @Param("dateTo") LocalDateTime dateTo,
             @Param("overdueOnly") boolean overdueOnly
     );
-    }
+
+    @Query("SELECT SUM(p.price) " +
+            "FROM Payment p " +
+            "WHERE p.isPaid = true " +
+            "AND FUNCTION('YEAR', p.createdAt) = :year")
+    Long sumTotalPaid(@Param("year") int year);
+
+    @Query("""
+    SELECT FUNCTION('MONTH', p.createdAt), SUM(p.price)
+    FROM Payment p
+    WHERE p.isPaid = true
+    AND FUNCTION('YEAR', p.createdAt) = :year
+    GROUP BY FUNCTION('MONTH', p.createdAt)
+""")
+    List<Object[]> getMonthlySalesRaw(@Param("year") int year);
+
+    @Query("""
+    SELECT new com.example.monthlylifebackend.payment.dto.res.GetAdminRecentPaymentRes(
+        p.idx,
+        u.name,
+        p.price,
+        CASE WHEN p.isPaid = true THEN '결제완료' ELSE '미결제' END
+    )
+    FROM Payment p
+    JOIN p.subscribe s
+    JOIN s.user u
+    ORDER BY p.createdAt DESC
+""")
+    List<GetAdminRecentPaymentRes> findRecentPayments(Pageable pageable);
+
+}
 
 

@@ -67,6 +67,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _AccessDenied_(HttpStatus.BAD_REQUEST, "SUBSCRIBE4020", "본인 구독만 취소 복원이 가능합니다"),
     _INVALID_RETURN_STATUS(HttpStatus.BAD_REQUEST, "SUBSCRIBE4021", "현재 반납(취소) 요청 상태가 아닙니다."),
     _NOT_FOUND_RETURN_(HttpStatus.BAD_REQUEST, "SUBSCRIBE4021", "반납 신청 내역이 없습니다"),
+    _NOT_FOUND_ACCESS_RENTAL_INFO_(HttpStatus.BAD_REQUEST, "SUBSCRIBE4022", "배송 정보에 대한 권한이 없습니다."),
 
 // Cart 에러
     _NOT_FOUND_CART(HttpStatus.NOT_FOUND, "CART4004", "장바구니 항목을 찾을 수 없습니다."), // 장바구니에 해당 ID가 없음
