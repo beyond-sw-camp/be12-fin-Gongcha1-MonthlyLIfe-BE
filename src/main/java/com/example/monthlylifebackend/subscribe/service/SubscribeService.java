@@ -4,34 +4,23 @@ package com.example.monthlylifebackend.subscribe.service;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.SubcribeHandler;
 import com.example.monthlylifebackend.payment.model.BillingKey;
-import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
-import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
+import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
+import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.subscribe.dto.SubscribeAndSalesDto;
 import com.example.monthlylifebackend.subscribe.dto.req.*;
 import com.example.monthlylifebackend.subscribe.dto.res.*;
-import com.example.monthlylifebackend.subscribe.dto.req.PostSaleReq;
-import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.mapper.RentalMapper;
 import com.example.monthlylifebackend.subscribe.mapper.SubscribeMapper;
 import com.example.monthlylifebackend.subscribe.model.*;
 import com.example.monthlylifebackend.subscribe.repository.*;
-import com.example.monthlylifebackend.subscribe.model.RentalDelivery;
-import com.example.monthlylifebackend.subscribe.model.Subscribe;
-import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import com.example.monthlylifebackend.user.model.User;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
-import com.example.monthlylifebackend.subscribe.repository.RentalDeliveryRepository;
-import org.springframework.data.domain.Page;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -276,11 +265,11 @@ public class SubscribeService {
 
     public void changeSubscriberNull(User user) {
         List<Subscribe> subscribeList = subscribeRepository.findAllByUser(user);
-        for(Subscribe subscribe : subscribeList) {
+        for (Subscribe subscribe : subscribeList) {
             subscribe.setUser(null);
         }
         subscribeRepository.saveAll(subscribeList);
-      
+    }
     public GetRentalDeliveryInfoRes getSubsribeDelivery(String userId, Long subscribeDetailIdx) {
 
 
