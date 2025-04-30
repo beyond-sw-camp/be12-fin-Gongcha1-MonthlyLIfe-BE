@@ -261,4 +261,12 @@ public class SubscribeService {
         ReturnDelivery delivery = subscribeMapper.toReturnDeliveryRepair(detail);
         returnDeliveryRepository.save(delivery);
     }
+
+    public void changeSubscriberNull(User user) {
+        List<Subscribe> subscribeList = subscribeRepository.findAllByUser(user);
+        for(Subscribe subscribe : subscribeList) {
+            subscribe.setUser(null);
+        }
+        subscribeRepository.saveAll(subscribeList);
+    }
 }

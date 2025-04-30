@@ -7,6 +7,7 @@ import com.example.monthlylifebackend.subscribe.dto.res.GetDeliveryListRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeListProjection;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeStatus;
+import com.example.monthlylifebackend.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
@@ -173,5 +173,6 @@ WHERE s.idx = :subscribeId
 """)
     List<GetAdminSubscribeDetailRes> findAdminSubscribeDetail(@Param("subscribeId") Long subscribeId);
 
+    List<Subscribe> findAllByUser(User user);
 
 }
