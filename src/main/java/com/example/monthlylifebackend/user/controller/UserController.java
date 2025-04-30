@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @Operation(summary = "아이디 중복 체크", description = "존재하는 아이디인지 확인합니다.")
-    @PostMapping("/checkid")
+    @PostMapping("/check/id")
     public BaseResponse<Boolean> postCheckId(@RequestBody PostCheckIdReq dto) {
         BaseResponse<Boolean> result = BaseResponse.onSuccess(userFacade.checkId(dto));
         return result;
