@@ -1,5 +1,6 @@
 package com.example.monthlylifebackend.subscribe.dto.res;
 
+import com.example.monthlylifebackend.subscribe.model.RentalStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class GetDeliveryListRes {
     private Long subscribePrice;
 
     @Schema(description = "배송 상태", example = "배송중")
-    private String deliveryStatus;
+    private RentalStatus deliveryStatus;
 
     @Schema(description = "회원 전화번호", example = "010-1234-5678")
     private String userPhone;

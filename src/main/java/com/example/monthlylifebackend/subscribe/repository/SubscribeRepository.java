@@ -41,7 +41,7 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
       (:searchType IS NULL OR (
           (:searchType = '주문번호' AND (:searchQuery IS NULL OR CAST(s.idx AS string) LIKE %:searchQuery%)) OR
           (:searchType = '주문자명' AND (:searchQuery IS NULL OR u.name LIKE %:searchQuery%)) OR
-          (:searchType = '주문상태' AND (:searchQuery IS NULL OR rd.status LIKE %:searchQuery%))
+          (:searchType = '주문상태' AND (:searchQuery IS NULL OR rd.status = %:searchQuery%))
       ))
       AND (:dateFrom IS NULL OR sd.createdAt >= :dateFrom)
       AND (:dateTo IS NULL OR sd.createdAt <= :dateTo)
@@ -91,34 +91,41 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
 
     @Query(
             value = """
-        SELECT
-          sd.idx            AS subscribeDetailIdx,
-          s.idx             AS saleIdx,
-          s.name            AS saleName,
-          sd.period         AS period,
-          sd.price          AS price,
-          p.code            AS productCode,
-          sub.idx           AS subscribeIdx,
-          sub.created_at    AS created_at,
-          sd.status         AS status,
-          sd.start_at,
-          sd.end_at,
-          (
-            SELECT pi.product_img_url
-            FROM product_image pi
-            WHERE pi.product_idx = p.code
-            LIMIT 1
-          )                   AS productImgUrl
-        FROM subscribe_detail sd
-          JOIN subscribe sub   ON sd.subscribe_idx = sub.idx
-          JOIN sale s          ON sd.sale_idx      = s.idx
-          JOIN sale_has_product shp ON s.idx       = shp.sale_idx
-          JOIN product p       ON shp.product_code = p.code
-        WHERE sub.user_id = :userId
-          AND sub.idx    IN :subscribeIds
-        GROUP BY sd.idx
-        ORDER BY sub.idx DESC, sd.idx ASC
-      """,
+    SELECT
+      sd.idx            AS subscribeDetailIdx,
+      s.idx             AS saleIdx,
+      s.name            AS saleName,
+      sd.period         AS period,
+      sd.price          AS price,
+      p.code            AS productCode,
+      sub.idx           AS subscribeIdx,
+      sub.created_at    AS created_at,
+      sd.status         AS status,
+      sd.start_at,
+      sd.end_at,
+      (
+        SELECT pi.product_img_url
+        FROM product_image pi
+        WHERE pi.product_idx = p.code
+        LIMIT 1
+      ) AS productImgUrl,
+      (
+        SELECT rd.status
+        FROM rental_delivery rd
+        WHERE rd.subscribe_detail_idx = sd.idx
+        ORDER BY rd.created_at DESC
+        LIMIT 1
+      ) AS deliveryStatus   -- 🔥 추가
+    FROM subscribe_detail sd
+    JOIN subscribe sub ON sd.subscribe_idx = sub.idx
+    JOIN sale s ON sd.sale_idx = s.idx
+    JOIN sale_has_product shp ON s.idx = shp.sale_idx
+    JOIN product p ON shp.product_code = p.code
+    WHERE sub.user_id = :userId
+      AND sub.idx IN :subscribeIds
+    GROUP BY sd.idx
+    ORDER BY sub.idx DESC, sd.idx ASC
+""",
             nativeQuery = true
     )
     List<GetSubscribeListProjection> findDetailsBySubscribeIds(

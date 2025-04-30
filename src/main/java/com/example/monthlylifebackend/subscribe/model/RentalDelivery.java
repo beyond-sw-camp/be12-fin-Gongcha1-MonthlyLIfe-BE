@@ -35,7 +35,10 @@ public class RentalDelivery extends BaseEntity {
 
     private String address2;
 
-    private String status;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private RentalStatus status = RentalStatus.PREPARING;
 
     private String courierCompany;
 
@@ -43,9 +46,9 @@ public class RentalDelivery extends BaseEntity {
 
     private String deliveryMemo;
 
-    private String shippedAt;
+    private LocalDateTime shippedAt;
 
-    private String deliveredAt;
+    private LocalDateTime deliveredAt;
 
     private LocalDateTime createdAt;
 
@@ -54,4 +57,8 @@ public class RentalDelivery extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "subscribe_detail_idx")
     private SubscribeDetail subscribeDetail;
+
+    public void updatedstatus(RentalStatus status) {
+        this.status = status;
+    }
 }

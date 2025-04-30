@@ -6,6 +6,8 @@ import com.example.monthlylifebackend.cart.service.CartService;
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.payment.service.BillingKeyService;
 import com.example.monthlylifebackend.payment.service.PaymentService;
+import com.example.monthlylifebackend.subscribe.dto.req.*;
+import com.example.monthlylifebackend.subscribe.dto.res.GetRentalDeliveryInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.SubscribeAndSalesDto;
 import com.example.monthlylifebackend.subscribe.dto.req.PostExtendRequest;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRepairOrLostReq;
@@ -89,5 +91,12 @@ public class SubscribeFacade {
     @Transactional
     public void createReport(PostRepairOrLostReq req, User user) {
         subscribeService.createRepairOrLost(req  , user.getId());
+    }
+
+
+
+
+    public GetRentalDeliveryInfoRes getSubsribeDelivery(User user, Long subscribeDetailIdx) {
+       return   subscribeService.getSubsribeDelivery(user.getId(), subscribeDetailIdx);
     }
 }

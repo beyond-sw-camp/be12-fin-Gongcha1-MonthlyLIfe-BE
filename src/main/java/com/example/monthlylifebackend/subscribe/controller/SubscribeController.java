@@ -5,6 +5,7 @@ import com.example.monthlylifebackend.subscribe.dto.req.PostExtendRequest;
 import com.example.monthlylifebackend.subscribe.dto.req.PostRepairOrLostReq;
 import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
 import com.example.monthlylifebackend.subscribe.dto.req.PostSubscribeReq;
+import com.example.monthlylifebackend.subscribe.dto.res.GetRentalDeliveryInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeListRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
@@ -74,11 +75,7 @@ public class SubscribeController {
 
 
 
-    @Operation(summary = "구독 취소 신청", description = "현재 구독을 취소 신청합니다.")
-    @PostMapping("/cancel")
-    public void cancelSubscription() {
-        // 구독 취소 신청 로직
-    }
+
 
     @Operation(summary = "구독 취소 철회", description = "취소된 구독을 다시 활성화합니다.")
     @PostMapping("/{detailIdx}/cancel/undo")
@@ -150,6 +147,22 @@ public class SubscribeController {
         GetSubscribeDetailInfoRes rs =subscribeFacade.getReturnDelivery(user,subscribeDetailIdx);
         return BaseResponse.onSuccess(rs);
     }
+
+
+
+    @Operation(summary = "구독 배송 조회", description = "현재 구독한 배송 정보를 확인합니다.")
+    @GetMapping("/getsubscribedelivery/{subscribeDetailIdx}")
+    public BaseResponse<GetRentalDeliveryInfoRes> getSubsribeDelivery(@PathVariable Long subscribeDetailIdx
+            , @AuthenticationPrincipal User user) {
+
+
+
+
+
+        GetRentalDeliveryInfoRes rs =subscribeFacade.getSubsribeDelivery(user,subscribeDetailIdx);
+        return BaseResponse.onSuccess(rs);
+    }
+
 
 
 

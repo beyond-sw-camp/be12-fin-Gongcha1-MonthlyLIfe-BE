@@ -70,6 +70,7 @@ public interface SubscribeMapper {
     @Mapping(source = "dto.address2", target = "address2")
     @Mapping(source = "dto.deliveryMemo", target = "deliveryMemo")
     @Mapping(source = "subscribeDetail", target = "subscribeDetail") // 예시: subscribeDetail 설정은 별도로 처리
+    @Mapping( ignore = true, target = "status")
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     RentalDelivery toRentalDelivery(PostRentalDeliveryReq dto , SubscribeDetail subscribeDetail);
@@ -135,12 +136,12 @@ public interface SubscribeMapper {
     @Mapping(source = "saleidx", target = "saleidx")
     @Mapping(source = "salename", target = "salename")
     @Mapping(source = "productImgurl", target = "productImgurl")
+    @Mapping(source = "deliveryStatus", target = "rentalStatus")
     GetSubscribeListDto toDto(GetSubscribeListProjection projection);
 
 
-//    List<GetSubscribeListDto> toSubscriptionInfo (List<GetSubscribeListProjection> list);
 
-    // 여기에 subcribeIdx 매핑해?
+
     default List<GetSubscribeListRes> toResList(List<GetSubscribeListProjection> list) {
         if (list == null || list.isEmpty()) return Collections.emptyList();
 
@@ -160,6 +161,8 @@ public interface SubscribeMapper {
                 })
                 .toList();
     }
+
+
     @Mapping(target = "idx", ignore = true)
     @Mapping(source = "detail.price", target = "price")
     @Mapping(source = "detail.period", target = "period")

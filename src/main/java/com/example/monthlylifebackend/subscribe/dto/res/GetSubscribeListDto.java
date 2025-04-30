@@ -1,5 +1,6 @@
 package com.example.monthlylifebackend.subscribe.dto.res;
 
+import com.example.monthlylifebackend.subscribe.model.RentalStatus;
 import com.example.monthlylifebackend.subscribe.model.SubscribeStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,10 @@ public class GetSubscribeListDto {
 
     @Schema(description = "구독 상태", example = "SUBSCRIBING")
     private SubscribeStatus status;
+
+
+    @Schema(description = "배송 상태", example = "PREPARING, SHIPPING, DELIVERED")
+    private RentalStatus rentalStatus;
 
     @Schema(description = "상품 이미지 URL", example = "https://image.server.com/product/1.jpg")
     private String productImgurl;
