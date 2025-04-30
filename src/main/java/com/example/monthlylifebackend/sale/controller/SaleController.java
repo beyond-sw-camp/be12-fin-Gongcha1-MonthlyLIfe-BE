@@ -136,6 +136,16 @@ public class SaleController {
         Page<GetSaleListRes> result = saleFacade.searchByKeyword(keyword, page, size);
         return BaseResponse.onSuccess(result);
     }
-
+    // 새로 추가할 카테고리별 Best 조회
+    @Operation(summary = "카테고리별 Best 상품 조회",
+            description = "특정 카테고리의 구독 수 기준 상위 N개 상품을 조회합니다.")
+    @GetMapping("/{categoryIdx}/best")
+    public BaseResponse<List<BestSaleListRes>> getCategoryBestSales(
+            @PathVariable Long categoryIdx,
+            @RequestParam(defaultValue = "5") int limit
+    ) {
+        List<BestSaleListRes> bestList = saleFacade.getCategoryBestSales(limit, categoryIdx);
+        return BaseResponse.onSuccess(bestList);
+    }
 
 }

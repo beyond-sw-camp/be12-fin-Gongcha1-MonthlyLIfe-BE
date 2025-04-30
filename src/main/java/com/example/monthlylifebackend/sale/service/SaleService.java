@@ -255,4 +255,40 @@ public class SaleService {
     }
 
 
+    public List<BestSaleListRes> getCategoryBestSales(int limit, Long categoryIdx) {
+        var pageReq = PageRequest.of(0, limit);
+        List<Object[]> rows = saleRepository.findCategoryBestSalesWithCount(pageReq, categoryIdx);
+
+        return rows.stream().map(row -> {
+            Sale sale = (Sale) row[0];
+            Long count = (Long) row[1];
+
+            // 상품 정보 매핑
+            var prods = sale.getSaleHasProductList().stream()
+                    .map(sp -> new BestSaleListRes.SaleProductInfo(
+                            sp.getProduct().getCode(),
+                            sp.getCondition().getIdx()
+                    ))
+                    .toList();
+
+            // 가격 정보 매핑
+            var prices = sale.getSalePriceList().stream()
+                    .map(p -> new BestSaleListRes.SalePriceInfo(
+                            p.getPeriod(),
+                            p.getPrice()
+                    ))
+                    .toList();
+
+            return new BestSaleListRes(
+                    sale.getIdx(),
+                    sale.getName(),
+                    sale.getDescription(),
+                    sale.getCategory().getIdx(),
+                    prods,
+                    prices,
+                    count
+            );
+        }).toList();
+    }
+
 }
