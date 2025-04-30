@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Modifying;
 
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -34,4 +34,16 @@ public interface SubscribeDetailRepository extends JpaRepository<SubscribeDetail
 """)
     Optional<SubscribeDetail> findActiveSubscribeDetail(@Param("subscribeId") Long subscribeId);
 
+
+//endAt - 1개월 한 날짜가 이번 달 1일 이후인 것
+@Query("""
+        SELECT SUM(sd.price)
+        FROM SubscribeDetail sd
+        WHERE sd.endAt >= :startOfMonth
+    """)
+        Long sumOfMonthlyPrice(@Param("startOfMonth") LocalDateTime startOfMonth);
+
+    int countByStatus(SubscribeStatus subscribeStatus);
 }
+
+

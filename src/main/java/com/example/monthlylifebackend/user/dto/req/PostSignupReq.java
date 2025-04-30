@@ -36,7 +36,7 @@ public class PostSignupReq {
     private String email;
 
     @Schema(description = "유저 우편번호(숫자 5자)", example = "07060")
-    @Pattern(regexp = "^\\d{5}$")
+    @Pattern(regexp = "^$|\\d{5}")
     private String postalCode;
 
     @Schema(description = "유저 기본 주소(100자 이내)", example = "서울특별시 동작구 보라매로 87")

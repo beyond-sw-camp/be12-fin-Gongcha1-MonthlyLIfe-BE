@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +39,6 @@ public class ProductService {
     private final ConditionRepository conditionRepository;
     private final ItemLocationRepository itemLocationRepository;
     private final ItemRepository itemRepository;
-    private final SaleMapper saleMapper;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -132,6 +130,9 @@ public class ProductService {
     public Product getProduct(String productCode) {
         return productRepository.findById(productCode)
                 .orElseThrow(() -> new ProductHandler(ErrorStatus._NOT_FOUND_PRODUCT));
+    }
+    public Long countAll() {
+        return productRepository.count();
     }
 
 

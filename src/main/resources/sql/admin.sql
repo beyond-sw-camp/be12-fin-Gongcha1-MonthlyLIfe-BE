@@ -23,7 +23,7 @@ VALUES (1, 1, 'P001', NOW(), NOW()),
        (3, 3, 'P003', NOW(), NOW());
 
 -- ✅ 5. product_image
-INSERT INTO product_image (product_idx, product_img_url, created_at, updated_at)
+INSERT INTO product_image (product_code, product_img_url, created_at, updated_at)
 VALUES ('P001', 'https://example.com/image1.jpg', NOW(), NOW()),
        ('P002', 'https://example.com/image2.jpg', NOW(), NOW()),
        ('P003', 'https://example.com/image3.jpg', NOW(), NOW());
@@ -39,7 +39,7 @@ VALUES (1, '창고', NOW(), NOW()),
        (2, '대여중', NOW(), NOW());
 
 -- ✅ 8. item
-INSERT INTO item (count, condition_idx, itemlocation_idx, product_idx, created_at, updated_at)
+INSERT INTO item (count, condition_idx, itemlocation_idx, product_code, created_at, updated_at)
 VALUES (50, 1, 1, 'P001', NOW(), NOW()),
        (30, 2, 2, 'P001', NOW(), NOW()),
        (40, 1, 1, 'P002', NOW(), NOW()),
@@ -51,7 +51,7 @@ VALUES (50, 1, 1, 'P001', NOW(), NOW()),
 INSERT INTO item_location (idx, name, created_at, updated_at)
 VALUES (3, '수리중', NOW(), NOW());
 
-INSERT INTO item (count, condition_idx, itemlocation_idx, product_idx, created_at, updated_at)
+INSERT INTO item (count, condition_idx, itemlocation_idx, product_code, created_at, updated_at)
 VALUES (10, 2, 3, 'P001', NOW(), NOW()),
        (30, 1, 3, 'P002', NOW(), NOW()),
        (70, 2, 3, 'P003', NOW(), NOW());

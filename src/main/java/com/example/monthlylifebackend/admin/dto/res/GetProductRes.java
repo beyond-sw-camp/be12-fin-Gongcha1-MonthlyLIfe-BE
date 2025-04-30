@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.admin.dto.response;
+package com.example.monthlylifebackend.admin.dto.res;
 
 import com.example.monthlylifebackend.product.dto.res.ProductImageRes;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-// ✅ 현재 클래스명 잘못됨. GetItemRes → GetProductStockSummaryRes 로 수정
 
 @Getter
 @Builder

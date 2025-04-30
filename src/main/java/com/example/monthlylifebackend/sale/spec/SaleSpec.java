@@ -41,4 +41,7 @@ public class SaleSpec {
             return cb.equal(condJoin.get("name"), grade);
         };
     }
+
+
+
 }

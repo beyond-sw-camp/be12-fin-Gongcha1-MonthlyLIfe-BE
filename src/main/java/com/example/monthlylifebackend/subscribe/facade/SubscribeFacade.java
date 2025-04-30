@@ -2,27 +2,27 @@ package com.example.monthlylifebackend.subscribe.facade;
 
 
 import com.example.monthlylifebackend.admin.service.ItemService;
+import com.example.monthlylifebackend.cart.service.CartService;
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
-import com.example.monthlylifebackend.common.exception.handler.PaymentHandler;
 import com.example.monthlylifebackend.payment.service.BillingKeyService;
 import com.example.monthlylifebackend.payment.service.PaymentService;
 import com.example.monthlylifebackend.subscribe.dto.req.*;
+import com.example.monthlylifebackend.subscribe.dto.res.GetRentalDeliveryInfoRes;
+import com.example.monthlylifebackend.subscribe.dto.SubscribeAndSalesDto;
+import com.example.monthlylifebackend.subscribe.dto.req.PostExtendRequest;
+import com.example.monthlylifebackend.subscribe.dto.req.PostRepairOrLostReq;
+import com.example.monthlylifebackend.subscribe.dto.req.PostReturnDeliveryReq;
+import com.example.monthlylifebackend.subscribe.dto.req.PostSubscribeReq;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeDetailInfoRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribeListRes;
 import com.example.monthlylifebackend.subscribe.dto.res.GetSubscribePageResDto;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
 import com.example.monthlylifebackend.user.model.User;
-import com.example.monthlylifebackend.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-
-import static com.example.monthlylifebackend.common.code.status.ErrorStatus._NOT_ALLOWED_USER;
 
 @Facade
 @RequiredArgsConstructor
@@ -32,6 +32,7 @@ public class SubscribeFacade {
     private final PaymentService paymentService;
     private final BillingKeyService billingKeyService;
     private final ItemService itemService;
+    private final CartService cartService;
 
 
     public Page<GetSubscribeListRes> getSubscriptionInfo(User user, Pageable pageable) {
@@ -53,7 +54,8 @@ public class SubscribeFacade {
     public Long createSubscription(PostSubscribeReq reqDto, User user) {
 
         //구독 생성
-        Subscribe subscribe = subscribeService.createSubscription(reqDto,user);
+        SubscribeAndSalesDto dto = subscribeService.createSubscription(reqDto,user);
+        Subscribe subscribe = dto.getSubscribe();
         //재고 수량 변경
         itemService.subscribeItem(subscribe);
         //결제 생성
@@ -62,6 +64,9 @@ public class SubscribeFacade {
 
         //결제 시작
         paymentService.startPayment(key, subscribe);
+
+        //장바구니 제거
+        cartService.deleteCartAfterSubscribe(user, dto.getSalePriceList());
 
         return subscribe.getIdx();
     }
@@ -86,5 +91,12 @@ public class SubscribeFacade {
     @Transactional
     public void createReport(PostRepairOrLostReq req, User user) {
         subscribeService.createRepairOrLost(req  , user.getId());
+    }
+
+
+
+
+    public GetRentalDeliveryInfoRes getSubsribeDelivery(User user, Long subscribeDetailIdx) {
+       return   subscribeService.getSubsribeDelivery(user.getId(), subscribeDetailIdx);
     }
 }

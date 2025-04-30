@@ -4,7 +4,6 @@ package com.example.monthlylifebackend.cart.repository;
 import com.example.monthlylifebackend.cart.dto.GetCartListProjection;
 import com.example.monthlylifebackend.cart.model.Cart;
 import com.example.monthlylifebackend.sale.model.SalePrice;
-import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import com.example.monthlylifebackend.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -58,5 +57,5 @@ public interface CartRepository extends JpaRepository<Cart, Long> {
     List<GetCartListProjection> findCartListProjection(@Param("userId") String userId);
 
 
-
+    void deleteCartBySalePriceAndUser(SalePrice salePrice, User user);
 }

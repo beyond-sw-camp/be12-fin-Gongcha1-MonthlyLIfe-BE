@@ -10,7 +10,6 @@ import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.CartHandler;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.user.model.User;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -65,6 +64,13 @@ public class CartService {
         }
         return cartMapper.toCartDtoListFromProjection(projections);
 
+    }
+
+    @Transactional
+    public void deleteCartAfterSubscribe(User user, List<SalePrice> salePriceList) {
+        for(SalePrice salePrice : salePriceList) {
+            cartRepository.deleteCartBySalePriceAndUser(salePrice, user);
+        }
     }
 
 

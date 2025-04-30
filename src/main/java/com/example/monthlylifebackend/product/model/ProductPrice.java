@@ -18,11 +18,10 @@ public class ProductPrice extends BaseEntity {
     private Long idx;
 
     private String description;
-    private String product_code;
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "product_idx")
+    @JoinColumn(name = "product_code")
     private Product product;
 
     @ManyToOne

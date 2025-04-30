@@ -10,8 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 
 @Entity
 @Getter
@@ -27,7 +25,7 @@ public class Item extends BaseEntity {
     private int count;
 
     @ManyToOne
-    @JoinColumn(name = "product_idx")
+    @JoinColumn(name = "product_code")
     private Product product;
 
     @ManyToOne

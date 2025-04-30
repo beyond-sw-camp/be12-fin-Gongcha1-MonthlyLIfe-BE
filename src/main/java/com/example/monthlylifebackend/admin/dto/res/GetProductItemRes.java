@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.admin.dto.response;
+package com.example.monthlylifebackend.admin.dto.res;
 
 import com.example.monthlylifebackend.item.dto.ItemDetailDto;
 import com.example.monthlylifebackend.product.dto.GetProductDetailDto;
