@@ -42,11 +42,11 @@ public class SaleController {
 
     @Operation(summary = "판매 상품 목록 조회", description = "판매 상품 목록을 조회합니다.")
     @GetMapping("/list")
-    public BaseResponse<Page<GetSaleListRes>> getProductList(
+    public BaseResponse<Slice<GetSaleListRes>> getProductList(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size
     ) {
-        Page<GetSaleListRes> saleProductList = saleFacade.getSaleProductList(page, size);
+        Slice<GetSaleListRes> saleProductList = saleFacade.getSaleProductList(page, size);
         return BaseResponse.onSuccess(saleProductList);
     }
 
@@ -119,11 +119,11 @@ public class SaleController {
     }
 
     @GetMapping("/packages")
-    public BaseResponse<Page<PackageSaleRes>> getPackageSales(
+    public BaseResponse<Slice<PackageSaleRes>> getPackageSales(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size
     ) {
-        Page<PackageSaleRes> pkgs = saleFacade.getPackageSales(page, size);
+        Slice<PackageSaleRes> pkgs = saleFacade.getPackageSales(page, size);
         return BaseResponse.onSuccess(pkgs);
     }
 

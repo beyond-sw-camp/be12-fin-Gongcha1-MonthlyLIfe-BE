@@ -38,7 +38,7 @@ public class SaleFacade {
         return saleService.getSaleCategoryList();
     }
 
-    public Page<GetSaleListRes> getSaleProductList(
+    public Slice<GetSaleListRes> getSaleProductList(
             int page,
             int size
     ) {
@@ -71,7 +71,7 @@ public class SaleFacade {
         return saleService.getBestSales(limit);
     }
 
-    public Page<PackageSaleRes> getPackageSales(int page, int size) {
+    public Slice<PackageSaleRes> getPackageSales(int page, int size) {
         return saleService.getPackageSales(page, size);
     }
 

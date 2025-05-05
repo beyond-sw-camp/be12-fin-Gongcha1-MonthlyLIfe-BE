@@ -109,13 +109,13 @@ public class SaleService {
                 .toList();
     }
 
-    public Page<GetSaleListRes> getSaleProductList(int page, int size) {
+    public Slice<GetSaleListRes> getSaleProductList(int page, int size) {
         // 필요에 따라 정렬도 추가 가능 (예: 최신순)
         Pageable pageable = PageRequest.of(page, size, Sort.by("idx").descending());
 
-        // repository 가 JpaRepository<Sale, Long> 라 가정
-        return saleRepository.findAll(pageable)
-                .map(saleMapper::toGetSaleListRes);
+        Slice<Sale> slice = saleRepository.findSliceBy(pageable);
+
+        return slice.map(saleMapper::toGetSaleListRes);
     }
 
     public SalePrice getSalePrice(Long salePriceIdx) {
@@ -206,13 +206,12 @@ public class SaleService {
     }
 
 
-    public Page<PackageSaleRes> getPackageSales(int page, int size) {
-        Page<Sale> pkgPage = saleRepository.findPackageSales(
-                PageRequest.of(page, size, Sort.by("idx").descending())
-        );
+    public Slice<PackageSaleRes> getPackageSales(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("idx").descending());
 
-        return pkgPage.map(sale -> {
-            // 상품 리스트(DTO)로 변환
+        Slice<Sale> pkgSlice = saleRepository.findPackageSalesSlice(pageable);
+
+        return pkgSlice.map(sale -> {
             List<PackageSaleRes.ProductInfo> prods = sale.getSaleHasProductList().stream()
                     .map(sp -> new PackageSaleRes.ProductInfo(
                             sp.getProduct().getCode(),
@@ -224,7 +223,6 @@ public class SaleService {
                     ))
                     .toList();
 
-            // 가격 리스트(DTO)로 변환
             List<PackageSaleRes.PriceInfo> prices = sale.getSalePriceList().stream()
                     .map(p -> new PackageSaleRes.PriceInfo(p.getPeriod(), p.getPrice()))
                     .toList();
@@ -239,6 +237,7 @@ public class SaleService {
             );
         });
     }
+
 
     public Page<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);

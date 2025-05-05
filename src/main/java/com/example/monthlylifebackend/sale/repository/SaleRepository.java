@@ -93,8 +93,9 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
     WHERE (SELECT COUNT(sp) 
              FROM SaleHasProduct sp 
             WHERE sp.sale = s) > 1
-  """)
-    Page<Sale> findPackageSales(Pageable pageable);
+""")
+    Slice<Sale> findPackageSalesSlice(Pageable pageable);
+
 
     @Query("""
       SELECT s, 
@@ -110,4 +111,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
             @Param("categoryIdx") Long categoryIdx
     );
 
+
+    Slice<Sale> findSliceBy(Pageable pageable);
 }
