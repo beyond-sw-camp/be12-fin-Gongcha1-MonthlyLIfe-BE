@@ -5,6 +5,9 @@ import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.Facade.SaleFacade;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
+import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
+import com.example.monthlylifebackend.sale.dto.res.*;
+import com.example.monthlylifebackend.sale.service.SaleService;
 import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
@@ -15,6 +18,8 @@ import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,11 +52,11 @@ public class SaleController {
 
     @Operation(summary = "카테고리별 판매상품 목록 조회", description = "카테고리별 판매 상품 목록을 조회합니다.")
     @GetMapping("/category/{categoryIdx}")
-    public BaseResponse<Page<GetSaleListRes>> getSalesByCategory(
+    public BaseResponse<Slice<GetSaleListSliceRes>> getSalesByCategory(
             @PathVariable Long categoryIdx,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size) {
-        Page<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx, page, size);
+        Slice<GetSaleListSliceRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx, page, size);
         return BaseResponse.onSuccess(salesByCategory);
     }
 
@@ -123,7 +128,7 @@ public class SaleController {
     }
 
     @Operation(
-            summary     = "판매 상품 키워드 검색",
+            summary = "판매 상품 키워드 검색",
             description = "검색어에 매칭되는 모든 판매상품을 페이징 조회합니다."
     )
     @GetMapping("/searchall")
@@ -135,6 +140,7 @@ public class SaleController {
         Page<GetSaleListRes> result = saleFacade.searchByKeyword(keyword, page, size);
         return BaseResponse.onSuccess(result);
     }
+
     // 새로 추가할 카테고리별 Best 조회
     @Operation(summary = "카테고리별 Best 상품 조회",
             description = "특정 카테고리의 구독 수 기준 상위 N개 상품을 조회합니다.")
