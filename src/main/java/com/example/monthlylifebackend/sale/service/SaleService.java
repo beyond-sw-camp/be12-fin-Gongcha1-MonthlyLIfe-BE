@@ -4,6 +4,12 @@ import com.example.monthlylifebackend.admin.repository.ItemRepository;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.SaleHandler;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
+import com.example.monthlylifebackend.product.model.Category;
+import com.example.monthlylifebackend.product.model.Condition;
+import com.example.monthlylifebackend.product.model.Product;
+import com.example.monthlylifebackend.product.repository.CategoryRepository;
+import com.example.monthlylifebackend.product.repository.ConditionRepository;
+import com.example.monthlylifebackend.product.repository.ProductRepository;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
@@ -11,12 +17,6 @@ import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
 import com.example.monthlylifebackend.sale.mapper.SaleMapper;
-import com.example.monthlylifebackend.product.model.Category;
-import com.example.monthlylifebackend.product.model.Condition;
-import com.example.monthlylifebackend.product.model.Product;
-import com.example.monthlylifebackend.product.repository.CategoryRepository;
-import com.example.monthlylifebackend.product.repository.ConditionRepository;
-import com.example.monthlylifebackend.product.repository.ProductRepository;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import com.example.monthlylifebackend.sale.model.SalePrice;
@@ -26,10 +26,7 @@ import com.example.monthlylifebackend.sale.repository.SaleRepository;
 import com.example.monthlylifebackend.sale.spec.SaleSpec;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -95,9 +92,8 @@ public class SaleService {
         return sale.getIdx();
     }
 
-    public Page<GetSaleListRes> getSalesByCategory(Long categoryIdx, int page, int size) {
-        return saleRepository.findByCategoryIdx(categoryIdx, PageRequest.of(page, size))
-                .map(saleMapper::toGetSaleListRes);
+    public Slice<GetSaleListRes> getSalesByCategory(Long categoryIdx, int page, int size) {
+        return saleRepository.findByCategoryIdx(categoryIdx, PageRequest.of(page, size));
     }
 
     public GetSaleDetailRes getSaleDetailInCategory(Long categoryIdx, Long saleIdx) {

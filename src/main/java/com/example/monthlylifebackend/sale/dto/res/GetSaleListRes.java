@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @Builder
 @NoArgsConstructor
@@ -26,35 +24,14 @@ public class GetSaleListRes {
     @Schema(description = "카테고리 ID", example = "1")
     private Long categoryIdx;
 
-    @Schema(description = "포함 상품 목록")
-    private List<ProductInfo> productList;
+    @Schema(description = "이미지", example = "image.jpg")
+    private String imageUrl;
 
-    @Schema(description = "기간별 가격 목록")
-    private List<PriceInfo> priceList;
+    @Schema(description = "상태", example = "S급")
+    private String conditionName;
 
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Schema(description = "포함 상품 정보")
-    public static class ProductInfo {
-        @Schema(description = "상품 코드", example = "TV001")
-        private String productCode;
+    @Schema(description = "가격", example = "19900")
+    private int price;
 
-        @Schema(description = "상태", example = "S급")
-        private String conditionName;
-    }
 
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Schema(description = "가격 정보")
-    public static class PriceInfo {
-        @Schema(description = "기간 (개월)", example = "12")
-        private int period;
-
-        @Schema(description = "가격", example = "19900")
-        private int price;
-    }
 }

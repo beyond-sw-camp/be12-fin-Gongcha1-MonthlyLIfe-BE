@@ -5,18 +5,16 @@ import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.Facade.SaleFacade;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
-import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
 import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
-import com.example.monthlylifebackend.sale.service.SaleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,11 +46,11 @@ public class SaleController {
 
     @Operation(summary = "카테고리별 판매상품 목록 조회", description = "카테고리별 판매 상품 목록을 조회합니다.")
     @GetMapping("/category/{categoryIdx}")
-    public BaseResponse<Page<GetSaleListRes>> getSalesByCategory(
+    public BaseResponse<Slice<GetSaleListRes>> getSalesByCategory(
             @PathVariable Long categoryIdx,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size) {
-        Page<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx, page, size);
+        Slice<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx, page, size);
         return BaseResponse.onSuccess(salesByCategory);
     }
 
@@ -61,7 +59,6 @@ public class SaleController {
     public BaseResponse<GetSaleDetailRes> getSaleDetailInCategory(
             @PathVariable Long categoryIdx,
             @PathVariable Long saleIdx) {
-
         GetSaleDetailRes saleDetailInCategory = saleFacade.getSaleDetailInCategory(categoryIdx, saleIdx);
         return BaseResponse.onSuccess(saleDetailInCategory);
     }

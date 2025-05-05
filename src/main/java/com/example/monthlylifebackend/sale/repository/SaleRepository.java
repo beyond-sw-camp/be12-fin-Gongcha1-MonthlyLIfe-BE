@@ -1,11 +1,12 @@
 package com.example.monthlylifebackend.sale.repository;
 
 
-import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
+import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -29,7 +30,44 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
             """)
     Optional<SalePrice> findBySaleIdxAndPeriod(@Param("saleIdx") Long saleIdx, @Param("period") int period);
 
-    Page<Sale> findByCategoryIdx(Long categoryIdx, Pageable pageable);
+    @Query(value = """
+                SELECT
+                s.idx AS idx,
+                s.name AS name,
+                s.description AS description,
+                s.category_idx AS categoryIdx,
+                (
+                      SELECT pi.product_img_url
+                      FROM sale_has_product shp2
+                      JOIN product p2 ON shp2.product_code = p2.code
+                      JOIN product_image pi ON pi.product_code = p2.code
+                      WHERE shp2.sale_idx =
+                       s.idx
+                      ORDER BY pi.created_at ASC
+                      LIMIT 1
+                ) AS imageUrl,
+                (
+                      SELECT cd.name
+                      FROM sale_has_product shp2
+                      JOIN `condition` cd ON cd.idx = shp2.condition_idx
+                      WHERE shp2.sale_idx =
+                       s.idx
+                      ORDER BY p.created_at ASC
+                      LIMIT 1
+                ) AS conditionName,
+                MIN(sp.price) AS price
+                FROM sale s
+                JOIN sale_price sp ON s.idx = sp.sale_idx
+                JOIN sale_has_product shp ON s.idx = shp.sale_idx
+                JOIN product p ON shp.product_code = p.code
+                WHERE s.category_idx = :categoryIdx
+                GROUP BY s.idx, s.name, s.description, s.category_idx
+                ORDER BY s.created_at DESC;
+                """,
+            nativeQuery = true)
+    Slice<GetSaleListRes> findByCategoryIdx(
+            @Param("categoryIdx") Long categoryIdx,
+            Pageable pageable);
 
     Optional<Sale> findByIdxAndCategoryIdx(Long saleIdx, Long categoryIdx);
 
