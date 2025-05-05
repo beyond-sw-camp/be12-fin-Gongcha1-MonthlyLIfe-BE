@@ -117,6 +117,17 @@ public class SaleService {
 
         return slice.map(saleMapper::toGetSaleListRes);
     }
+//public Slice<GetSaleWeatherRes> getWeatherSales(int page, int size) {
+//    Pageable pg = PageRequest.of(page, size, Sort.by("createdAt").descending());
+//    Slice<Sale> slice = saleRepository.findSliceBy(pg);
+//
+//    return slice.map(sale -> {
+//        GetSaleWeatherRes dto = saleMapper.toGetSaleWeatherRes(sale);
+//        // 썸네일·조건·최저가·기간 추가 로직을 수동으로 채워야 할 수도 있습니다.
+//        // 예: dto.setImageUrl( … ); dto.setConditionName( … );
+//        return dto;
+//    });
+//}
 
     public SalePrice getSalePrice(Long salePriceIdx) {
         return salePriceRepository.findById(salePriceIdx)
@@ -249,40 +260,45 @@ public class SaleService {
     }
 
 
-    public List<BestSaleListRes> getCategoryBestSales(int limit, Long categoryIdx) {
-        var pageReq = PageRequest.of(0, limit);
-        List<Object[]> rows = saleRepository.findCategoryBestSalesWithCount(pageReq, categoryIdx);
-
-        return rows.stream().map(row -> {
-            Sale sale = (Sale) row[0];
-            Long count = (Long) row[1];
-
-            // 상품 정보 매핑
-            var prods = sale.getSaleHasProductList().stream()
-                    .map(sp -> new BestSaleListRes.SaleProductInfo(
-                            sp.getProduct().getCode(),
-                            sp.getCondition().getIdx()
-                    ))
-                    .toList();
-
-            // 가격 정보 매핑
-            var prices = sale.getSalePriceList().stream()
-                    .map(p -> new BestSaleListRes.SalePriceInfo(
-                            p.getPeriod(),
-                            p.getPrice()
-                    ))
-                    .toList();
-
-            return new BestSaleListRes(
-                    sale.getIdx(),
-                    sale.getName(),
-                    sale.getDescription(),
-                    sale.getCategory().getIdx(),
-                    prods,
-                    prices,
-                    count
-            );
-        }).toList();
+    public List<GetBestSaleRes> getCategoryBestSales(int limit, Long categoryIdx) {
+        Pageable pg = PageRequest.of(0, limit);
+        return saleRepository.findCategoryBestSummaries(categoryIdx, pg);
     }
+
+//    public List<BestSaleListRes> getCategoryBestSales(int limit, Long categoryIdx) {
+//        var pageReq = PageRequest.of(0, limit);
+//        List<Object[]> rows = saleRepository.findCategoryBestSalesWithCount(pageReq, categoryIdx);
+//
+//        return rows.stream().map(row -> {
+//            Sale sale = (Sale) row[0];
+//            Long count = (Long) row[1];
+//
+//            // 상품 정보 매핑
+//            var prods = sale.getSaleHasProductList().stream()
+//                    .map(sp -> new BestSaleListRes.SaleProductInfo(
+//                            sp.getProduct().getCode(),
+//                            sp.getCondition().getIdx()
+//                    ))
+//                    .toList();
+//
+//            // 가격 정보 매핑
+//            var prices = sale.getSalePriceList().stream()
+//                    .map(p -> new BestSaleListRes.SalePriceInfo(
+//                            p.getPeriod(),
+//                            p.getPrice()
+//                    ))
+//                    .toList();
+//
+//            return new BestSaleListRes(
+//                    sale.getIdx(),
+//                    sale.getName(),
+//                    sale.getDescription(),
+//                    sale.getCategory().getIdx(),
+//                    prods,
+//                    prices,
+//                    count
+//            );
+//        }).toList();
+//    }
 
 }

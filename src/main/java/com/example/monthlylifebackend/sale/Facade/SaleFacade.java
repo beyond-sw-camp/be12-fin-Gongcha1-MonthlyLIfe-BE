@@ -38,7 +38,7 @@ public class SaleFacade {
         return saleService.getSaleCategoryList();
     }
 
-    public Slice<GetSaleListRes> getSaleProductList(
+        public Slice<GetSaleListRes> getSaleProductList(
             int page,
             int size
     ) {
@@ -46,6 +46,10 @@ public class SaleFacade {
                 page,
                 size);
     }
+//    public Slice<GetSaleWeatherRes> getWeatherSales(int page, int size) {
+//        return saleService.getWeatherSales(page, size);
+//    }
+
 
     public Page<GetSaleListRes> getSaleSearch(
             Long categoryIdx,
@@ -79,7 +83,7 @@ public class SaleFacade {
         return saleService.searchByKeyword(keyword, page, size);
     }
 
-    public List<BestSaleListRes> getCategoryBestSales(int limit, Long categoryIdx) {
+    public List<GetBestSaleRes> getCategoryBestSales(int limit, Long categoryIdx) {
         return saleService.getCategoryBestSales(limit, categoryIdx);
     }
 

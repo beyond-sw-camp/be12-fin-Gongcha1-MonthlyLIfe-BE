@@ -50,6 +50,24 @@ public class SaleController {
         return BaseResponse.onSuccess(saleProductList);
     }
 
+//    @Operation(summary = "판매 상품 목록 조회", description = "판매 상품 목록을 조회합니다.")
+//    @GetMapping("/list")
+//    public BaseResponse<Slice<GetSaleWeatherRes>> getProductList(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "6") int size
+//    ) {
+//        Slice<GetSaleWeatherRes> saleProductList = saleFacade.getWeatherSales(page, size);
+//        return BaseResponse.onSuccess(saleProductList);
+//    }
+    //    @Operation(summary = "카테고리별 판매상품 목록 조회", description = "카테고리별 판매 상품 목록을 조회합니다.")
+//    @GetMapping("/category/{categoryIdx}")
+//    public BaseResponse<Page<GetSaleListRes>> getSalesByCategory(
+//            @PathVariable Long categoryIdx,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "3") int size) {
+//        Page<GetSaleListRes> salesByCategory = saleFacade.getSalesByCategory(categoryIdx, page, size);
+//        return BaseResponse.onSuccess(salesByCategory);
+//    }
     @Operation(summary = "카테고리별 판매상품 목록 조회", description = "카테고리별 판매 상품 목록을 조회합니다.")
     @GetMapping("/category/{categoryIdx}")
     public BaseResponse<Slice<GetSaleListSliceRes>> getSalesByCategory(
@@ -145,11 +163,11 @@ public class SaleController {
     @Operation(summary = "카테고리별 Best 상품 조회",
             description = "특정 카테고리의 구독 수 기준 상위 N개 상품을 조회합니다.")
     @GetMapping("/{categoryIdx}/best")
-    public BaseResponse<List<BestSaleListRes>> getCategoryBestSales(
+    public BaseResponse<List<GetBestSaleRes>> getCategoryBestSales(
             @PathVariable Long categoryIdx,
             @RequestParam(defaultValue = "5") int limit
     ) {
-        List<BestSaleListRes> bestList = saleFacade.getCategoryBestSales(limit, categoryIdx);
+        List<GetBestSaleRes> bestList = saleFacade.getCategoryBestSales(limit, categoryIdx);
         return BaseResponse.onSuccess(bestList);
     }
 

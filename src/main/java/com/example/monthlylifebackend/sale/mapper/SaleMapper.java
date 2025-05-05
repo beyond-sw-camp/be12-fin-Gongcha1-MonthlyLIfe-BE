@@ -6,6 +6,7 @@ import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
+import com.example.monthlylifebackend.sale.dto.res.GetSaleWeatherRes;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.sale.model.SaleHasProduct;
@@ -15,6 +16,9 @@ import java.util.List;
 
 @Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SaleMapper {
+
+
+
 
     // --- 등록용 Entity 매핑 (변경 없음) ---
 
@@ -132,5 +136,8 @@ public interface SaleMapper {
             PatchSaleReq dto,
             @MappingTarget Sale sale
     );
+
+
+    GetSaleWeatherRes toGetSaleWeatherRes(Sale sale);
 
 }

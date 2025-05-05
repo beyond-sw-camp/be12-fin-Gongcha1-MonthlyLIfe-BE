@@ -33,5 +33,8 @@ public class GetSaleListSliceRes {
     @Schema(description = "가격", example = "19900")
     private int price;
 
+    @Schema(description = "기간", example = "3")
+    private int period;
+
 
 }
