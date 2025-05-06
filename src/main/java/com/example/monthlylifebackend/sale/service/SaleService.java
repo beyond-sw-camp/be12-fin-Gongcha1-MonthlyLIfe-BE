@@ -301,4 +301,9 @@ public class SaleService {
 //        }).toList();
 //    }
 
+    /** 최신 상품 N개 조회 */
+    public List<NewSaleListRes> getNewArrivals(int limit) {
+        return saleRepository.findTopNewArrivals(limit);
+    }
+
 }

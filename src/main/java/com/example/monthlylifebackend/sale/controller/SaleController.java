@@ -171,4 +171,13 @@ public class SaleController {
         return BaseResponse.onSuccess(bestList);
     }
 
+    @Operation(summary = "신규 상품 조회", description = "최신 등록 순으로 상위 N개 판매상품을 조회합니다.")
+    @GetMapping("/new-arrivals")
+    public BaseResponse<List<NewSaleListRes>> getNewArrivals(
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+        List<NewSaleListRes> list = saleFacade.getNewArrivals(limit);
+        return BaseResponse.onSuccess(list);
+    }
+
 }

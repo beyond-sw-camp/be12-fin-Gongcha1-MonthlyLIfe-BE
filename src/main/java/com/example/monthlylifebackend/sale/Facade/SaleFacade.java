@@ -87,4 +87,8 @@ public class SaleFacade {
         return saleService.getCategoryBestSales(limit, categoryIdx);
     }
 
+    public List<NewSaleListRes> getNewArrivals(int limit) {
+        return saleService.getNewArrivals(limit);
+    }
+
 }
