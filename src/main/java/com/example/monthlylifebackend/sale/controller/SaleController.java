@@ -72,14 +72,14 @@ public class SaleController {
 
     @Operation(summary = "판매 상품 카테고리별 검색", description = "판매 상품의 카테고리별 상품의 검색 기능")
     @GetMapping("/search")
-    public BaseResponse<Page<GetSaleListRes>> searchSales(
+    public BaseResponse<Slice<GetSaleListRes>> searchSales(
             @RequestParam Long categoryIdx,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size,
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String grade
     ) {
-        Page<GetSaleListRes> result = saleFacade.getSaleSearch(
+        Slice<GetSaleListRes> result = saleFacade.getSaleSearch(
                 categoryIdx, page, size, keyword, grade
         );
         return BaseResponse.onSuccess(result);

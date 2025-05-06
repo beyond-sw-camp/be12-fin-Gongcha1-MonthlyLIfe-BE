@@ -69,6 +69,43 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
             @Param("categoryIdx") Long categoryIdx,
             Pageable pageable);
 
+    @Query(value = """
+                SELECT
+                s.idx AS idx,
+                s.name AS name,
+                s.description AS description,
+                s.category_idx AS categoryIdx,
+                (
+                      SELECT pi.product_img_url
+                      FROM sale_has_product shp2
+                      JOIN product p2 ON shp2.product_code = p2.code
+                      JOIN product_image pi ON pi.product_code = p2.code
+                      WHERE shp2.sale_idx =
+                       s.idx
+                      ORDER BY pi.created_at ASC
+                      LIMIT 1
+                ) AS imageUrl,
+                cd.name AS conditionName,
+                MIN(sp.price) AS price
+                FROM sale s
+                JOIN sale_price sp ON s.idx = sp.sale_idx
+                JOIN sale_has_product shp ON s.idx = shp.sale_idx
+                JOIN product p ON shp.product_code = p.code
+                JOIN `condition` cd ON s.condition_idx = cd.idx
+                WHERE s.category_idx = :categoryIdx
+                AND cd.name LIKE :grade
+                AND s.name LIKE :keyword
+                GROUP BY s.idx, s.name, s.description, s.category_idx
+                ORDER BY s.created_at DESC;
+                """,
+            nativeQuery = true)
+    Slice<GetSaleListRes> findByCategoryIdxAndGradeAndKeyword(
+            @Param("categoryIdx") Long categoryIdx, String grade, String keyword,
+            Pageable pageable);
+
+
+
+
     Optional<Sale> findByIdxAndCategoryIdx(Long saleIdx, Long categoryIdx);
 
     @Query("""

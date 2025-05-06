@@ -122,21 +122,20 @@ public class SaleService {
                 .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE_PRICE));
     }
 
-    public Page<GetSaleListRes> getSaleSearch(
+    public Slice<GetSaleListRes> getSaleSearch(
             Long categoryIdx,
             int page,
             int size,
             String keyword,
             String grade
     ) {
+        if (keyword==null) keyword = "";
+        if (grade==null) grade = "";
         PageRequest pageable = PageRequest.of(page, size);
-        Specification<Sale> spec = Specification
-                .where(SaleSpec.byCategory(categoryIdx))
-                .and(SaleSpec.byKeyword(keyword))
-                .and(SaleSpec.byGrade(grade));
+        grade = grade.concat("%");
+        keyword = "%".concat(keyword.concat("%"));
 
-        return saleRepository.findAll(spec, pageable)
-                .map(saleMapper::toGetSaleListRes);
+        return saleRepository.findByCategoryIdxAndGradeAndKeyword(categoryIdx, grade, keyword, pageable);
     }
 
     @Transactional
