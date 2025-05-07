@@ -4,13 +4,11 @@ import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
-import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
-import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
-import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
-import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
+import com.example.monthlylifebackend.sale.dto.res.*;
 import com.example.monthlylifebackend.sale.service.SaleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -24,7 +22,11 @@ public class SaleFacade {
         return saleService.registerSale(dto);
     }
 
-    public Page<GetSaleListRes> getSalesByCategory(Long categoryIdx, int page, int size) {
+//    public Page<GetSaleListRes> getSalesByCategory(Long categoryIdx, int page, int size) {
+//        return saleService.getSalesByCategory(categoryIdx, page, size);
+//    }
+
+    public Slice<GetSaleListSliceRes> getSalesByCategory(Long categoryIdx, int page, int size) {
         return saleService.getSalesByCategory(categoryIdx, page, size);
     }
 
@@ -36,7 +38,7 @@ public class SaleFacade {
         return saleService.getSaleCategoryList();
     }
 
-    public Page<GetSaleListRes> getSaleProductList(
+    public Slice<GetSaleListRes> getSaleProductList(
             int page,
             int size
     ) {
@@ -44,8 +46,12 @@ public class SaleFacade {
                 page,
                 size);
     }
+//    public Slice<GetSaleWeatherRes> getWeatherSales(int page, int size) {
+//        return saleService.getWeatherSales(page, size);
+//    }
 
-    public Page<GetSaleListRes> getSaleSearch(
+
+    public Slice<GetSaleListSliceRes> getSaleSearch(
             Long categoryIdx,
             int page,
             int size,
@@ -69,12 +75,23 @@ public class SaleFacade {
         return saleService.getBestSales(limit);
     }
 
-    public Page<PackageSaleRes> getPackageSales(int page, int size) {
+    public Slice<PackageSaleRes> getPackageSales(int page, int size) {
         return saleService.getPackageSales(page, size);
     }
 
-    public Page<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
+    public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
         return saleService.searchByKeyword(keyword, page, size);
     }
 
+    public List<GetBestSaleRes> getCategoryBestSales(int limit, Long categoryIdx) {
+        return saleService.getCategoryBestSales(limit, categoryIdx);
+    }
+
+    public List<NewSaleListRes> getNewArrivals(int limit) {
+        return saleService.getNewArrivals(limit);
+    }
+
+    public List<GetBestSaleRes> getAllBestSales(int limit) {
+        return saleService.getAllBestSales(limit);
+    }
 }

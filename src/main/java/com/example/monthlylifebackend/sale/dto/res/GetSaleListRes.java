@@ -43,6 +43,9 @@ public class GetSaleListRes {
 
         @Schema(description = "상태", example = "S급")
         private String conditionName;
+
+        @Schema(description = "상품 이미지 URL 목록")
+        private List<String> imageUrls;
     }
 
     @Getter
