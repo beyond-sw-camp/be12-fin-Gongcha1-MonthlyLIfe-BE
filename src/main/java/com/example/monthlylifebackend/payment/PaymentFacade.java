@@ -1,24 +1,36 @@
 package com.example.monthlylifebackend.payment;
 
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
+import com.example.monthlylifebackend.payment.dto.DailySettlementDto;
 import com.example.monthlylifebackend.payment.dto.req.PostBillingKeyReq;
 import com.example.monthlylifebackend.payment.dto.req.PostWebhookReq;
 import com.example.monthlylifebackend.payment.dto.res.GetPaymentMethodRes;
 import com.example.monthlylifebackend.payment.service.BillingKeyService;
 import com.example.monthlylifebackend.payment.service.PaymentService;
+import com.example.monthlylifebackend.payment.service.SettlementService;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.service.SubscribeService;
 import com.example.monthlylifebackend.user.model.User;
+import com.example.monthlylifebackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Facade
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentFacade {
     private final PaymentService paymentService;
     private final BillingKeyService billingKeyService;
     private final SubscribeService subscribeService;
+    private final UserService userService;
+    private final SettlementService settlementService;
+
 
     public Long createPaymentMethod(PostBillingKeyReq dto, User user) {
         //빌링키를 포트원에 확인하고 정보 받아오기
@@ -63,6 +75,25 @@ public class PaymentFacade {
 
         paymentService.schedulePayment(subscribe, billingKey, nextPrice, cycle);
     }
+
+    @Transactional
+    @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
+    public void payout() {
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        LocalDateTime yesterday = today.minusDays(1);
+        log.info(yesterday + "schedule start");
+
+        DailySettlementDto dto = paymentService.DailySettlement(yesterday, today);
+
+        settlementService.save(dto.getSettlement());
+        subscribeService.saveDelayedSubscribeList(dto.getDelayedSubscribeList());
+        userService.saveDelayedUserList(dto.getDelayedUserList());
+        log.info(yesterday + "schedule end");
+    }
+
+
+
+
 
     private Long extractSubscribeIdx(String str) {
         String[] parts = str.split("-");

@@ -5,6 +5,8 @@ import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -19,12 +21,15 @@ public class Payment extends BaseEntity {
 
     private boolean isPaid;
 
+    private LocalDateTime scheduledAt;
+
     private Long price;
 
-    public Payment(String paymentId, Long price, Subscribe subscribe) {
+    public Payment(String paymentId, Long price, Subscribe subscribe, LocalDateTime scheduledAt) {
         this.paymentId = paymentId;
         this.price = price;
         this.subscribe =subscribe;
+        this.scheduledAt = scheduledAt;
         isPaid = false;
     }
 
