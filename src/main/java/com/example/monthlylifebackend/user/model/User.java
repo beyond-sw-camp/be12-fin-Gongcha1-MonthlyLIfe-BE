@@ -34,7 +34,7 @@ public class User extends BaseEntity   {
     @Column(length = 50, nullable = false)
     private String email;
 
-    @ColumnDefault("true")
+    @ColumnDefault("false")
     private boolean isDelayed;
 
     @Column(length = 10)
@@ -66,4 +66,6 @@ public class User extends BaseEntity   {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setDelayed(boolean isDelayed) { this.isDelayed = isDelayed; }
 }
