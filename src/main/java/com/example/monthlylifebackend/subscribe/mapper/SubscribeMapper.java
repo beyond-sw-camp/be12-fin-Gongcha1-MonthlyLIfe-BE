@@ -105,10 +105,15 @@ public interface SubscribeMapper {
 
     @Mapping(target = "idx", ignore = true)
     @Mapping(source = "detail", target = "subscribeDetail")
+    @Mapping(target = "subscribeName", source = "req.subscriberName")
+    @Mapping(target = "subscribePhone", source = "req.subscriberPhone")
+    @Mapping(target = "address1", source = "user.address1")
+    @Mapping(target = "address2", source = "user.address2")
+    @Mapping(target = "description", source = "req.description")
     @Mapping(target = "status", expression = "java(ReturnDeliveryStatus.REPAIR_REQUESTED)")
     @Mapping(target = "returnLocation", constant ="BEFORE_RETURN" )
 
-    ReturnDelivery toReturnDeliveryRepair(SubscribeDetail detail) ;
+    ReturnDelivery toReturnDeliveryRepair(SubscribeDetail detail, User user, PostRepairOrLostReq req) ;
 
 
     // 구독 반납

@@ -3,6 +3,7 @@ package com.example.monthlylifebackend.subscribe.service;
 
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.SubcribeHandler;
+import com.example.monthlylifebackend.common.exception.handler.UserHandler;
 import com.example.monthlylifebackend.payment.model.BillingKey;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
@@ -70,6 +71,7 @@ public class SubscribeService {
 
         Subscribe subscribe = subscribeMapper.tosubscribe(user, billingKey);
         List<SalePrice> salePriceList = new ArrayList<>();
+        List<RentalDelivery> rentalDeliveryList = new ArrayList<>();
         for (PostSaleReq saleReq : reqDto.getSales()) {
             // 세일 가격 불러오기
             SalePrice salePrice = salePriceRepository.findBySaleIdxAndPeriod(saleReq.getSaleIdx(), saleReq.getPeriod())
@@ -79,11 +81,12 @@ public class SubscribeService {
             subscribe.getSubscribeDetailList().add(subscribeDetail);
 
             RentalDelivery delivery = subscribeMapper.toRentalDelivery(reqDto.getRentalDelivery(), subscribeDetail);
-            rentalDeliveryRepository.save(delivery);
+            rentalDeliveryList.add(delivery);
         }
 
         SubscribeAndSalesDto ret = new SubscribeAndSalesDto();
         ret.setSubscribe(subscribeRepository.save(subscribe));
+        rentalDeliveryRepository.saveAll(rentalDeliveryList);
         ret.setSalePriceList(salePriceList);
         return ret;
     }
@@ -241,6 +244,7 @@ public class SubscribeService {
     public void createRepairOrLost(PostRepairOrLostReq req , String userId) {
         SubscribeDetail detail = subscribeDetailRepository.findWithProductAndUser(req.getSubscribeDetailIdx(), userId)
                 .orElseThrow(() -> new SubcribeHandler(ErrorStatus._NOT_FOUND_SUBSCRIBE_DETAIL));
+        User user = userRepository.findById(userId).orElseThrow(()->new UserHandler(ErrorStatus._NOT_FOUND_USER));
 
         RepairRequest rr = subscribeMapper.toEntity(req, detail);
         if (req.getType() == ReportType.REPAIR) {
@@ -259,7 +263,7 @@ public class SubscribeService {
         repairRequestRepository.save(rr);
 
 
-        ReturnDelivery delivery = subscribeMapper.toReturnDeliveryRepair(detail);
+        ReturnDelivery delivery = subscribeMapper.toReturnDeliveryRepair(detail,user, req);
         returnDeliveryRepository.save(delivery);
     }
 

@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ItemLocationRepository extends JpaRepository<ItemLocation, Long> {
     Optional<ItemLocation> findFirstByName(String name);
+
 }

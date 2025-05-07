@@ -5,22 +5,21 @@ import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.sale.Facade.SaleFacade;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
-import com.example.monthlylifebackend.product.dto.res.GetProductListRes;
 import com.example.monthlylifebackend.sale.dto.res.BestSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.PackageSaleRes;
-import com.example.monthlylifebackend.sale.service.SaleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Getter
 @RestController
 @RequestMapping("/sale")
 @RequiredArgsConstructor
