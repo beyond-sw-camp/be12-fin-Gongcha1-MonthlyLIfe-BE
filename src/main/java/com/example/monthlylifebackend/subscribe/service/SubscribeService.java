@@ -70,6 +70,7 @@ public class SubscribeService {
 
         Subscribe subscribe = subscribeMapper.tosubscribe(user, billingKey);
         List<SalePrice> salePriceList = new ArrayList<>();
+        List<RentalDelivery> rentalDeliveryList = new ArrayList<>();
         for (PostSaleReq saleReq : reqDto.getSales()) {
             // 세일 가격 불러오기
             SalePrice salePrice = salePriceRepository.findBySaleIdxAndPeriod(saleReq.getSaleIdx(), saleReq.getPeriod())
@@ -79,11 +80,12 @@ public class SubscribeService {
             subscribe.getSubscribeDetailList().add(subscribeDetail);
 
             RentalDelivery delivery = subscribeMapper.toRentalDelivery(reqDto.getRentalDelivery(), subscribeDetail);
-            rentalDeliveryRepository.save(delivery);
+            rentalDeliveryList.add(delivery);
         }
 
         SubscribeAndSalesDto ret = new SubscribeAndSalesDto();
         ret.setSubscribe(subscribeRepository.save(subscribe));
+        rentalDeliveryRepository.saveAll(rentalDeliveryList);
         ret.setSalePriceList(salePriceList);
         return ret;
     }

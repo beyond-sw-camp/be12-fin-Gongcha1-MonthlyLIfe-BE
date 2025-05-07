@@ -136,7 +136,7 @@ public class AdminFacade {
 
     @Transactional(readOnly=true)
     public Page<GetAdminReturnDeliveryRes> getRepairRequestList(Pageable pageable, ReturnDeliveryStatus status, LocalDate dateFrom, LocalDate dateTo) {
-            return returnDeliveryService.getRePairRequestList(pageable,status,dateFrom, dateTo);
+            return returnDeliveryService.getRepairRequestlist(pageable,status,dateFrom, dateTo);
     }
 
     @Transactional

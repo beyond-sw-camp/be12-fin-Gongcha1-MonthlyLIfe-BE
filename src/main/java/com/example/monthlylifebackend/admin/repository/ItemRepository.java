@@ -95,6 +95,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             Product product, Condition condition, int count
     );
     Optional<Item> findByProductAndItemLocation(Product product, ItemLocation itemLocation);
+    Optional<Item> findByProductAndItemLocationAndCondition(Product product, ItemLocation itemLocation, Condition condition);
 
 }
 
