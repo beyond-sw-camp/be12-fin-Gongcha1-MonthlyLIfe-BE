@@ -113,6 +113,11 @@ public class UserService {
     public List<GetAdminRecentUserRes> getAdminRecentUserRes(){
         return userRepository.findRecentUsers(PageRequest.of(0, 5));
     }
+
+    public void saveDelayedUserList(List<User> userList) {
+        userList.forEach(user -> user.setDelayed(true));
+        userRepository.saveAll(userList);
+    }
 }
 
 

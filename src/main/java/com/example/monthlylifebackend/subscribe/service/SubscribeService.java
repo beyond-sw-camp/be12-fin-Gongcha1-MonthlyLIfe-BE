@@ -305,4 +305,10 @@ public class SubscribeService {
 
         return rentalMapper.toDto(rs);
     }
+
+    //구독들을 연체로 바꿔서 저장하는 함수
+    public void saveDelayedSubscribeList(List<Subscribe> subscribeList) {
+        subscribeList.forEach(subscribe -> subscribe.setDelayed(true));
+        subscribeRepository.saveAll(subscribeList);
+    }
 }
