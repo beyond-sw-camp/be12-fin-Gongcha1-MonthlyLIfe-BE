@@ -2,13 +2,16 @@ package com.example.monthlylifebackend.payment.service;
 
 import com.example.monthlylifebackend.common.exception.handler.PaymentHandler;
 import com.example.monthlylifebackend.payment.CustomPaymentClient;
+import com.example.monthlylifebackend.payment.dto.DailySettlementDto;
+import com.example.monthlylifebackend.payment.dto.req.PostWebhookReq;
 import com.example.monthlylifebackend.payment.dto.res.GetAdminPaymentRes;
 import com.example.monthlylifebackend.payment.dto.res.GetAdminRecentPaymentRes;
-import com.example.monthlylifebackend.payment.repository.PaymentRepository;
-import com.example.monthlylifebackend.payment.dto.req.PostWebhookReq;
 import com.example.monthlylifebackend.payment.model.Payment;
+import com.example.monthlylifebackend.payment.model.Settlement;
+import com.example.monthlylifebackend.payment.repository.PaymentRepository;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
+import com.example.monthlylifebackend.user.model.User;
 import io.portone.sdk.server.payment.PayWithBillingKeyResponse;
 import io.portone.sdk.server.payment.billingkey.BillingKeyInfo;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +26,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-import static com.example.monthlylifebackend.common.code.status.ErrorStatus._PAYMENT_FAILED;
 import static com.example.monthlylifebackend.common.code.status.ErrorStatus._NOT_FOUND_PAYMENT;
+import static com.example.monthlylifebackend.common.code.status.ErrorStatus._PAYMENT_FAILED;
 import static com.example.monthlylifebackend.user.service.UserService.fillMonthlyIntData;
 
 @Service
@@ -44,7 +47,7 @@ public class PaymentService {
         }
 
         //payment 번호 구하기
-        Payment payment = createPayment(subscribe.getIdx(), price, 1);
+        Payment payment = createPayment(subscribe.getIdx(), price, 1, LocalDateTime.now());
 
         //구독번호와 가격을 이용해서 첫번째 결제하기
         CompletableFuture<PayWithBillingKeyResponse> future = customPaymentClient.startPayment(payment.getPaymentId(), billingKey, subscribeCode, price);
@@ -80,15 +83,15 @@ public class PaymentService {
     }
 
     public void schedulePayment(Subscribe subscribe, String billingKey, Long price, Integer cycle) {
-        Payment payment = createPayment(subscribe.getIdx(), price, cycle);
+        Payment payment = createPayment(subscribe.getIdx(), price, cycle, LocalDateTime.now().plusMonths(1));
         customPaymentClient.OneMonthAfterPayment(payment.getPaymentId(), billingKey, subscribe.getIdx()+"", price, LocalDateTime.now());
     }
 
-    private Payment createPayment(Long subscribeIdx, Long price, int cycle) {
+    public Payment createPayment(Long subscribeIdx, Long price, int cycle, LocalDateTime scheduledAt) {
         String paymentId = "payment"+"-"+subscribeIdx+"-"+cycle+"-"+UUID.randomUUID();
         Subscribe s = Subscribe.builder().idx(subscribeIdx).build();
         s.ignoreVersion();
-        Payment payment = new Payment(paymentId, price, s);
+        Payment payment = new Payment(paymentId, price, s, scheduledAt);
         return paymentRepository.save(payment);
     }
 
@@ -139,5 +142,46 @@ public class PaymentService {
 
     public List<GetAdminRecentPaymentRes> getAdminRecentPaymentRes() {
         return paymentRepository.findRecentPayments(PageRequest.of(0, 5));
+    }
+
+    public DailySettlementDto DailySettlement(LocalDateTime start, LocalDateTime end) {
+
+        //오늘 일자 결제내역들 불러오기
+        List<Payment> payments = paymentRepository.findAllByScheduledAtGreaterThanEqualAndScheduledAtLessThan(start, end);
+
+        Long totalAmount = 0L;
+        int paymentCount = 0;
+        List<Subscribe> delayedSubscribeList = new ArrayList<>();
+        Set<User> delayedUserSet = new HashSet<>();
+
+        for(Payment payment : payments) {
+            //결제가 되었으면 정산
+            if(payment.isPaid()) {
+                totalAmount += payment.getPrice();
+                paymentCount++;
+            }
+            //안되었으면 연체 처리
+            else {
+                delayedSubscribeList.add(payment.getSubscribe());
+                delayedUserSet.add(payment.getSubscribe().getUser());
+            }
+        }
+
+        List<User> delayedUserList = delayedUserSet.stream().toList();
+
+        Settlement settlement = Settlement.builder()
+                .settlementDate(LocalDate.from(start))
+                .totalSalesAmount(totalAmount)
+                .totalRefundAmount(0L)
+                .netAmount(totalAmount)
+                .transactionCount(paymentCount)
+                .build();
+
+
+        return DailySettlementDto.builder()
+                .settlement(settlement)
+                .delayedSubscribeList(delayedSubscribeList)
+                .delayedUserList(delayedUserList)
+                .build();
     }
 }
