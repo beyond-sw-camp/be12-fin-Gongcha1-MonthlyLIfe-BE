@@ -6,13 +6,13 @@ import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
-import com.example.monthlylifebackend.sale.dto.res.GetSaleWeatherRes;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
 import com.example.monthlylifebackend.sale.model.SaleHasProduct;
 import org.mapstruct.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SaleMapper {
@@ -71,6 +71,13 @@ public interface SaleMapper {
     @Mapping(source = "category.idx", target = "categoryIdx")
     @Mapping(source = "saleHasProductList", target = "productList")
     @Mapping(source = "salePriceList", target = "priceList")
+    @Mapping(
+            target = "descriptionImageUrls",
+            // Collectors.toList() 대신에 java.util.stream.Collectors.toList() 를 직접 사용
+            expression = "java(sale.getSaleHasProductList().stream()\n" +
+                    "    .map(shp -> shp.getProduct().getDescriptionImageUrl())\n" +
+                    "    .collect(java.util.stream.Collectors.toList()))"
+    )
     GetSaleDetailRes toGetSaleDetailRes(Sale sale);
 
 
@@ -105,17 +112,31 @@ public interface SaleMapper {
 
     // --- Detail용 리스트 요소 매핑: SaleHasProduct → GetSaleDetailRes.ProductInfo ---
 
-    @IterableMapping(elementTargetType = GetSaleDetailRes.ProductInfo.class)
-    @Mapping(source = "product.code", target = "productCode")
-    @Mapping(source = "condition.name", target = "conditionName")
-    List<GetSaleDetailRes.ProductInfo> mapDetailProductInfoList(List<SaleHasProduct> list);
-
-    @Mapping(source = "product.code", target = "productCode")
-    @Mapping(source = "condition.name", target = "conditionName")
-    GetSaleDetailRes.ProductInfo toDetailProductInfo(SaleHasProduct shp);
+//    @IterableMapping(elementTargetType = GetSaleDetailRes.ProductInfo.class)
+//    @Mapping(source = "product.code", target = "productCode")
+//    @Mapping(source = "condition.name", target = "conditionName")
+//    List<GetSaleDetailRes.ProductInfo> mapDetailProductInfoList(List<SaleHasProduct> list);
+//
+//    @Mapping(source = "product.code", target = "productCode")
+//    @Mapping(source = "condition.name", target = "conditionName")
+//    GetSaleDetailRes.ProductInfo toDetailProductInfo(SaleHasProduct shp);
 
 
     // --- Detail용 리스트 요소 매핑: SalePrice → GetSaleDetailRes.PriceInfo ---
+    default GetSaleDetailRes.ProductInfo toDetailProductInfo(SaleHasProduct shp) {
+        return GetSaleDetailRes.ProductInfo.builder()
+                .conditionName(shp.getCondition().getName())
+                .imageUrls(
+                        shp.getProduct()
+                                .getProductImageList()
+                                .stream()
+                                .map(pi -> pi.getProductImgUrl())
+                                .collect(Collectors.toList())
+                )
+                .build();
+    }
+
+
 
     @IterableMapping(elementTargetType = GetSaleDetailRes.PriceInfo.class)
     List<GetSaleDetailRes.PriceInfo> mapDetailPriceInfoList(List<SalePrice> list);
@@ -136,8 +157,5 @@ public interface SaleMapper {
             PatchSaleReq dto,
             @MappingTarget Sale sale
     );
-
-
-    GetSaleWeatherRes toGetSaleWeatherRes(Sale sale);
 
 }

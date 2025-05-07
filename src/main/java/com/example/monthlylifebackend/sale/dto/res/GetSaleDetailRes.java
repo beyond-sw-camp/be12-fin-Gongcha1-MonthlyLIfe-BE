@@ -32,6 +32,9 @@ public class GetSaleDetailRes {
     @Schema(description = "기간별 가격 목록")
     private List<PriceInfo> priceList;
 
+    @Schema(description = "상품 설명용 이미지 URL 목록")
+    private List<String> descriptionImageUrls;
+
     @Getter
     @Builder
     @NoArgsConstructor
@@ -43,6 +46,9 @@ public class GetSaleDetailRes {
 
         @Schema(description = "상품 상태", example = "S급")
         private String conditionName;
+
+        @Schema(description = "상품 이미지 URL 목록")
+        private List<String> imageUrls;
     }
 
     @Getter
