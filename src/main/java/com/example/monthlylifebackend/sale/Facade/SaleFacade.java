@@ -38,7 +38,7 @@ public class SaleFacade {
         return saleService.getSaleCategoryList();
     }
 
-        public Slice<GetSaleListRes> getSaleProductList(
+    public Slice<GetSaleListRes> getSaleProductList(
             int page,
             int size
     ) {
@@ -79,7 +79,7 @@ public class SaleFacade {
         return saleService.getPackageSales(page, size);
     }
 
-    public Page<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
+    public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
         return saleService.searchByKeyword(keyword, page, size);
     }
 

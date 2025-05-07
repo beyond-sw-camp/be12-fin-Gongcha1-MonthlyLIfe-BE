@@ -255,7 +255,7 @@ public class SaleService {
     }
 
 
-    public Page<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
+    public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);
         Specification<Sale> spec = Specification
                 .where(SaleSpec.byKeyword(keyword));         // 오직 키워드 조건만

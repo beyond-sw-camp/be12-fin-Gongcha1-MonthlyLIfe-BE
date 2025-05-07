@@ -80,6 +80,18 @@ public interface SaleMapper {
     )
     GetSaleDetailRes toGetSaleDetailRes(Sale sale);
 
+    @IterableMapping(elementTargetType = GetSaleListRes.ProductInfo.class)
+    List<GetSaleListRes.ProductInfo> mapProductInfoList(List<SaleHasProduct> list);
+
+    @Mapping(source = "product.code", target = "productCode")
+    @Mapping(source = "condition.name", target = "conditionName")
+    // 아래 expression 으로 imageUrls 를 한번에 맵핑
+    @Mapping(target = "imageUrls",
+            expression = "java(shp.getProduct().getProductImageList().stream()"
+                    + " .map(pi -> pi.getProductImgUrl())"
+                    + " .collect(java.util.stream.Collectors.toList()))")
+    GetSaleListRes.ProductInfo toProductInfo(SaleHasProduct shp);
+
 
     // --- 내부 리스트 요소 매핑: SaleHasProduct → ProductInfo ---
 
