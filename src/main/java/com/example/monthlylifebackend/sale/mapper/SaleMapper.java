@@ -56,8 +56,6 @@ public interface SaleMapper {
      */
     @Mapping(source = "idx", target = "idx")             // 사실 같은 이름은 생략해도 자동 매핑됨
     @Mapping(source = "category.idx", target = "categoryIdx")
-    @Mapping(source = "saleHasProductList", target = "productList")
-    @Mapping(source = "salePriceList", target = "priceList")
     GetSaleListRes toGetSaleListRes(Sale sale);
 
     /**
@@ -72,24 +70,24 @@ public interface SaleMapper {
 
     // --- 내부 리스트 요소 매핑: SaleHasProduct → ProductInfo ---
 
-    @IterableMapping(elementTargetType = GetSaleListRes.ProductInfo.class)
-    @Mapping(source = "product.code", target = "productCode")
-    @Mapping(source = "condition.name", target = "conditionName")
-    List<GetSaleListRes.ProductInfo> mapProductInfoList(List<SaleHasProduct> list);
-
-    @Mapping(source = "product.code", target = "productCode")
-    @Mapping(source = "condition.name", target = "conditionName")
-    GetSaleListRes.ProductInfo toProductInfo(SaleHasProduct shp);
-
-
-    // --- 내부 리스트 요소 매핑: SalePrice → PriceInfo ---
-
-    @IterableMapping(elementTargetType = GetSaleListRes.PriceInfo.class)
-    List<GetSaleListRes.PriceInfo> mapPriceInfoList(List<SalePrice> list);
-
-    @Mapping(source = "period", target = "period")
-    @Mapping(source = "price", target = "price")
-    GetSaleListRes.PriceInfo toPriceInfo(SalePrice price);
+//    @IterableMapping(elementTargetType = GetSaleListRes.ProductInfo.class)
+//    @Mapping(source = "product.code", target = "productCode")
+//    @Mapping(source = "condition.name", target = "conditionName")
+//    List<GetSaleListRes.ProductInfo> mapProductInfoList(List<SaleHasProduct> list);
+//
+//    @Mapping(source = "product.code", target = "productCode")
+//    @Mapping(source = "condition.name", target = "conditionName")
+//    GetSaleListRes.ProductInfo toProductInfo(SaleHasProduct shp);
+//
+//
+//    // --- 내부 리스트 요소 매핑: SalePrice → PriceInfo ---
+//
+//    @IterableMapping(elementTargetType = GetSaleListRes.PriceInfo.class)
+//    List<GetSaleListRes.PriceInfo> mapPriceInfoList(List<SalePrice> list);
+//
+//    @Mapping(source = "period", target = "period")
+//    @Mapping(source = "price", target = "price")
+//    GetSaleListRes.PriceInfo toPriceInfo(SalePrice price);
 
     // Category → GetCategoryRes
     @Mapping(source = "idx", target = "idx")
