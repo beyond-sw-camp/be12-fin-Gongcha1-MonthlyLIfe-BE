@@ -37,7 +37,7 @@ out/
 .vscode/
 
 ##각자 개발 환경
-src/main/resources/application-dev.yml
-Dockerfile
+/api/src/main/resources/application-dev.yml
+api/Dockerfile
 docker-compose.yml
 /logs/app-log.log
