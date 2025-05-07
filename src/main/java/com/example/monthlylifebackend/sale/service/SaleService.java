@@ -306,4 +306,9 @@ public class SaleService {
         return saleRepository.findTopNewArrivals(limit);
     }
 
+    public List<GetBestSaleRes> getAllBestSales(int limit) {
+        Pageable page = PageRequest.of(0, limit);
+        return saleRepository.findAllBestSales(page);
+    }
+
 }

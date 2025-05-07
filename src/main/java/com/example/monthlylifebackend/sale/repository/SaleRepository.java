@@ -153,7 +153,6 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
               )                           AS condition_name,
               MIN(sp.price)               AS price,
               (
-                /* 최저가 항목의 기간 */
                 SELECT sp2.period
                 FROM sale_price sp2
                 WHERE sp2.sale_idx = s.idx
@@ -219,5 +218,68 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
             nativeQuery = true
     )
     List<NewSaleListRes> findTopNewArrivals(@Param("limit") int limit);
+
+
+    @Query(value = """
+    SELECT
+      s.idx               AS sale_idx,
+      s.name              AS name,
+      s.category_idx      AS category_idx,
+      (
+        SELECT pi.product_img_url
+        FROM sale_has_product shp2
+        JOIN product_image pi
+          ON shp2.product_code = pi.product_code
+        WHERE shp2.sale_idx = s.idx
+        ORDER BY pi.created_at ASC
+        LIMIT 1
+      ) AS image_url,
+      (
+        SELECT p3.manufacturer
+        FROM sale_has_product shp3
+        JOIN product p3
+          ON shp3.product_code = p3.code
+        WHERE shp3.sale_idx = s.idx
+        ORDER BY shp3.created_at ASC
+        LIMIT 1
+      ) AS manufacturer,
+      (
+        SELECT cd.name
+        FROM sale_has_product shp4
+        JOIN `condition` cd
+          ON shp4.condition_idx = cd.idx
+        WHERE shp4.sale_idx = s.idx
+        ORDER BY shp4.created_at ASC
+        LIMIT 1
+      ) AS condition_name,
+      MIN(sp.price) AS price,
+      (
+        SELECT sp2.period
+        FROM sale_price sp2
+        WHERE sp2.sale_idx = s.idx
+        ORDER BY sp2.price ASC
+        LIMIT 1
+      ) AS period,
+
+      (
+        SELECT COUNT(*)
+        FROM subscribe_detail sd2
+        WHERE sd2.sale_idx = s.idx
+          AND sd2.status   = 'SUBSCRIBING'
+      ) AS subscribe_count
+
+    FROM sale s
+      JOIN sale_price sp
+        ON sp.sale_idx = s.idx
+
+    GROUP BY
+      s.idx, s.name, s.category_idx
+
+    ORDER BY
+      subscribe_count DESC
+    """,
+            nativeQuery = true)
+    List<GetBestSaleRes> findAllBestSales(Pageable pageable);
+
 
 }

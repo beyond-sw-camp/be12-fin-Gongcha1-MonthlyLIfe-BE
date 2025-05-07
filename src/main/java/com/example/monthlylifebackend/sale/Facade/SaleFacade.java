@@ -91,4 +91,7 @@ public class SaleFacade {
         return saleService.getNewArrivals(limit);
     }
 
+    public List<GetBestSaleRes> getAllBestSales(int limit) {
+        return saleService.getAllBestSales(limit);
+    }
 }

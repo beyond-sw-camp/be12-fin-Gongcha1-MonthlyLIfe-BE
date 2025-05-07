@@ -50,7 +50,7 @@ public class SaleController {
         return BaseResponse.onSuccess(saleProductList);
     }
 
-//    @Operation(summary = "판매 상품 목록 조회", description = "판매 상품 목록을 조회합니다.")
+    //    @Operation(summary = "판매 상품 목록 조회", description = "판매 상품 목록을 조회합니다.")
 //    @GetMapping("/list")
 //    public BaseResponse<Slice<GetSaleWeatherRes>> getProductList(
 //            @RequestParam(defaultValue = "0") int page,
@@ -180,4 +180,13 @@ public class SaleController {
         return BaseResponse.onSuccess(list);
     }
 
+
+    @Operation(summary = "전체 Best 상품 조회", description = "구독 수 기준으로 전체 판매상품 중 상위 N개를 조회합니다.")
+    @GetMapping("/best/all")
+    public BaseResponse<List<GetBestSaleRes>> getAllBestSales(
+            @RequestParam(defaultValue = "8") int limit
+    ) {
+        List<GetBestSaleRes> list = saleFacade.getAllBestSales(limit);
+        return BaseResponse.onSuccess(list);
+    }
 }
