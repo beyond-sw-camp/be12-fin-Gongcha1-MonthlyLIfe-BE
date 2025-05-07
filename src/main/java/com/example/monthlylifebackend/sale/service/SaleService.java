@@ -224,14 +224,19 @@ public class SaleService {
 
         return pkgSlice.map(sale -> {
             List<PackageSaleRes.ProductInfo> prods = sale.getSaleHasProductList().stream()
-                    .map(sp -> new PackageSaleRes.ProductInfo(
-                            sp.getProduct().getCode(),
-                            sp.getProduct().getProductImageList().stream()
-                                    .findFirst()
-                                    .map(pi -> pi.getProductImgUrl())
-                                    .orElse("/assets/images/placeholder.png"),
-                            sp.getCondition().getName()
-                    ))
+                    .map(sp -> {
+                        List<String> urls = sp.getProduct()
+                                .getProductImageList()
+                                .stream()
+                                .map(pi -> pi.getProductImgUrl())
+                                .collect(Collectors.toList());
+
+                        return new PackageSaleRes.ProductInfo(
+                                sp.getProduct().getCode(),
+                                urls,
+                                sp.getCondition().getName()
+                        );
+                    })
                     .toList();
 
             List<PackageSaleRes.PriceInfo> prices = sale.getSalePriceList().stream()
