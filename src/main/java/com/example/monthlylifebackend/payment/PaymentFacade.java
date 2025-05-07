@@ -15,6 +15,7 @@ import com.example.monthlylifebackend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 @Facade
 @RequiredArgsConstructor
 @Slf4j
+@EnableScheduling
 public class PaymentFacade {
     private final PaymentService paymentService;
     private final BillingKeyService billingKeyService;
@@ -79,7 +81,7 @@ public class PaymentFacade {
     @Transactional
     @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul")
     public void payout() {
-        LocalDateTime today = LocalDate.now().atStartOfDay();
+        LocalDateTime today = LocalDate.now().atStartOfDay().plusHours(15);
         LocalDateTime yesterday = today.minusDays(1);
         log.info(yesterday + "schedule start");
 
