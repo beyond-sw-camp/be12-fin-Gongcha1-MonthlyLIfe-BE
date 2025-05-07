@@ -77,4 +77,8 @@ public class SaleFacade {
         return saleService.searchByKeyword(keyword, page, size);
     }
 
+    public List<BestSaleListRes> getCategoryBestSales(int limit, Long categoryIdx) {
+        return saleService.getCategoryBestSales(limit, categoryIdx);
+    }
+
 }

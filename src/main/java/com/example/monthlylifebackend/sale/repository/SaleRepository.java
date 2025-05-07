@@ -54,4 +54,18 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
   """)
     Page<Sale> findPackageSales(Pageable pageable);
 
+    @Query("""
+      SELECT s, 
+             SUM(CASE WHEN sd.status = 'SUBSCRIBING' THEN 1 ELSE 0 END) AS subscribeCount
+      FROM Sale s
+      LEFT JOIN s.subscribeDetailList sd
+      WHERE (:categoryIdx IS NULL OR s.category.idx = :categoryIdx)
+      GROUP BY s
+      ORDER BY subscribeCount DESC
+    """)
+    List<Object[]> findCategoryBestSalesWithCount(
+            Pageable pageable,
+            @Param("categoryIdx") Long categoryIdx
+    );
+
 }
