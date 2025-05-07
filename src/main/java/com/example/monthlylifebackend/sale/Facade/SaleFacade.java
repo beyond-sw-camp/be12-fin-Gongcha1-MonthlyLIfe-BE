@@ -51,7 +51,7 @@ public class SaleFacade {
 //    }
 
 
-    public Page<GetSaleListRes> getSaleSearch(
+    public Slice<GetSaleListSliceRes> getSaleSearch(
             Long categoryIdx,
             int page,
             int size,

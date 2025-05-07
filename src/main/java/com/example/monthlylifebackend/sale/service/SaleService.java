@@ -134,22 +134,39 @@ public class SaleService {
                 .orElseThrow(() -> new SaleHandler(ErrorStatus._NOT_FOUND_SALE_PRICE));
     }
 
-    public Page<GetSaleListRes> getSaleSearch(
+//    public Page<GetSaleListRes> getSaleSearch(
+//            Long categoryIdx,
+//            int page,
+//            int size,
+//            String keyword,
+//            String grade
+//    ) {
+//        PageRequest pageable = PageRequest.of(page, size);
+//        Specification<Sale> spec = Specification
+//                .where(SaleSpec.byCategory(categoryIdx))
+//                .and(SaleSpec.byKeyword(keyword))
+//                .and(SaleSpec.byGrade(grade));
+//
+//        return saleRepository.findAll(spec, pageable)
+//                .map(saleMapper::toGetSaleListRes);
+//    }
+
+    public Slice<GetSaleListSliceRes> getSaleSearch(
             Long categoryIdx,
             int page,
             int size,
             String keyword,
             String grade
     ) {
+        if (keyword == null) keyword = "";
+        if (grade == null) grade = "";
         PageRequest pageable = PageRequest.of(page, size);
-        Specification<Sale> spec = Specification
-                .where(SaleSpec.byCategory(categoryIdx))
-                .and(SaleSpec.byKeyword(keyword))
-                .and(SaleSpec.byGrade(grade));
+        grade = grade.concat("%");
+        keyword = "%".concat(keyword.concat("%"));
 
-        return saleRepository.findAll(spec, pageable)
-                .map(saleMapper::toGetSaleListRes);
+        return saleRepository.findByCategoryIdxAndGradeAndKeyword(categoryIdx, grade, keyword, pageable);
     }
+
 
     @Transactional
     public void deleteSale(Long saleIdx) {
@@ -306,7 +323,9 @@ public class SaleService {
 //        }).toList();
 //    }
 
-    /** 최신 상품 N개 조회 */
+    /**
+     * 최신 상품 N개 조회
+     */
     public List<NewSaleListRes> getNewArrivals(int limit) {
         return saleRepository.findTopNewArrivals(limit);
     }

@@ -179,107 +179,154 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
 
     @Query(
             value = """
-            SELECT
-              s.idx               AS idx,
-              s.name              AS name,
-              s.category_idx      AS categoryIdx,
-              (
-                SELECT pi.product_img_url
-                FROM sale_has_product shp2
-                  JOIN product_image pi ON shp2.product_code = pi.product_code
-                WHERE shp2.sale_idx = s.idx
-                ORDER BY pi.created_at
-                LIMIT 1
-              )                   AS imageUrl,
-              (
-                SELECT cd.name
-                FROM sale_has_product shp3
-                  JOIN `condition` cd ON shp3.condition_idx = cd.idx
-                WHERE shp3.sale_idx = s.idx
-                ORDER BY shp3.created_at
-                LIMIT 1
-              )                   AS conditionName,
-              MIN(sp.price)       AS price,
-              (
-                SELECT sp2.period
-                FROM sale_price sp2
-                WHERE sp2.sale_idx = s.idx
-                ORDER BY sp2.price
-                LIMIT 1
-              )                   AS period
-            FROM sale s
-              JOIN sale_price sp ON s.idx = sp.sale_idx
-            GROUP BY
-              s.idx, s.name, s.category_idx
-            ORDER BY
-              s.created_at DESC
-            LIMIT :limit
-            """,
+                    SELECT
+                      s.idx               AS idx,
+                      s.name              AS name,
+                      s.category_idx      AS categoryIdx,
+                      (
+                        SELECT pi.product_img_url
+                        FROM sale_has_product shp2
+                          JOIN product_image pi ON shp2.product_code = pi.product_code
+                        WHERE shp2.sale_idx = s.idx
+                        ORDER BY pi.created_at
+                        LIMIT 1
+                      )                   AS imageUrl,
+                      (
+                        SELECT cd.name
+                        FROM sale_has_product shp3
+                          JOIN `condition` cd ON shp3.condition_idx = cd.idx
+                        WHERE shp3.sale_idx = s.idx
+                        ORDER BY shp3.created_at
+                        LIMIT 1
+                      )                   AS conditionName,
+                      MIN(sp.price)       AS price,
+                      (
+                        SELECT sp2.period
+                        FROM sale_price sp2
+                        WHERE sp2.sale_idx = s.idx
+                        ORDER BY sp2.price
+                        LIMIT 1
+                      )                   AS period
+                    FROM sale s
+                      JOIN sale_price sp ON s.idx = sp.sale_idx
+                    GROUP BY
+                      s.idx, s.name, s.category_idx
+                    ORDER BY
+                      s.created_at DESC
+                    LIMIT :limit
+                    """,
             nativeQuery = true
     )
     List<NewSaleListRes> findTopNewArrivals(@Param("limit") int limit);
 
 
     @Query(value = """
+            SELECT
+              s.idx               AS sale_idx,
+              s.name              AS name,
+              s.category_idx      AS category_idx,
+              (
+                SELECT pi.product_img_url
+                FROM sale_has_product shp2
+                JOIN product_image pi
+                  ON shp2.product_code = pi.product_code
+                WHERE shp2.sale_idx = s.idx
+                ORDER BY pi.created_at ASC
+                LIMIT 1
+              ) AS image_url,
+              (
+                SELECT p3.manufacturer
+                FROM sale_has_product shp3
+                JOIN product p3
+                  ON shp3.product_code = p3.code
+                WHERE shp3.sale_idx = s.idx
+                ORDER BY shp3.created_at ASC
+                LIMIT 1
+              ) AS manufacturer,
+              (
+                SELECT cd.name
+                FROM sale_has_product shp4
+                JOIN `condition` cd
+                  ON shp4.condition_idx = cd.idx
+                WHERE shp4.sale_idx = s.idx
+                ORDER BY shp4.created_at ASC
+                LIMIT 1
+              ) AS condition_name,
+              MIN(sp.price) AS price,
+              (
+                SELECT sp2.period
+                FROM sale_price sp2
+                WHERE sp2.sale_idx = s.idx
+                ORDER BY sp2.price ASC
+                LIMIT 1
+              ) AS period,
+            
+              (
+                SELECT COUNT(*)
+                FROM subscribe_detail sd2
+                WHERE sd2.sale_idx = s.idx
+                  AND sd2.status   = 'SUBSCRIBING'
+              ) AS subscribe_count
+            
+            FROM sale s
+              JOIN sale_price sp
+                ON sp.sale_idx = s.idx
+            
+            GROUP BY
+              s.idx, s.name, s.category_idx
+            
+            ORDER BY
+              subscribe_count DESC
+            """,
+            nativeQuery = true)
+    List<GetBestSaleRes> findAllBestSales(Pageable pageable);
+
+
+    @Query(value = """
     SELECT
-      s.idx               AS sale_idx,
+      s.idx               AS idx,
       s.name              AS name,
-      s.category_idx      AS category_idx,
+      s.description       AS description,
+      s.category_idx      AS categoryIdx,
       (
+        /* 첫 번째 상품 썸네일 */
         SELECT pi.product_img_url
         FROM sale_has_product shp2
-        JOIN product_image pi
-          ON shp2.product_code = pi.product_code
+          JOIN product p2 ON shp2.product_code = p2.code
+          JOIN product_image pi ON pi.product_code = p2.code
         WHERE shp2.sale_idx = s.idx
         ORDER BY pi.created_at ASC
         LIMIT 1
-      ) AS image_url,
+      )                    AS imageUrl,
+      cd.name             AS conditionName,
+      MIN(sp.price)       AS price,
       (
-        SELECT p3.manufacturer
-        FROM sale_has_product shp3
-        JOIN product p3
-          ON shp3.product_code = p3.code
-        WHERE shp3.sale_idx = s.idx
-        ORDER BY shp3.created_at ASC
-        LIMIT 1
-      ) AS manufacturer,
-      (
-        SELECT cd.name
-        FROM sale_has_product shp4
-        JOIN `condition` cd
-          ON shp4.condition_idx = cd.idx
-        WHERE shp4.sale_idx = s.idx
-        ORDER BY shp4.created_at ASC
-        LIMIT 1
-      ) AS condition_name,
-      MIN(sp.price) AS price,
-      (
+        /* 최저가 옵션의 기간 */
         SELECT sp2.period
         FROM sale_price sp2
         WHERE sp2.sale_idx = s.idx
         ORDER BY sp2.price ASC
         LIMIT 1
-      ) AS period,
-
-      (
-        SELECT COUNT(*)
-        FROM subscribe_detail sd2
-        WHERE sd2.sale_idx = s.idx
-          AND sd2.status   = 'SUBSCRIBING'
-      ) AS subscribe_count
-
+      )                    AS period
     FROM sale s
-      JOIN sale_price sp
-        ON sp.sale_idx = s.idx
-
-    GROUP BY
-      s.idx, s.name, s.category_idx
-
-    ORDER BY
-      subscribe_count DESC
+      JOIN sale_price sp    ON s.idx = sp.sale_idx
+      JOIN sale_has_product shp ON s.idx = shp.sale_idx
+      JOIN product p        ON shp.product_code = p.code
+      JOIN `condition` cd   ON shp.condition_idx = cd.idx
+    WHERE s.category_idx = :categoryIdx
+      AND cd.name   LIKE :grade
+      AND s.name    LIKE :keyword
+    GROUP BY s.idx, s.name, s.description, s.category_idx, cd.name
+    ORDER BY s.created_at DESC
     """,
-            nativeQuery = true)
-    List<GetBestSaleRes> findAllBestSales(Pageable pageable);
+            nativeQuery = true
+    )
+    Slice<GetSaleListSliceRes> findByCategoryIdxAndGradeAndKeyword(
+            @Param("categoryIdx") Long categoryIdx,
+            @Param("grade") String grade,
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
 
 
 }

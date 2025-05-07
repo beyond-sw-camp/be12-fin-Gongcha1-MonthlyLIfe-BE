@@ -27,9 +27,9 @@ public class Sale extends BaseEntity {
 
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "condition_idx")
-    private Condition condition;
+//    @ManyToOne
+//    @JoinColumn(name = "condition_idx")
+//    private Condition condition;
 
     @ManyToOne
     @JoinColumn(name = "category_idx", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
