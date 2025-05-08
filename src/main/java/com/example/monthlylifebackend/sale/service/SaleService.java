@@ -44,7 +44,7 @@ public class SaleService {
     private final ItemRepository itemRepository;
     private final SaleMapper saleMapper;
 
-
+    @Transactional
     public Long registerSale(PostSaleRegisterReq dto) {
         // 1) Category 조회
         Category category = categoryRepository.findById(dto.getCategoryIdx())
