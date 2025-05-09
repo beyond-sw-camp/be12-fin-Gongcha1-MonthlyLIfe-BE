@@ -13,9 +13,11 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, String> {
     List<Product> findAllByCodeIn(List<String> codes);
 
-    @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
-    List<Product> findByNameContaining(String name);
+//    @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
+//    List<Product> findByNameContaining(String name);
 
     @Query("SELECT p FROM Product p WHERE p.name LIKE %:name%")
     Optional<Product> findFirstByNameContaining(String name);
+
+    List<Product> findTop3ByNameContaining(String itemName);
 }

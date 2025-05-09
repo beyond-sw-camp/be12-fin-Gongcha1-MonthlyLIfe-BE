@@ -8,6 +8,7 @@ import com.example.monthlylifebackend.chatV2.core.UserContext;
 import com.example.monthlylifebackend.chatV2.core.UserContextManager;
 import com.example.monthlylifebackend.chatV2.executor.InternalCommandExecutor;
 import com.example.monthlylifebackend.chatV2.protocol.ProtocolBuilder;
+import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.product.repository.ProductRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,36 +40,32 @@ public class GptMcpServer {
      * 자연어를 받아서 InternalCommand로 변환하는 메인 메서드
      */
     @Transactional
-    public Object  handleMcp(String userId, UserRequest userRequest) {
+    public Object handleMcp(String userId, UserRequest userRequest) {
         try {
 //            System.out.println("@@@@@@@@@@@@@@@@@@ : " + userId);
             userContextManager.addMessageToConversationLog(userId, "사용자: " + userRequest.message());
             List<String> conversation = userContextManager.getConversationLog(userId);
-            GptParsedResult parsed = validateParsedResult(callGptAndParse(userRequest.message() ,conversation));
+
+
+            GptParsedResult parsed = validateParsedResult(callGptAndParse(userRequest.message(), conversation));
 
             UserContext context = userContextManager.getContext(userId);
             InternalCommand command = commandDispatcher.dispatch(context, parsed);
 
-//            System.out.println(command.getParameters().get("item")+"@@@@@@@@@@@@@@@@@@@");
-            // Dispatcher 호출
-            if (command.getService()=="search"){
+            if (command.getService() == "search") {
 
                 return internalCommandExecutor.execute(command);
-            }else if(command.getService()=="rental"){
+            } else if (command.getService() == "rental") {
+
+//
+//                String confirmationMessage = "이 제품으로 구독하시겠습니까? (예/아니요)";
+//                userContextManager.addMessageToConversationLog(userId, "AI: " + confirmationMessage);
 
 
-                String confirmationMessage = "이 제품으로 구독하시겠습니까? (예/아니요)";
-                userContextManager.addMessageToConversationLog(userId, "AI: " + confirmationMessage);
+                return internalCommandExecutor.execute(command);
 
 
-//                System.out.println(userContextManager.getConversationLog(userId));
-
-                return "구독 여부 확인 중... 클라이언트에서 응답을 기다립니다.";
-
-
-
-            }
-            else {
+            } else {
                 return null;
             }
 
@@ -88,10 +85,10 @@ public class GptMcpServer {
     }
 
 
-    private GptParsedResult callGptAndParse(String message , List<String> conversation) throws Exception {
+    private GptParsedResult callGptAndParse(String message, List<String> conversation) throws Exception {
 
 //        System.out.println("@@@@@@@@@@@@@@@@@@@@@" + conversation);
-         Map<String, Object> requestBody = ProtocolBuilder.buildRequest(message  ,conversation);
+        Map<String, Object> requestBody = ProtocolBuilder.buildRequest(message, conversation);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -125,8 +122,15 @@ public class GptMcpServer {
         JsonNode args = objectMapper.readTree(argumentsJson);
 
         String item = args.has("item") ? args.get("item").asText() : "";
-        int duration = args.has("duration") ? args.get("duration").asInt() : 0;
+        item = item.replaceAll("\\s+", " ").trim();
+        Integer period = (args.has("period") && !args.get("period").isNull())
+                ? args.get("period").asInt() : null;
 
-        return new GptParsedResult(functionName, item, duration);
+        String condition = null;
+        if ("subscribe_item".equals(functionName) && args.has("condition") && !args.get("condition").isNull()) {
+            condition = args.get("condition").asText();
+        }
+
+        return new GptParsedResult(functionName, item, period, condition);
     }
 }

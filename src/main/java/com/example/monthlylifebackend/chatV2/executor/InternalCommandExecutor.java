@@ -1,9 +1,14 @@
 package com.example.monthlylifebackend.chatV2.executor;
 
+import com.example.monthlylifebackend.chatV2.api.model.res.GetAiSubscribeDetailRes;
 import com.example.monthlylifebackend.chatV2.core.InternalCommand;
 import com.example.monthlylifebackend.chatV2.core.UserContextManager;
+import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.common.code.status.ErrorStatus;
+import com.example.monthlylifebackend.common.exception.handler.McpHandler;
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.repository.ProductRepository;
+import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.repository.SubscribeRepository;
 import com.example.monthlylifebackend.user.model.User;
@@ -12,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,6 +26,10 @@ public class InternalCommandExecutor {
 
     private final ProductRepository productRepository;
     private final UserContextManager userContextManager;
+    private final UserRepository userRepository;
+
+    private final SalePriceRepository salePriceRepository;
+
 
 
     public Object execute(InternalCommand command) {
@@ -35,7 +45,7 @@ public class InternalCommandExecutor {
 
     private List<String> handleSearch(InternalCommand command) {
         String itemName = (String) command.getParameters().get("item");
-        List<Product> products = productRepository.findByNameContaining(itemName);
+        List<Product> products = productRepository.findTop3ByNameContaining(itemName);
 
         if(products==null){
             System.out.println(" 값 비었는디?");
@@ -47,49 +57,54 @@ public class InternalCommandExecutor {
                 .collect(Collectors.joining(", "));
         userContextManager.addMessageToConversationLog(userId, "AI: " +productNames);
 
-        return products.stream()
+
+        List<String> productNameList = products.stream()
                 .map(Product::getName)
                 .collect(Collectors.toList());
+
+
+        return productNameList;
     }
 
     // 구독 처리
-    private String handleRental(InternalCommand command) {
+    private Object  handleRental(InternalCommand command) {
         //  TOdo 구독을 처리해 주지 않고 구독 하시겠습니까 ? 예 or 아니오로 해서 해당 결제창 이동( 채팅저장 ) , 아니오 시 (채팅만 저장 )
 
-//        // 유저와 상품 정보 받기
-//        User user = userRepository.findById((String) command.getParameters().get("userId"))
-//                .orElseThrow(() -> new RuntimeException("User with ID not found"));
-//
-//
+        String userId = (String) command.getParameters().get("userId");
         String itemName = (String) command.getParameters().get("item");
-        Product rs = productRepository.findFirstByNameContaining(itemName).orElseThrow(() -> new RuntimeException("그딴거 없다"));
-
-
-//
-//
-//        int period = (int) command.getParameters().get("duration");
-//
-//
-//
-//        // 구독 처리
-//        Subscribe subscription = Subscribe.builder()
-//                .user(user).
-//                .item(rs.getName())
-//                .durationMonths(period)
-//                .build();
-//
-//        subscribeRepository.save(subscription);
-//
+        productRepository.findFirstByNameContaining(itemName).orElseThrow(() -> new RuntimeException("그딴거 없다"));
+        Integer period = (Integer) command.getParameters().get("period");
+        String condition = (String) command.getParameters().get("condition");
 
 
 
-        // Todo 상품 ID랑,
-//            saleIdx:      saleStore.saleDetail.saleIdx,  // 판매 상품 ID
-//             salePriceIdx: sel.salePriceIdx,              // 선택된 옵션의 PK
-//            period:       sel.period,                    // 개월 수
-//               price:        sel.price,                     // 월 가격
-//
+        if (condition == null || period == null) {
+            StringBuilder msg = new StringBuilder("구독을 위해 ");
 
-        return "구독 처리 완료: " ;
+            if (condition == null) msg.append("급(S/A/B/C)");
+            if (condition == null && period == null) msg.append("과 ");
+            if (period == null) msg.append("기간(개월 수)");
+
+            msg.append("이 필요해요. 예: A급 3개월");
+
+            userContextManager.addMessageToConversationLog(userId, "AI: " + msg);
+
+            return msg.toString();
+        }
+
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@" + condition);
+
+        GetAiSubscribeDetailRes rs = salePriceRepository.findSalePriceInfo(itemName, period, condition).orElseThrow(() -> new RuntimeException("그딴거 없다"));
+
+
+
+        String aiMessage = String.format("이 조건으로 구독하시겠습니까?\n상품: %s\n등급: %s\n기간: %d개월\n예/아니오로 답해주세요.",
+                itemName, condition, period);
+        userContextManager.addMessageToConversationLog(userId, "AI: " + aiMessage);
+
+
+
+
+        return rs;
     }
 }

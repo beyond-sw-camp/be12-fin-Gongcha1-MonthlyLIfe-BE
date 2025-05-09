@@ -5,6 +5,7 @@ import com.example.monthlylifebackend.chatV2.api.model.res.GptParsedResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
@@ -16,15 +17,19 @@ public class CommandDispatcher {
 
         switch (intent) {
             case "subscribe_item":
-                return new InternalCommand(
-                        "rental",
-                        "subscribe",
-                        Map.of(
-                                "item", parsed.item(),
-                                "duration", parsed.duration(),
-                                "userId", context.getUserId()
-                        )
-                );
+                Map<String, Object> params = new HashMap<>();
+                params.put("item", parsed.item());
+                params.put("userId", context.getUserId());
+
+                if (parsed.period() != null) {
+                    params.put("period", parsed.period());
+                }
+                if (parsed.condition() != null) {
+                    params.put("condition", parsed.condition());
+                }
+
+                return new InternalCommand("rental", "subscribe", params);
+
             case "cancel_item":
                 return new InternalCommand(
                         "rental",
@@ -39,7 +44,7 @@ public class CommandDispatcher {
                         "extend",
                         Map.of(
                                 "item", parsed.item(),
-                                "duration", parsed.duration(),
+                                "period", parsed.period(),
                                 "userId", context.getUserId()
 
                         )
