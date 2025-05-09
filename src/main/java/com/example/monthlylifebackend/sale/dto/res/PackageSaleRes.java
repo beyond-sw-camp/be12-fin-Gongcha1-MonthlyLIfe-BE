@@ -20,7 +20,7 @@ public class PackageSaleRes {
     @Getter @AllArgsConstructor @NoArgsConstructor
     public static class ProductInfo {
         private String productCode;
-        private String imageUrl;
+        private List<String> imageUrls;
         private String conditionName;
     }
 
