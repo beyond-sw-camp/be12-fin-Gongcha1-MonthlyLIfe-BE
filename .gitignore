@@ -41,3 +41,4 @@ src/main/resources/application-dev.yml
 Dockerfile
 docker-compose.yml
 /logs/app-log.log
+.crt
