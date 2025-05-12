@@ -13,6 +13,20 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MariaDBDialect
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USER}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enabled: true
+            required: true
+          auth: true
+          timeout: 5000
+
   mvc:
     static-path-pattern: /uploads/**
   web:
