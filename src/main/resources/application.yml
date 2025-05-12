@@ -1,6 +1,15 @@
 spring:
 #  profiles:
 #    active: dev
+  data:
+    elasticsearch:
+      uris: ${ES_URI}
+      username: ${ES_USERNAME}
+      password: ${ES_PASSWORD}
+#      ssl:
+#        certificate: file:/es-ca.crt   #src/main/resources 밑에 넣으면 classpath로 인식됨
+#        verification-mode: certificate
+
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
@@ -33,6 +42,7 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace
+    org.springframework.data.elasticsearch: DEBUG
 
 file:
   upload-dir: ${UPLOAD_DIR}
