@@ -34,7 +34,7 @@ public class Subscribe extends BaseEntity {
     @Schema(description = "구독한 사용자" ,example = "1")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "billing_key_idx")
     @Schema(description = "빌링 키 정보")
     private BillingKey billingKey;
