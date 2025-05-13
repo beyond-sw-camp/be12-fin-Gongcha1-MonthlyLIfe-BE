@@ -13,6 +13,18 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MariaDBDialect
 
+  mail:
+    host: ${EMAIL_HOST}
+    port: ${EMAIL_PORT}
+    username: ${EMAIL_USER}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          localhost: client.local.dev
+
   mvc:
     static-path-pattern: /uploads/**
   web:
@@ -74,3 +86,6 @@ springdoc:
   swagger-ui:
     url: /docs/v3/api-docs
     path: /docs/swagger-ui
+
+openai:
+  api-key: ${api_key}

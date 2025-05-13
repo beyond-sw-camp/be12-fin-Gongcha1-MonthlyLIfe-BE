@@ -82,7 +82,20 @@ public enum ErrorStatus implements BaseErrorCode {
     _NOT_FOUND_RENTALDELIVERY(HttpStatus.NOT_FOUND, "RETURNDELIVERY4004", "해당 반납을 찾을 수 없습니다."),
 
     //ItemLocation에러
-    _NOT_FOUND_ITEMLOCATION(HttpStatus.NOT_FOUND, "ITEMLOCATION4004", "해당 반납을 찾을 수 없습니다.");
+    _NOT_FOUND_ITEMLOCATION(HttpStatus.NOT_FOUND, "ITEMLOCATION4004", "해당 반납을 찾을 수 없습니다."),
+    // MCP 또는 GPT 에러 (5000번대)
+    _NOT_FOUND_COMMAND(HttpStatus.BAD_REQUEST, "MCP5000", "알 수 없는 명령어입니다."),
+    _NOT_FOUND_PRODUCT_BY_NAME(HttpStatus.NOT_FOUND, "MCP5001", "상품 이름으로 제품을 찾을 수 없습니다."),
+    _MISSING_CONDITION(HttpStatus.BAD_REQUEST, "MCP5002", "구독 등급이 누락되었습니다. 예: A급"),
+    _MISSING_PERIOD(HttpStatus.BAD_REQUEST, "MCP5003", "구독 기간이 누락되었습니다. 예: 3개월"),
+    _MISSING_CONDITION_AND_PERIOD(HttpStatus.BAD_REQUEST, "MCP5004", "구독 등급과 기간이 모두 누락되었습니다. 예: A급 3개월"),
+    _INVALID_AI_ARGUMENT(HttpStatus.BAD_REQUEST, "MCP5005", "AI가 반환한 파라미터가 유효하지 않습니다."),
+    _INTERNAL_CHAT_PROCESSING_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "MCP5006", "AI 처리 중 내부 오류가 발생했습니다."),
+    _GPT_API_CALL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MCP5007", "GPT API 호출에 실패했습니다."),
+    _MISSING_USER_CONTEXT(HttpStatus.BAD_REQUEST, "MCP5008", "사용자 컨텍스트가 존재하지 않습니다."),
+    _NOT_FOUND_SALE_PRICE_INFO(HttpStatus.NOT_FOUND, "MCP5009", "해당 조건의 구독 가격 정보를 찾을 수 없습니다."),
+    _EMPTY_SEARCH_RESULT(HttpStatus.NOT_FOUND, "MCP5010", "해당 검색어로 상품을 찾을 수 없습니다."),
+    _TOOLCALL_ARGUMENT_PARSE_ERROR(HttpStatus.BAD_REQUEST, "MCP5011", "AI가 반환한 arguments 파싱에 실패했습니다.");
 
 
     private final HttpStatus httpStatus;

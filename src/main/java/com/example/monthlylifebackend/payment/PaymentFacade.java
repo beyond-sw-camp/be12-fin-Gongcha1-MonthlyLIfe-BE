@@ -1,6 +1,7 @@
 package com.example.monthlylifebackend.payment;
 
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
+import com.example.monthlylifebackend.email.EmailService;
 import com.example.monthlylifebackend.payment.dto.DailySettlementDto;
 import com.example.monthlylifebackend.payment.dto.req.PostBillingKeyReq;
 import com.example.monthlylifebackend.payment.dto.req.PostWebhookReq;
@@ -26,6 +27,7 @@ public class PaymentFacade {
     private final SubscribeService subscribeService;
     private final UserService userService;
     private final SettlementService settlementService;
+    private final EmailService emailService;
 
 
     public Long createPaymentMethod(PostBillingKeyReq dto, User user) {
@@ -81,11 +83,11 @@ public class PaymentFacade {
         settlementService.save(dto.getSettlement());
         subscribeService.saveDelayedSubscribeList(dto.getDelayedSubscribeList());
         userService.saveDelayedUserList(dto.getDelayedUserList());
+
+        for(Subscribe subscribe : dto.getDelayedSubscribeList()) {
+            emailService.sendDelayEmail(subscribe.getUser(), subscribe);
+        }
     }
-
-
-
-
 
     private Long extractSubscribeIdx(String str) {
         String[] parts = str.split("-");
