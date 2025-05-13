@@ -2,7 +2,6 @@ package com.example.monthlylifebackend.sale.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.product.model.Category;
-import com.example.monthlylifebackend.product.model.Condition;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,9 +26,9 @@ public class Sale extends BaseEntity {
 
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "condition_idx")
-    private Condition condition;
+//    @ManyToOne
+//    @JoinColumn(name = "condition_idx")
+//    private Condition condition;
 
     @ManyToOne
     @JoinColumn(name = "category_idx", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))

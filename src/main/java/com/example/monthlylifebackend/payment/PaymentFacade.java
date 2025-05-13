@@ -89,10 +89,6 @@ public class PaymentFacade {
         }
     }
 
-
-
-
-
     private Long extractSubscribeIdx(String str) {
         String[] parts = str.split("-");
         return Long.parseLong(parts[1]);

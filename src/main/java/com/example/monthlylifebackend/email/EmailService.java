@@ -18,22 +18,24 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    @Async
-    public void sendMail(String email, String subject, String text) {
+    private void sendMail(String email, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject(subject);
         message.setText(text);
+        message.setFrom("celarim.test.com");
         mailSender.send(message);
     }
 
+    @Async
+
     public void sendDelayEmail(User user, Subscribe subscribe) {
-        String subejct = "가구 구독 연체 안내문";
+        String subject = "가구 구독 연체 안내문";
 
         StringBuilder delayedSubscribe = new StringBuilder();
         Long price = 0L;
         for(SubscribeDetail subscribeDetail : subscribe.getSubscribeDetailList()) {
-            if(subscribeDetail.getEndAt().isBefore(LocalDateTime.now())) {
+            if(subscribeDetail.getEndAt().isAfter(LocalDateTime.now())) {
                 delayedSubscribe.append(subscribeDetail.getSale().getName()).append(" ");
                 price += subscribeDetail.getPrice();
             }
@@ -52,7 +54,7 @@ public class EmailService {
                 감사합니다.
                 """, user.getId(), delayedSubscribeStr, price, LocalDate.now().plusDays(7).toString());
 
-        sendMail(user.getEmail(), subejct, text);
+        sendMail(user.getEmail(), subject, text);
 
     }
 }
