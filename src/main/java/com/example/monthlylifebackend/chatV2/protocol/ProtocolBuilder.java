@@ -6,6 +6,7 @@ import java.util.Map;
 public class ProtocolBuilder {
 
     public static Map<String, Object> buildRequest(String userMessage ,List<String> conversation) {
+        System.out.println(conversation+"@@@@@@@@@@@@@@@@@@");
         return Map.of(
                 "model", "gpt-4-1106-preview",
                 "messages", List.of(

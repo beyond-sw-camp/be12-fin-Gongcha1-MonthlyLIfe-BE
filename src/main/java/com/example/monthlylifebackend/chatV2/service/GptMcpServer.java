@@ -2,18 +2,15 @@ package com.example.monthlylifebackend.chatV2.service;
 
 import com.example.monthlylifebackend.chatV2.api.model.req.UserRequest;
 import com.example.monthlylifebackend.chatV2.api.model.res.GptParsedResult;
-import com.example.monthlylifebackend.chatV2.core.CommandDispatcher;
-import com.example.monthlylifebackend.chatV2.core.InternalCommand;
-import com.example.monthlylifebackend.chatV2.core.UserContext;
-import com.example.monthlylifebackend.chatV2.core.UserContextManager;
+import com.example.monthlylifebackend.chatV2.core.*;
 import com.example.monthlylifebackend.chatV2.executor.InternalCommandExecutor;
 import com.example.monthlylifebackend.chatV2.protocol.ProtocolBuilder;
-import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.product.repository.ProductRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -24,6 +21,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GptMcpServer {
 
     @Value("${openai.api-key}")
@@ -32,9 +30,11 @@ public class GptMcpServer {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final ProductRepository productRepository;
-    private final UserContextManager userContextManager;
+//    private final UserContextManager userContextManager;
+    private final EsUserContextManager userContextManager;
     private final CommandDispatcher commandDispatcher;
     private final InternalCommandExecutor internalCommandExecutor;
+    private final EsChatLogService esChatLogService;
 
     /**
      * 자연어를 받아서 InternalCommand로 변환하는 메인 메서드
@@ -42,24 +42,20 @@ public class GptMcpServer {
     @Transactional
     public Object handleMcp(String userId, UserRequest userRequest) {
         try {
-//            System.out.println("@@@@@@@@@@@@@@@@@@ : " + userId);
-            userContextManager.addMessageToConversationLog(userId, "사용자: " + userRequest.message());
+//            userContextManager.addMessageToConversationLog(userId, "사용자: " + userRequest.message());
+
+            esChatLogService.saveUserLogAsync(userId, userRequest.message());
             List<String> conversation = userContextManager.getConversationLog(userId);
 
 
             GptParsedResult parsed = validateParsedResult(callGptAndParse(userRequest.message(), conversation));
 
-            UserContext context = userContextManager.getContext(userId);
-            InternalCommand command = commandDispatcher.dispatch(context, parsed);
+            InternalCommand command = commandDispatcher.dispatch(userId, parsed);
 
             if (command.getService() == "search") {
 
                 return internalCommandExecutor.execute(command);
             } else if (command.getService() == "rental") {
-
-//
-//                String confirmationMessage = "이 제품으로 구독하시겠습니까? (예/아니요)";
-//                userContextManager.addMessageToConversationLog(userId, "AI: " + confirmationMessage);
 
 
                 return internalCommandExecutor.execute(command);
@@ -71,6 +67,8 @@ public class GptMcpServer {
 
 
         } catch (Exception e) {
+            log.error("handleMcp 내부 처리 중 오류 발생", e); // ❗ 로그 찍고
+
             e.printStackTrace();
             throw new RuntimeException("MCP 서버 오류", e);
         }
@@ -87,7 +85,6 @@ public class GptMcpServer {
 
     private GptParsedResult callGptAndParse(String message, List<String> conversation) throws Exception {
 
-//        System.out.println("@@@@@@@@@@@@@@@@@@@@@" + conversation);
         Map<String, Object> requestBody = ProtocolBuilder.buildRequest(message, conversation);
 
         HttpHeaders headers = new HttpHeaders();
@@ -101,6 +98,8 @@ public class GptMcpServer {
                 entity,
                 Map.class
         );
+
+        System.out.println(response.getBody());
 
         Map messageMap = (Map) ((Map) ((List<?>) response.getBody().get("choices")).get(0)).get("message");
 
@@ -123,6 +122,7 @@ public class GptMcpServer {
 
         String item = args.has("item") ? args.get("item").asText() : "";
         item = item.replaceAll("\\s+", " ").trim();
+
         Integer period = (args.has("period") && !args.get("period").isNull())
                 ? args.get("period").asInt() : null;
 
@@ -134,3 +134,6 @@ public class GptMcpServer {
         return new GptParsedResult(functionName, item, period, condition);
     }
 }
+
+
+
