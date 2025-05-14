@@ -41,11 +41,14 @@ jobs:
           command: |
             echo "Using TAG << pipeline.parameters.tag >>"
             docker build -t $DOCKERHUB_USERNAME/mlback:<< pipeline.parameters.tag >> .
+            docker build -t $DOCKERHUB_USERNAME/mlbatch:<< pipeline.parameters.tag >> ./batch
+
       - run:
           name: Push application Docker image
           command: |
             docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
             docker push $DOCKERHUB_USERNAME/mlback:<< pipeline.parameters.tag >>
+            docker push $DOCKERHUB_USERNAME/mlbatch:<< pipeline.parameters.tag >>
 workflows:
   version: 2
   build-and-deploy:
