@@ -99,6 +99,7 @@ public class GptMcpServer {
                 Map.class
         );
 
+
         System.out.println(response.getBody());
 
         Map messageMap = (Map) ((Map) ((List<?>) response.getBody().get("choices")).get(0)).get("message");
