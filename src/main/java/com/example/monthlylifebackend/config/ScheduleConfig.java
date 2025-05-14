@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ScheduleConfig {
     private final PaymentFacade paymentFacade;
-    @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 */10 * * * *", zone = "Asia/Seoul")
     public void dailyPayout() {
         log.info(LocalDateTime.now() + "schedule start");
         long start = System.currentTimeMillis();
