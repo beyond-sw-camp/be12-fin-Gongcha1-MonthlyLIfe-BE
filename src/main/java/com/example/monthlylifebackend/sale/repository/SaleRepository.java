@@ -1,10 +1,11 @@
 package com.example.monthlylifebackend.sale.repository;
 
 
-import com.example.monthlylifebackend.sale.dto.res.*;
+import com.example.monthlylifebackend.sale.dto.res.GetBestSaleRes;
+import com.example.monthlylifebackend.sale.dto.res.GetSaleListSliceRes;
+import com.example.monthlylifebackend.sale.dto.res.NewSaleListRes;
 import com.example.monthlylifebackend.sale.model.Sale;
 import com.example.monthlylifebackend.sale.model.SalePrice;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -78,6 +79,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
     Slice<GetSaleListSliceRes> findByCategoryIdx(
             @Param("categoryIdx") Long categoryIdx,
             Pageable pageable);
+
 
 
     Optional<Sale> findByIdxAndCategoryIdx(Long saleIdx, Long categoryIdx);
