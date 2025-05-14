@@ -44,7 +44,7 @@ public class GptMcpServer {
         try {
 //            userContextManager.addMessageToConversationLog(userId, "사용자: " + userRequest.message());
 
-            esChatLogService.saveUserLogAsync(userId, userRequest.message());
+            esChatLogService.saveUserLogAsync(userId, "user : "+ userRequest.message());
             List<String> conversation = userContextManager.getConversationLog(userId);
 
 

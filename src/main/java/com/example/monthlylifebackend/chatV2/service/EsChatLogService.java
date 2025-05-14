@@ -19,17 +19,21 @@ public class EsChatLogService {
     @Async
     public void saveUserLogAsync(String userId, String message) {
         // 기존 로직 복붙
-        UserContextDocument doc = esRepo.findById(userId)
-                .orElseGet(() -> {
-                    var newDoc = new UserContextDocument();
-                    newDoc.setUserId(userId);
-                    newDoc.setConversationLog(new ArrayList<>());
-                    newDoc.setCreatedAt(Instant.now());
-                    return newDoc;
-                });
+        UserContextDocument doc = esRepo.findById(userId).orElse(null);
 
-        List<String> log = doc.getConversationLog();
-        log.add(message);
+        if (doc == null) {
+            // 유저가 처음 왔을 때 → 메시지 포함해서 초기화
+            doc = new UserContextDocument();
+            doc.setUserId(userId);
+            List<String> initLog = new ArrayList<>();
+            initLog.add(message);
+            doc.setConversationLog(initLog);
+            doc.setCreatedAt(Instant.now());
+        } else {
+            // 기존 유저 → 그냥 append
+            doc.getConversationLog().add(message);
+        }
+
         doc.setCreatedAt(Instant.now());
         esRepo.save(doc);
     }
