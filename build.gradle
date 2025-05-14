@@ -28,6 +28,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    //이메일 설정
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+
 
     //롬복
     compileOnly 'org.projectlombok:lombok'
@@ -72,6 +76,10 @@ dependencies {
     //예외 및 유효성 검사
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    //elasticsearch 설정
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
 
     //테스트 코드 관련
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

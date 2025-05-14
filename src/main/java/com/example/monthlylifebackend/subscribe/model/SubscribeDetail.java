@@ -50,15 +50,15 @@ public class SubscribeDetail extends BaseEntity {
     @Schema(description = "버전 (낙관적 락)", example = "0")
     private Long version;
 
-    @OneToMany(mappedBy = "subscribeDetail")
+    @OneToMany(mappedBy = "subscribeDetail", fetch = FetchType.LAZY)
     @Schema(description = "수리 요청 목록")
     private List<RepairRequest> repairRequestList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "subscribeDetail", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subscribeDetail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Schema(description = "배송 내역")
     private List<RentalDelivery> rentalDeliveryList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "subscribeDetail")
+    @OneToMany(mappedBy = "subscribeDetail", fetch = FetchType.LAZY)
     @Schema(description = "반납 내역")
     private List<ReturnDelivery> returnDeliveryList = new ArrayList<>();
 
