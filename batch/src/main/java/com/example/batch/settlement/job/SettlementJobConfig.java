@@ -1,9 +1,6 @@
 package com.example.batch.settlement.job;
 
-import com.example.batch.settlement.core.domain.Payment;
-import com.example.batch.settlement.core.domain.Settlement;
-import com.example.batch.settlement.core.domain.Subscribe;
-import com.example.batch.settlement.core.domain.User;
+import com.example.batch.settlement.core.domain.*;
 import com.example.batch.settlement.core.repository.PaymentRepository;
 import com.example.batch.settlement.core.repository.SettlementRepository;
 import com.example.batch.settlement.core.repository.SubscribeRepository;
@@ -31,6 +28,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -56,7 +54,7 @@ public class SettlementJobConfig {
     @Bean
     public Step settlementStep(JobRepository jobRepository, ItemReader<Payment> settlementReader, ItemWriter<Payment> settlementClassifierWriter) {
         return new StepBuilder("settlementStep", jobRepository)
-                .<Payment, Payment>chunk(30, platformTransactionManager)
+                .<Payment, Payment>chunk(50, platformTransactionManager)
                 .reader(settlementReader)
                 .writer(settlementClassifierWriter)
                 .transactionManager(platformTransactionManager)
@@ -66,7 +64,7 @@ public class SettlementJobConfig {
     @Bean
     public ItemReader<Payment> settlementReader() {
         System.out.println("reader 실행");
-        LocalDateTime today = LocalDateTime.now().minusHours(17);
+        LocalDateTime today = LocalDateTime.now();
         LocalDateTime yesterday = today.minusDays(1);
 
         return new RepositoryItemReaderBuilder<Payment>()
@@ -129,12 +127,13 @@ public class SettlementJobConfig {
             Long totalAmount = items.getItems().stream()
                     .mapToLong(Payment::getPrice)
                     .sum();
+            int cnt = items.size();
 
             // 예: 오늘자 정산 객체를 하나 생성 or 업데이트
             Settlement settlement = settlementRepository.findBySettlementDate(LocalDate.now())
                     .orElseGet(() -> new Settlement(LocalDate.now(), 0L));
 
-            settlement.addAmount(totalAmount);
+            settlement.addAmount(totalAmount, cnt);
             settlementRepository.save(settlement);
         };
     }
@@ -150,7 +149,9 @@ public class SettlementJobConfig {
                 userRepository.save(subscribe.getUser());
                 subscribeRepository.save(subscribe);
 
-                emailService.sendDelayEmail(user, subscribe);
+                List<SubscribeDetail> list =  subscribe.getSubscribeDetailList();
+                list.size();
+                emailService.sendDelayEmail(user, list);
             }
         };
     }

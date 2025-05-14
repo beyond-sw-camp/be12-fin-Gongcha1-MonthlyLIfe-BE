@@ -12,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -30,14 +29,18 @@ public class Settlement extends BaseEntity {
     private Long totalRefundAmount;
     private Long netAmount;
     private int transactionCount;
-    private LocalDateTime settledAt;
 
     public Settlement(LocalDate settlementDate, Long totalSalesAmount) {
         this.settlementDate = settlementDate;
         this.totalSalesAmount = totalSalesAmount;
+        this.netAmount = totalSalesAmount;
+        this.totalRefundAmount = 0L;
+        this.transactionCount = 0;
     }
 
-    public void addAmount(Long amount) {
+    public void addAmount(Long amount, int cnt) {
         this.totalSalesAmount += amount;
+        this.netAmount += amount;
+        this.transactionCount+=cnt;
     }
 }

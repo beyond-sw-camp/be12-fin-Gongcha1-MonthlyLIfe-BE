@@ -24,7 +24,7 @@ spring:
       mail:
         smtp:
           auth: true
-          timeout: 5000
+          timeout: 10000
           localhost: client.local.dev
 
 logging:

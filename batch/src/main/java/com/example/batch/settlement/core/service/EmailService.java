@@ -1,6 +1,5 @@
 package com.example.batch.settlement.core.service;
 
-import com.example.batch.settlement.core.domain.Subscribe;
 import com.example.batch.settlement.core.domain.SubscribeDetail;
 import com.example.batch.settlement.core.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +28,12 @@ public class EmailService {
     }
 
     @Async
-    public void sendDelayEmail(User user, Subscribe subscribe) {
+    public void sendDelayEmail(User user, List<SubscribeDetail> subscribeDetailList) {
         String subject = "가구 구독 연체 안내문";
 
         StringBuilder delayedSubscribe = new StringBuilder();
         Long price = 0L;
-        for(SubscribeDetail subscribeDetail : subscribe.getSubscribeDetailList()) {
+        for(SubscribeDetail subscribeDetail : subscribeDetailList) {
             if(subscribeDetail.getEndAt().isAfter(LocalDateTime.now())) {
                 delayedSubscribe.append(subscribeDetail.getSale().getName()).append(" ");
                 price += subscribeDetail.getPrice();
