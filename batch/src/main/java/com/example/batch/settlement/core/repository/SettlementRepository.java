@@ -7,5 +7,5 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface SettlementRepository extends JpaRepository<Settlement, Long> {
-    Optional<Settlement> findByDate(LocalDate date);
+    Optional<Settlement> findBySettlementDate(LocalDate date);
 }

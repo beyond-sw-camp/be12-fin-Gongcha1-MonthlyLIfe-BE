@@ -9,6 +9,7 @@ import com.example.batch.settlement.core.repository.SettlementRepository;
 import com.example.batch.settlement.core.repository.SubscribeRepository;
 import com.example.batch.settlement.core.repository.UserRepository;
 import com.example.batch.settlement.core.service.EmailService;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -36,11 +37,11 @@ import java.util.Collections;
 @EnableTransactionManagement
 public class SettlementJobConfig {
     private final PlatformTransactionManager platformTransactionManager;
-
-    private final PaymentRepository paymentRepository;
+    private final EntityManagerFactory entityManagerFactory;
     private final SubscribeRepository subscribeRepository;
     private final UserRepository userRepository;
     private final SettlementRepository settlementRepository;
+    private final PaymentRepository paymentRepository;
 
     private final EmailService emailService;
 
@@ -55,29 +56,54 @@ public class SettlementJobConfig {
     @Bean
     public Step settlementStep(JobRepository jobRepository, ItemReader<Payment> settlementReader, ItemWriter<Payment> settlementClassifierWriter) {
         return new StepBuilder("settlementStep", jobRepository)
-                .<Payment, Payment>chunk(10, platformTransactionManager)
+                .<Payment, Payment>chunk(30, platformTransactionManager)
                 .reader(settlementReader)
                 .writer(settlementClassifierWriter)
                 .transactionManager(platformTransactionManager)
                 .build();
     }
 
-
     @Bean
     public ItemReader<Payment> settlementReader() {
         System.out.println("reader 실행");
-        LocalDateTime today = LocalDate.now().atStartOfDay();
+        LocalDateTime today = LocalDateTime.now().minusHours(17);
         LocalDateTime yesterday = today.minusDays(1);
 
         return new RepositoryItemReaderBuilder<Payment>()
                 .repository(paymentRepository)
                 .methodName("findAllByScheduledAtGreaterThanEqualAndScheduledAtLessThan")
                 .arguments(yesterday, today)
-                .pageSize(3)
+                .pageSize(50)
                 .sorts(Collections.singletonMap("scheduledAt", Sort.Direction.ASC))
                 .name("paymentReader")
                 .build();
     }
+
+
+//    @Bean
+//    public JpaPagingItemReader<Payment> settlementReader() {
+//        System.out.println("reader 실행");
+//        LocalDateTime today = LocalDateTime.now();
+//        LocalDateTime yesterday = today.minusDays(1);
+//
+//
+//
+//        return new JpaPagingItemReaderBuilder<Payment>()
+//                .name("settlementReader")
+//                .entityManagerFactory(entityManagerFactory)
+//                .queryString("""
+//                        SELECT p FROM Payment p
+//                        JOIN FETCH p.subscribe s
+//                        JOIN FETCH s.user
+//                        JOIN FETCH s.subscribeDetailList d
+//                        JOIN FETCH d.sale sl
+//                        WHERE p.scheduledAt >= :start AND p.scheduledAt < :end
+//                        ORDER BY p.scheduledAt ASC
+//                        """)
+//                .parameterValues(Map.of("start", yesterday, "end", today))
+//                .pageSize(10)
+//                .build();
+//    }
 
     @Bean
     public ItemWriter<Payment> settlementClassifierWriter() {
@@ -105,7 +131,7 @@ public class SettlementJobConfig {
                     .sum();
 
             // 예: 오늘자 정산 객체를 하나 생성 or 업데이트
-            Settlement settlement = settlementRepository.findByDate(LocalDate.now())
+            Settlement settlement = settlementRepository.findBySettlementDate(LocalDate.now())
                     .orElseGet(() -> new Settlement(LocalDate.now(), 0L));
 
             settlement.addAmount(totalAmount);

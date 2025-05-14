@@ -26,7 +26,7 @@ public class SubscribeDetail extends BaseEntity {
 
     private Integer period;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "sale_idx")
     private Sale sale;
 

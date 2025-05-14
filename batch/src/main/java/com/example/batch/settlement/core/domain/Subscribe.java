@@ -3,6 +3,7 @@ package com.example.batch.settlement.core.domain;
 import com.example.batch.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,8 @@ public class Subscribe extends BaseEntity {
     private Long billingKeyIdx;
 
     @Builder.Default
-    @OneToMany(mappedBy = "subscribe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "subscribe")
+    @BatchSize(size = 50)
     private List<SubscribeDetail> subscribeDetailList = new ArrayList<>();
 
     @Version

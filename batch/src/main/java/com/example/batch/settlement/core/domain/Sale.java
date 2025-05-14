@@ -26,5 +26,7 @@ public class Sale extends BaseEntity {
     private String description;
 
     private Long categoryIdx;
+
+
 }
 

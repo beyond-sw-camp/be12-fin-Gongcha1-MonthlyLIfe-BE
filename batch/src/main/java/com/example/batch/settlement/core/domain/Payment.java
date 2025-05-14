@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+//
 public class Payment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,13 +35,6 @@ public class Payment extends BaseEntity {
         this.scheduledAt = scheduledAt;
         isPaid = false;
     }
-
-
-
-    public void paySuccess() {
-        isPaid = true;
-    }
-
     @ManyToOne
     @JoinColumn(name = "subscribe_idx")
     private Subscribe subscribe;
