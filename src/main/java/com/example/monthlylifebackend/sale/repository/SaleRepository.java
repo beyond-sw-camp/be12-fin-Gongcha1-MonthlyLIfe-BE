@@ -329,4 +329,113 @@ public interface SaleRepository extends JpaRepository<Sale, Long>, JpaSpecificat
     );
 
 
+    @Query(value = """
+        SELECT
+          s.idx               AS idx,
+          s.name              AS name,
+          s.description       AS description,
+          s.category_idx      AS categoryIdx,
+          (
+            SELECT pi.product_img_url
+            FROM sale_has_product shp2
+            JOIN product p2 ON shp2.product_code = p2.code
+            JOIN product_image pi ON pi.product_code = p2.code
+            WHERE shp2.sale_idx = s.idx
+            ORDER BY pi.created_at ASC
+            LIMIT 1
+          )                  AS imageUrl,
+          cd.name             AS conditionName,
+          MIN(sp.price)       AS price,
+          (
+            SELECT sp2.period
+            FROM sale_price sp2
+            WHERE sp2.sale_idx = s.idx
+            ORDER BY sp2.price ASC
+            LIMIT 1
+          )                  AS period
+        FROM sale s
+        JOIN sale_price sp ON s.idx = sp.sale_idx
+        JOIN sale_has_product shp ON s.idx = shp.sale_idx
+        JOIN product p ON shp.product_code = p.code
+        JOIN `condition` cd ON shp.condition_idx = cd.idx
+        WHERE s.category_idx = :categoryIdx
+          AND cd.name LIKE :grade
+        GROUP BY s.idx, s.name, s.description, s.category_idx, cd.name
+        ORDER BY s.created_at DESC
+        """,
+            countQuery = """
+        SELECT COUNT(DISTINCT s.idx)
+        FROM sale s
+        JOIN sale_price sp ON s.idx = sp.sale_idx
+        JOIN sale_has_product shp ON s.idx = shp.sale_idx
+        JOIN product p ON shp.product_code = p.code
+        JOIN `condition` cd ON shp.condition_idx = cd.idx
+        WHERE s.category_idx = :categoryIdx
+          AND cd.name LIKE :grade
+        """,
+            nativeQuery = true
+    )
+    Slice<GetSaleListSliceRes> findFilteredWithoutKeyword(
+            @Param("categoryIdx") Long categoryIdx,
+            @Param("grade") String grade,
+            Pageable pageable
+    );
+
+    @Query(value = """
+        SELECT
+          s.idx               AS idx,
+          s.name              AS name,
+          s.description       AS description,
+          s.category_idx      AS categoryIdx,
+          (
+            SELECT pi.product_img_url
+            FROM sale_has_product shp2
+            JOIN product p2 ON shp2.product_code = p2.code
+            JOIN product_image pi ON pi.product_code = p2.code
+            WHERE shp2.sale_idx = s.idx
+            ORDER BY pi.created_at ASC
+            LIMIT 1
+          )                  AS imageUrl,
+          cd.name             AS conditionName,
+          MIN(sp.price)       AS price,
+          (
+            SELECT sp2.period
+            FROM sale_price sp2
+            WHERE sp2.sale_idx = s.idx
+            ORDER BY sp2.price ASC
+            LIMIT 1
+          )                  AS period
+        FROM sale s
+        JOIN sale_price sp ON s.idx = sp.sale_idx
+        JOIN sale_has_product shp ON s.idx = shp.sale_idx
+        JOIN product p ON shp.product_code = p.code
+        JOIN `condition` cd ON shp.condition_idx = cd.idx
+        WHERE s.category_idx = :categoryIdx
+          AND cd.name LIKE :grade
+          AND s.idx IN (:saleIds)
+        GROUP BY s.idx, s.name, s.description, s.category_idx, cd.name
+        ORDER BY s.created_at DESC
+        """,
+            countQuery = """
+        SELECT COUNT(DISTINCT s.idx)
+        FROM sale s
+        JOIN sale_price sp ON s.idx = sp.sale_idx
+        JOIN sale_has_product shp ON s.idx = shp.sale_idx
+        JOIN product p ON shp.product_code = p.code
+        JOIN `condition` cd ON shp.condition_idx = cd.idx
+        WHERE s.category_idx = :categoryIdx
+          AND cd.name LIKE :grade
+          AND s.idx IN (:saleIds)
+        """,
+            nativeQuery = true
+    )
+    Slice<GetSaleListSliceRes> findFilteredByElasticSearch(
+            @Param("categoryIdx") Long categoryIdx,
+            @Param("grade") String grade,
+            @Param("saleIds") List<Long> saleIds,
+            Pageable pageable
+    );
+
+    List<Sale> findByIdxIn(List<Long> idxList);
+
 }

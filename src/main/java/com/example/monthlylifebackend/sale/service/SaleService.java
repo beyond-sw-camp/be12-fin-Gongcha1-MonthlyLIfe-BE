@@ -3,7 +3,11 @@ package com.example.monthlylifebackend.sale.service;
 import com.example.monthlylifebackend.admin.repository.ItemRepository;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.SaleHandler;
+import com.example.monthlylifebackend.elastic.SaleSearchRepository;
+import com.example.monthlylifebackend.elastic.model.SaleAllDocument;
+import com.example.monthlylifebackend.elastic.model.SaleDocument;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
+import com.example.monthlylifebackend.product.model.ProductImage;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.*;
@@ -43,6 +47,7 @@ public class SaleService {
     private final ConditionRepository conditionRepository;
     private final ItemRepository itemRepository;
     private final SaleMapper saleMapper;
+    private final SaleSearchRepository saleSearchRepository;
 
     @Transactional
     public Long registerSale(PostSaleRegisterReq dto) {
@@ -150,22 +155,50 @@ public class SaleService {
 //        return saleRepository.findAll(spec, pageable)
 //                .map(saleMapper::toGetSaleListRes);
 //    }
-
-    public Slice<GetSaleListSliceRes> getSaleSearch(
-            Long categoryIdx,
-            int page,
-            int size,
-            String keyword,
-            String grade
-    ) {
-        if (keyword == null) keyword = "";
-        if (grade == null) grade = "";
+    
+    // 엘라스틱 전
+//    public Slice<GetSaleListSliceRes> getSaleSearch(
+//            Long categoryIdx,
+//            int page,
+//            int size,
+//            String keyword,
+//            String grade
+//    ) {
+//        if (keyword == null) keyword = "";
+//        if (grade == null) grade = "";
+//        PageRequest pageable = PageRequest.of(page, size);
+//        grade = grade.concat("%");
+//        keyword = "%".concat(keyword.concat("%"));
+//
+//        return saleRepository.findByCategoryIdxAndGradeAndKeyword(categoryIdx, grade, keyword, pageable);
+//    }
+    // 엘라스틱 적용 후
+    public Slice<GetSaleListSliceRes> getSaleSearch(Long categoryIdx, int page, int size, String keyword, String grade) {
         PageRequest pageable = PageRequest.of(page, size);
-        grade = grade.concat("%");
-        keyword = "%".concat(keyword.concat("%"));
+        if (grade == null) grade = "";
+        grade = grade + "%";
 
-        return saleRepository.findByCategoryIdxAndGradeAndKeyword(categoryIdx, grade, keyword, pageable);
+        List<Long> saleIds = null;
+
+        // Elasticsearch 검색
+        if (keyword != null && !keyword.isBlank()) {
+            Page<SaleAllDocument> esResult = saleSearchRepository.searchByKeyword(keyword, pageable);
+            saleIds = esResult.stream().map(SaleAllDocument::getIdx).toList();
+
+            if (saleIds.isEmpty()) {
+                return new SliceImpl<>(List.of(), pageable, false); // 결과 없음
+            }
+        }
+
+        // 조건 분기
+        if (saleIds == null) {
+            return saleRepository.findFilteredWithoutKeyword(categoryIdx, grade, pageable);
+        } else {
+            return saleRepository.findFilteredByElasticSearch(categoryIdx, grade, saleIds, pageable);
+        }
     }
+
+
 
 
     @Transactional
@@ -271,7 +304,7 @@ public class SaleService {
         });
     }
 
-
+    // 엘라스틱 전
     public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
         PageRequest pageable = PageRequest.of(page, size);
         Specification<Sale> spec = Specification
@@ -280,6 +313,52 @@ public class SaleService {
         return saleRepository.findAll(spec, pageable)
                 .map(saleMapper::toGetSaleListRes);
     }
+
+    // 엘라스틱 적용 후
+//    public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//
+//        // 1. ES로 상품명 검색해서 idx만 추출
+//        Page<SaleAllDocument> result = saleSearchRepository.searchByKeyword(keyword, pageable);
+//        List<Long> idxList = result.getContent().stream()
+//                .map(SaleAllDocument::getIdx)
+//                .toList();
+//        System.out.println("🔍 Elasticsearch에서 검색된 saleIdx 리스트: " + idxList);
+//        if (idxList.isEmpty()) {
+//            return new SliceImpl<>(List.of(), pageable, false);
+//        }
+//
+//        // 2. DB에서 실제 상품 정보 조회
+//        List<Sale> sales = saleRepository.findByIdxIn(idxList);
+//        System.out.println("🧩 DB에서 실제 조회된 Sale 개수: " + sales.size());
+//
+//
+//        // 3. Entity → DTO 변환
+//        List<GetSaleListRes> dtoList = sales.stream()
+//                .map(sale -> new GetSaleListRes(
+//                        sale.getIdx(),
+//                        sale.getName(),
+//                        sale.getDescription(),
+//                        sale.getCategory().getIdx(),
+//                        sale.getSaleHasProductList().stream()
+//                                .map(item -> new GetSaleListRes.ProductInfo(
+//                                        item.getProduct().getCode(),
+//                                        item.getCondition().getName(),
+//                                        item.getProduct().getProductImageList().stream()
+//                                                .map(ProductImage::getProductImgUrl)
+//                                                .toList()
+//                                ))
+//                                .toList(),
+//                        sale.getSalePriceList().stream()
+//                                .map(price -> new GetSaleListRes.PriceInfo(price.getPeriod(), price.getPrice()))
+//                                .toList()
+//                ))
+//                .toList();
+//
+//        return new SliceImpl<>(dtoList, pageable, result.hasNext());
+//    }
+
+
 
 
     public List<GetBestSaleRes> getCategoryBestSales(int limit, Long categoryIdx) {
