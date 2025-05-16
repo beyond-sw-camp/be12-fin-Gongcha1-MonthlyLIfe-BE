@@ -62,6 +62,16 @@ public class SaleFacade {
                 categoryIdx, page, size, keyword, grade
         );
     }
+    public Slice<GetSaleListSliceRes> searchByKeyword(
+            int page,
+            int size,
+            String keyword,
+            String grade
+    ) {
+        return saleService.searchByKeyword(
+                 page, size, keyword, grade
+        );
+    }
 
     public Long updateSale(Long saleIdx, PatchSaleReq dto) {
         return saleService.updateSale(saleIdx, dto);
@@ -79,9 +89,9 @@ public class SaleFacade {
         return saleService.getPackageSales(page, size);
     }
 
-    public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
-        return saleService.searchByKeyword(keyword, page, size);
-    }
+//    public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
+//        return saleService.searchByKeyword(keyword, page, size);
+//    }
 
     public List<GetBestSaleRes> getCategoryBestSales(int limit, Long categoryIdx) {
         return saleService.getCategoryBestSales(limit, categoryIdx);

@@ -145,17 +145,30 @@ public class SaleController {
         return BaseResponse.onSuccess(pkgs);
     }
 
-    @Operation(
-            summary = "판매 상품 키워드 검색",
-            description = "검색어에 매칭되는 모든 판매상품을 페이징 조회합니다."
-    )
+//    @Operation(
+//            summary = "판매 상품 키워드 검색",
+//            description = "검색어에 매칭되는 모든 판매상품을 페이징 조회합니다."
+//    )
+//    @GetMapping("/searchall")
+//    public BaseResponse<Slice<GetSaleListRes>> searchByKeyword(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "6") int size,
+//            @RequestParam String keyword
+//    ) {
+//        Slice<GetSaleListRes> result = saleFacade.searchByKeyword(keyword, page, size);
+//        return BaseResponse.onSuccess(result);
+//    }
+    @Operation(summary = "판매 상품 키워드 검색", description = "검색어에 매칭되는 모든 판매상품을 페이징 조회합니다.")
     @GetMapping("/searchall")
-    public BaseResponse<Slice<GetSaleListRes>> searchByKeyword(
+    public BaseResponse<Slice<GetSaleListSliceRes>> searchByKeyword(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size,
-            @RequestParam String keyword
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String grade
     ) {
-        Slice<GetSaleListRes> result = saleFacade.searchByKeyword(keyword, page, size);
+        Slice<GetSaleListSliceRes> result = saleFacade.searchByKeyword(
+                 page, size, keyword, grade
+        );
         return BaseResponse.onSuccess(result);
     }
 

@@ -3,9 +3,9 @@ package com.example.monthlylifebackend.sale.service;
 import com.example.monthlylifebackend.admin.repository.ItemRepository;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.SaleHandler;
-import com.example.monthlylifebackend.elastic.SaleSearchRepository;
-import com.example.monthlylifebackend.elastic.model.SaleAllDocument;
-import com.example.monthlylifebackend.elastic.model.SaleDocument;
+//import com.example.monthlylifebackend.elastic.SaleSearchRepository;
+//import com.example.monthlylifebackend.elastic.model.SaleAllDocument;
+//import com.example.monthlylifebackend.elastic.model.SaleDocument;
 import com.example.monthlylifebackend.product.dto.res.GetCategoryRes;
 import com.example.monthlylifebackend.product.model.ProductImage;
 import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
@@ -47,7 +47,7 @@ public class SaleService {
     private final ConditionRepository conditionRepository;
     private final ItemRepository itemRepository;
     private final SaleMapper saleMapper;
-    private final SaleSearchRepository saleSearchRepository;
+//    private final SaleSearchRepository saleSearchRepository;
 
     @Transactional
     public Long registerSale(PostSaleRegisterReq dto) {
@@ -157,48 +157,71 @@ public class SaleService {
 //    }
     
     // 엘라스틱 전
-//    public Slice<GetSaleListSliceRes> getSaleSearch(
-//            Long categoryIdx,
-//            int page,
-//            int size,
-//            String keyword,
-//            String grade
-//    ) {
-//        if (keyword == null) keyword = "";
-//        if (grade == null) grade = "";
-//        PageRequest pageable = PageRequest.of(page, size);
-//        grade = grade.concat("%");
-//        keyword = "%".concat(keyword.concat("%"));
-//
-//        return saleRepository.findByCategoryIdxAndGradeAndKeyword(categoryIdx, grade, keyword, pageable);
-//    }
-    // 엘라스틱 적용 후
-    public Slice<GetSaleListSliceRes> getSaleSearch(Long categoryIdx, int page, int size, String keyword, String grade) {
-        PageRequest pageable = PageRequest.of(page, size);
+    public Slice<GetSaleListSliceRes> getSaleSearch(
+            Long categoryIdx,
+            int page,
+            int size,
+            String keyword,
+            String grade
+    ) {
+        if (keyword == null) keyword = "";
         if (grade == null) grade = "";
-        grade = grade + "%";
+        PageRequest pageable = PageRequest.of(page, size);
+        grade = grade.concat("%");
+        keyword = "%".concat(keyword.concat("%"));
 
-        List<Long> saleIds = null;
+        return saleRepository.findByCategoryIdxAndGradeAndKeyword(categoryIdx, grade, keyword, pageable);
+    }
+    // 엘라스틱 적용 후
+//    public Slice<GetSaleListSliceRes> getSaleSearch(Long categoryIdx, int page, int size, String keyword, String grade) {
+//        PageRequest pageable = PageRequest.of(page, size);
+//        if (grade == null) grade = "";
+//        grade = grade + "%";
+//
+//        List<Long> saleIds = null;
+//
+//        // Elasticsearch 검색
+//        if (keyword != null && !keyword.isBlank()) {
+//            Page<SaleAllDocument> esResult = saleSearchRepository.searchByKeyword(keyword, pageable);
+//            saleIds = esResult.stream().map(SaleAllDocument::getIdx).toList();
+//
+//            if (saleIds.isEmpty()) {
+//                return new SliceImpl<>(List.of(), pageable, false); // 결과 없음
+//            }
+//        }
+//
+//        // 조건 분기
+//        if (saleIds == null) {
+//            return saleRepository.findFilteredWithoutKeyword(categoryIdx, grade, pageable);
+//        } else {
+//            return saleRepository.findFilteredByElasticSearch(categoryIdx, grade, saleIds, pageable);
+//        }
+//    }
 
-        // Elasticsearch 검색
-        if (keyword != null && !keyword.isBlank()) {
-            Page<SaleAllDocument> esResult = saleSearchRepository.searchByKeyword(keyword, pageable);
-            saleIds = esResult.stream().map(SaleAllDocument::getIdx).toList();
+    public Slice<GetSaleListSliceRes> searchByKeyword(
+            int page,
+            int size,
+            String keyword,
+            String grade
+    ) {
+        if (keyword == null) keyword = "";
+        if (grade == null) grade = "";
+        PageRequest pageable = PageRequest.of(page, size);
+        grade = grade.concat("%");
+        keyword = "%".concat(keyword.concat("%"));
 
-            if (saleIds.isEmpty()) {
-                return new SliceImpl<>(List.of(), pageable, false); // 결과 없음
-            }
-        }
-
-        // 조건 분기
-        if (saleIds == null) {
-            return saleRepository.findFilteredWithoutKeyword(categoryIdx, grade, pageable);
-        } else {
-            return saleRepository.findFilteredByElasticSearch(categoryIdx, grade, saleIds, pageable);
-        }
+        return saleRepository.findByGradeAndKeyword(grade, keyword, pageable);
     }
 
-
+    // 엘라스틱 전
+//    public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
+//        PageRequest pageable = PageRequest.of(page, size);
+//        Specification<Sale> spec = Specification
+//                .where(SaleSpec.byKeyword(keyword));         // 오직 키워드 조건만
+//
+//        return saleRepository.findAll(spec, pageable)
+//                .map(saleMapper::toGetSaleListRes);
+//    }
 
 
     @Transactional
@@ -304,15 +327,7 @@ public class SaleService {
         });
     }
 
-    // 엘라스틱 전
-    public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
-        PageRequest pageable = PageRequest.of(page, size);
-        Specification<Sale> spec = Specification
-                .where(SaleSpec.byKeyword(keyword));         // 오직 키워드 조건만
 
-        return saleRepository.findAll(spec, pageable)
-                .map(saleMapper::toGetSaleListRes);
-    }
 
     // 엘라스틱 적용 후
 //    public Slice<GetSaleListRes> searchByKeyword(String keyword, int page, int size) {
