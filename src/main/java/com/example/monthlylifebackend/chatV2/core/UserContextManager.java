@@ -38,9 +38,5 @@ public class UserContextManager {
         contextStore.put(userId, context);
     }
 
-    public void updateLastSearchedItems(String userId, List<Product> products) {
-        UserContext context = getContext(userId);
-        context.setLastSearchedItem(products);  // 여러 상품을 저장
-        updateContext(userId, context);  // 업데이트된 UserContext 저장
-    }
+
 }

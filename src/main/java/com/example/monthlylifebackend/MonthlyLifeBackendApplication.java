@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableJpaAuditing
 @EnableAsync
 @SpringBootApplication
+@EnableAsync
 public class MonthlyLifeBackendApplication {
 
     public static void main(String[] args) {
