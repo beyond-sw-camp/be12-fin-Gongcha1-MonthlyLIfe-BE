@@ -5,8 +5,10 @@ spring:
     elasticsearch:
       uris: ${ES_URI}
       username: ${ES_USERNAME}
-      password: ${ES_PASSWORD}
-#      ssl:
+      password: ${ES_PASSWORD}     # (인증 없으면 생략)
+      ssl:
+        enabled: false
+  #      ssl:
 #        certificate: file:/es-ca.crt   #src/main/resources 밑에 넣으면 classpath로 인식됨
 #        verification-mode: certificate
 
