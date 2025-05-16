@@ -17,9 +17,6 @@ spec:
       containers:
         - name: backend
           image: k6kjun/mlback:latest
-          volumeMounts:
-            - name: image-pvc
-              mountPath: /image
           envFrom:
             - configMapRef:
                 name: back-cm
@@ -35,8 +32,3 @@ spec:
               port: 8080
             initialDelaySeconds: 45
             periodSeconds: 10
-
-      volumes:
-      - name : image-pvc
-        persistentVolumeClaim:
-          claimName: image-pvc
