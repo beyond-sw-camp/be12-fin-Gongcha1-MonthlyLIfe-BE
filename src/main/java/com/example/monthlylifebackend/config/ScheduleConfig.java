@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.time.LocalDateTime;
 
 @Slf4j
-@EnableScheduling
 @Configuration
 @RequiredArgsConstructor
 public class ScheduleConfig {

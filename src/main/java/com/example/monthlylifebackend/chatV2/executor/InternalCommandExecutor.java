@@ -3,21 +3,14 @@ package com.example.monthlylifebackend.chatV2.executor;
 import com.example.monthlylifebackend.chatV2.api.model.res.GetAiSubscribeDetailRes;
 import com.example.monthlylifebackend.chatV2.core.InternalCommand;
 import com.example.monthlylifebackend.chatV2.core.UserContextManager;
-import com.example.monthlylifebackend.common.BaseResponse;
-import com.example.monthlylifebackend.common.code.status.ErrorStatus;
-import com.example.monthlylifebackend.common.exception.handler.McpHandler;
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.repository.ProductRepository;
 import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
-import com.example.monthlylifebackend.subscribe.model.Subscribe;
-import com.example.monthlylifebackend.subscribe.repository.SubscribeRepository;
-import com.example.monthlylifebackend.user.model.User;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component

@@ -1,0 +1,35 @@
+server:
+  port: 9090
+
+spring:
+  batch:
+    job:
+      name: settlementJob
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: none
+
+  mail:
+    host: ${EMAIL_HOST}
+    port: ${EMAIL_PORT}
+    username: ${EMAIL_USER}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 10000
+          localhost: client.local.dev
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.transaction: trace
+    org.hibernate.orm.jdbc.bind: trace
+
