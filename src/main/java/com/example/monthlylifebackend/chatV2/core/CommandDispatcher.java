@@ -12,14 +12,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CommandDispatcher {
 
-    public InternalCommand dispatch(UserContext context, GptParsedResult parsed) {
+    public InternalCommand dispatch(String userId, GptParsedResult parsed) {
         String intent = parsed.intent();
 
         switch (intent) {
             case "subscribe_item":
                 Map<String, Object> params = new HashMap<>();
                 params.put("item", parsed.item());
-                params.put("userId", context.getUserId());
+                params.put("userId", userId);
 
                 if (parsed.period() != null) {
                     params.put("period", parsed.period());
@@ -34,7 +34,7 @@ public class CommandDispatcher {
                 return new InternalCommand(
                         "rental",
                         "cancel",
-                        Map.of("item", parsed.item(), "userId", context.getUserId()
+                        Map.of("item", parsed.item(), "userId", userId
                         )
 
                 );
@@ -45,7 +45,7 @@ public class CommandDispatcher {
                         Map.of(
                                 "item", parsed.item(),
                                 "period", parsed.period(),
-                                "userId", context.getUserId()
+                                "userId", userId
 
                         )
                 );
@@ -53,7 +53,7 @@ public class CommandDispatcher {
                 return new InternalCommand(
                         "search",
                         "search_product",
-                        Map.of("item", parsed.item(),"userId", context.getUserId())
+                        Map.of("item", parsed.item(),"userId", userId)
                 );
             default:
                 throw new IllegalArgumentException("Unknown intent: " + intent);
