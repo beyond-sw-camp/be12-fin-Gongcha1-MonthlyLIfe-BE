@@ -17,11 +17,12 @@ jobs:
           command: chmod +x gradlew
       - run:
           name: Gradle Build
-          command: ./gradlew bootJar
+          command: ./gradlew :batch:bootJar
+
       - persist_to_workspace:
           root: .
-          paths:
-            - build/libs/*.jar
+          paths
+            - batch/build/libs/*.jar
 
   docker-build-and-push:
     docker:
