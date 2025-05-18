@@ -13,15 +13,15 @@ import lombok.NoArgsConstructor;
 @Schema(description = "카테고리 응답 DTO")
 public class GetCategoryRes {
 
-    @Schema(description = "카테고리 IDX")
+    @Schema(description = "카테고리 IDX", example = "1")
     private Long idx;
 
-    @Schema(description = "카테고리 이름")
+    @Schema(description = "카테고리 이름", example = "냉난방기기")
     private String name;
 
-    @Schema(description = "카테고리 아이콘 URL")
+    @Schema(description = "카테고리 아이콘 URL", example = "https://example.com/icons/vacuum.png")
     private String iconUrl;
 
-    @Schema(description = "상위 카테고리 IDX (없으면 null)")
+    @Schema(description = "상위 카테고리 IDX (없으면 null)", example = "null")
     private Long parentIdx;
 }

@@ -10,19 +10,27 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "신규 등록 판매상품 응답 DTO")
 public class NewSaleListRes {
-    @Schema(description = "판매 ID")
+
+    @Schema(description = "판매 ID", example = "101")
     private Long idx;
-    @Schema(description = "상품 이름")
+
+    @Schema(description = "상품 이름", example = "LG 미니 냉장고")
     private String name;
-    @Schema(description = "카테고리 ID")
+
+    @Schema(description = "카테고리 ID", example = "2")
     private Long categoryIdx;
-    @Schema(description = "썸네일 이미지 URL")
+
+    @Schema(description = "썸네일 이미지 URL", example = "https://example.com/images/fridge_thumb.jpg")
     private String imageUrl;
-    @Schema(description = "등급 이름")
+
+    @Schema(description = "등급 이름", example = "A급")
     private String conditionName;
-    @Schema(description = "최저가")
+
+    @Schema(description = "최저가", example = "9900")
     private int price;
-    @Schema(description = "해당 최저가 기간(개월)")
+
+    @Schema(description = "해당 최저가 기간(개월)", example = "12")
     private int period;
 }
