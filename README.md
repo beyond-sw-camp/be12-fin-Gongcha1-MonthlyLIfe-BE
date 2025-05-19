@@ -93,6 +93,7 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 <img src="https://github.com/user-attachments/assets/772e1bce-3339-4ea9-805b-a6b122d66347" width="617" />
 
 <br>
+
 ---
 
 ## 🔐 인증 및 보안
