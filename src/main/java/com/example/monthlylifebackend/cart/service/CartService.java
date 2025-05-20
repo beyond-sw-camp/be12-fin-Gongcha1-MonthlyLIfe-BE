@@ -8,7 +8,7 @@ import com.example.monthlylifebackend.cart.model.Cart;
 import com.example.monthlylifebackend.cart.repository.CartRepository;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.CartHandler;
-import com.example.monthlylifebackend.sale.model.SalePrice;
+import com.example.monthlylifebackend.sale.model.entity.SalePrice;
 import com.example.monthlylifebackend.user.model.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

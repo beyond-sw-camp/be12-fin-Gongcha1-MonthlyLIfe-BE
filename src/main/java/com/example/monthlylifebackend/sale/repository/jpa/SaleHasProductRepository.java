@@ -1,7 +1,7 @@
-package com.example.monthlylifebackend.sale.repository;
+package com.example.monthlylifebackend.sale.repository.jpa;
 
-import com.example.monthlylifebackend.sale.model.Sale;
-import com.example.monthlylifebackend.sale.model.SaleHasProduct;
+import com.example.monthlylifebackend.sale.model.entity.Sale;
+import com.example.monthlylifebackend.sale.model.entity.SaleHasProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

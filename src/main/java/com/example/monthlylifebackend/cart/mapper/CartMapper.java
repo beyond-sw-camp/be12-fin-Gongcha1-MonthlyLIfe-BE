@@ -5,7 +5,7 @@ import com.example.monthlylifebackend.cart.dto.GetCartListProjection;
 
 import com.example.monthlylifebackend.cart.dto.res.GetCartListRes;
 import com.example.monthlylifebackend.cart.model.Cart;
-import com.example.monthlylifebackend.sale.model.SalePrice;
+import com.example.monthlylifebackend.sale.model.entity.SalePrice;
 import com.example.monthlylifebackend.user.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

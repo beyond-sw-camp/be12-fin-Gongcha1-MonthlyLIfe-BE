@@ -6,9 +6,9 @@ import com.example.monthlylifebackend.sale.dto.req.PatchSaleReq;
 import com.example.monthlylifebackend.sale.dto.req.PostSaleRegisterReq;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleListRes;
 import com.example.monthlylifebackend.sale.dto.res.GetSaleDetailRes;
-import com.example.monthlylifebackend.sale.model.Sale;
-import com.example.monthlylifebackend.sale.model.SalePrice;
-import com.example.monthlylifebackend.sale.model.SaleHasProduct;
+import com.example.monthlylifebackend.sale.model.entity.Sale;
+import com.example.monthlylifebackend.sale.model.entity.SalePrice;
+import com.example.monthlylifebackend.sale.model.entity.SaleHasProduct;
 import org.mapstruct.*;
 
 import java.util.List;
