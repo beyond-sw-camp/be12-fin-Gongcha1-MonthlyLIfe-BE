@@ -55,6 +55,7 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 - [🧠 주요 기능 상세](#-주요-기능-상세)
 - [📑 API 명세서](#-API-명세서)
 - [🔍 핵심 로직 상세 설명](#-핵심-로직-상세-설명)
+- [📂 프로젝트 폴더 바로가기](#-프로젝트-폴더-바로가기)
 
 ---
 
@@ -274,6 +275,11 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 
 ---
 
+## 📂 프로젝트 폴더 바로가기
+- [📃 Frontend Repository](https://github.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-FE/blob/develop/README.md)
+- [📃 Devops/Infra](https://github.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-BE/blob/develop/devops/README.md)
+
+---
 
 ## ⚙ 개발 환경 세팅
 
