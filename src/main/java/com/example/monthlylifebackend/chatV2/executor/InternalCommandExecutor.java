@@ -5,14 +5,12 @@ import com.example.monthlylifebackend.chatV2.core.EsUserContextManager;
 import com.example.monthlylifebackend.chatV2.core.InternalCommand;
 import com.example.monthlylifebackend.chatV2.core.UserContextManager;
 import com.example.monthlylifebackend.chatV2.service.EsChatLogService;
-import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.McpHandler;
 
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.repository.ProductRepository;
-import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
-import com.example.monthlylifebackend.user.repository.UserRepository;
+import com.example.monthlylifebackend.sale.repository.jpa.SalePriceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
