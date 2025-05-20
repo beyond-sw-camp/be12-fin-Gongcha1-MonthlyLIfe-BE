@@ -106,7 +106,7 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 
 ## 🧠 주요 기능 상세
 <details>
-  <summary><strong>👤 회원 기능</strong> ｜ <a href="https://github.com/your-repo/wiki/회원-기능" target="_blank">📘 위키 바로가기</a></summary>
+  <summary><strong>👤 회원가입</strong></summary>
   <ul>
     <li><strong>회원 가입</strong>: 유저가 정보를 입력해 가입
       <br><img src="./gif/USER001.gif" width="400" />
@@ -118,7 +118,16 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 </details>
 
 <details>
-  <summary><strong>🛒 상품 조회 기능</strong> ｜ <a href="https://github.com/your-repo/wiki/상품-조회-기능" target="_blank">📘 위키 바로가기</a></summary>
+  <summary><strong> 로그인 / 로그아웃</strong></summary>
+  <ul>
+    <li><strong>로그인</strong>: 이메일과 비밀번호로 JWT 발급
+      <br><img src="./gif/USER002.gif" width="400" />
+    </li>
+  </ul>
+</details>
+
+<details>
+  <summary><strong>🛒 상품 조회 기능</strong></summary>
   <ul>
     <li><strong>상품 목록 조회</strong>: 전체 상품 최신순 조회
       <br><img src="./gif/SALE001.gif" width="400" />
@@ -133,7 +142,7 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 </details>
 
 <details>
-  <summary><strong>📦 구독/결제 기능</strong> ｜ <a href="https://github.com/your-repo/wiki/구독-및-결제-기능" target="_blank">📘 위키 바로가기</a></summary>
+  <summary><strong>📦 구독/결제 기능</strong></summary>
   <ul>
     <li><strong>상품 구독</strong>: 상품 및 기간 선택 후 결제
       <br><img src="./gif/SUBSCRIBE001.gif" width="400" />
@@ -148,7 +157,7 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 </details>
 
 <details>
-  <summary><strong>📞 고객지원 기능</strong> ｜ <a href="https://github.com/your-repo/wiki/고객지원-기능" target="_blank">📘 위키 바로가기</a></summary>
+  <summary><strong>📞 고객지원 기능</strong></summary>
   <ul>
     <li><strong>1:1 채팅 상담</strong>: 유저가 메시지를 보내면 관리자에게 실시간 전달
       <br><img src="./gif/SUPPORT001.gif" width="400" />
@@ -160,7 +169,7 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 </details>
 
 <details>
-  <summary><strong>🤖 AI 챗봇 기능 (MCP 기반)</strong> ｜ <a href="https://github.com/your-repo/wiki/AI-챗봇-기능" target="_blank">📘 위키 바로가기</a></summary>
+  <summary><strong>🤖 AI 챗봇 기능 (MCP 기반)</strong></summary>
   <ul>
     <li><strong>GPT 챗봇 기반 구독 추천</strong>: 사용자 자연어 분석 → 조건 파악 → 상품 추천/자동 구독
       <br><img src="./gif/AI001.gif" width="400" />
@@ -174,7 +183,18 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
   </ul>
 </details>
 
-
+<details>
+  <summary><strong> 관리자 기능</strong></summary>
+  <ul>
+    <li><strong> 판매 상품 등록 </strong>
+      
+    </li>
+    <li><strong> 판매 상품 수정 및 삭제</strong>
+    
+    </li>
+    
+  </ul>
+</details>
 
 
 ---
