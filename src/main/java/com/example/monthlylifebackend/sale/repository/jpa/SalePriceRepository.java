@@ -1,7 +1,7 @@
-package com.example.monthlylifebackend.sale.repository;
+package com.example.monthlylifebackend.sale.repository.jpa;
 
 import com.example.monthlylifebackend.chatV2.api.model.res.GetAiSubscribeDetailRes;
-import com.example.monthlylifebackend.sale.model.SalePrice;
+import com.example.monthlylifebackend.sale.model.entity.SalePrice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

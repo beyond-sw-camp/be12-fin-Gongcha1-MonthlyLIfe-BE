@@ -1,8 +1,7 @@
-package com.example.monthlylifebackend.sale.model;
+package com.example.monthlylifebackend.sale.model.entity;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.product.model.Category;
-import com.example.monthlylifebackend.product.model.Condition;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

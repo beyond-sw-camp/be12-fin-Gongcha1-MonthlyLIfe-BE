@@ -1,6 +1,6 @@
 package com.example.monthlylifebackend.sale.spec;
 
-import com.example.monthlylifebackend.sale.model.Sale;
+import com.example.monthlylifebackend.sale.model.entity.Sale;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 

@@ -4,7 +4,7 @@ import com.example.monthlylifebackend.cart.dto.res.GetCartListRes;
 import com.example.monthlylifebackend.cart.service.CartService;
 import com.example.monthlylifebackend.common.customAnnotation.Facade;
 import com.example.monthlylifebackend.product.service.ProductService;
-import com.example.monthlylifebackend.sale.model.SalePrice;
+import com.example.monthlylifebackend.sale.model.entity.SalePrice;
 import com.example.monthlylifebackend.sale.service.SaleService;
 import com.example.monthlylifebackend.user.model.User;
 import jakarta.transaction.Transactional;

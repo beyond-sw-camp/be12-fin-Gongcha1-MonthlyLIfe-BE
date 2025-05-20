@@ -75,6 +75,12 @@ dependencies {
 
     //elasticsearch 설정
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+    implementation 'co.elastic.clients:elasticsearch-java:8.16.1'
+    // build.gradle
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+
+
 
 
     //테스트 코드 관련
