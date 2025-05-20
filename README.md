@@ -111,17 +111,17 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
   ### 회원가입
    - 요청
      ![회원가입 요청](https://github.com/user-attachments/assets/44aab1c2-6fec-4d7d-985e-c076436e8d5a)
-
+      > 사용자가 이름, 이메일, 비밀번호 등의 정보를 입력하여 회원가입 요청을 보냅니다.
    - 응답
      ![회원가입 응답](https://github.com/user-attachments/assets/3acaaf7a-5321-443a-a864-17bd571e25a0)
-
+       > 회원가입이 성공적으로 완료되었을 때 반환되는 응답입니다.
   ### 로그인
    - 요청
      ![로그인 요청](https://github.com/user-attachments/assets/057999c8-5952-4eff-9fe9-1ccd9ab69f83)
-
+       > 아이디와 비밀번호를 기반으로 로그인 요청을 보냅니다.
    - 응답
      ![로그인 응답](https://github.com/user-attachments/assets/0f4cdea6-9138-4c7c-a9b6-5724d68d8fb8)
-
+       > 로그인 성공 시 JWT 토큰과 사용자 정보가 반환됩니다.
 </details>
 
 
@@ -131,25 +131,25 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
   ### 전체 판매 상품 조회
    - 요청
      ![판매 상품 목록 조회 요청](https://github.com/user-attachments/assets/49201ca9-4902-41d9-82bb-5fbeaf700b61)
-
+       > 전체 판매 상품을 조회하기 위한 GET 요청입니다.
    - 응답
      ![상품조회 응답](https://github.com/user-attachments/assets/010c8749-c1d7-4b28-a28a-f880e743d1a6)
-
+       > 판매 상품들의 목록과 간략한 정보(이름, 이미지, 가격 등)를 포함한 응답입니다.
 
   ### 판매 상품 상세 조회
    - 요청
       ![상세조회 요청](https://github.com/user-attachments/assets/f61ff0e7-2eaf-4069-8cc4-9d44e40b6d31)
-
+       > 선택한 판매 상품의 상세 정보를 조회하는 요청입니다.
    - 응답
       ![상세조회 응답](https://github.com/user-attachments/assets/5c7cd83d-a05c-498a-8a2c-90488b9bcb3c)
-
+       > 해당 상품의 상세 정보(구성 상품, 기간별 가격, 설명 등)를 반환합니다.
   ### 판매 상품 전체 검색
    - 요청
       ![상품검색 요청](https://github.com/user-attachments/assets/34f7f6f7-c6b2-48c3-b076-bb2cb67bf5d1)
-
+      > 키워드를 포함한 전체 판매 상품 검색 요청입니다.
    - 응답
      ![상품검색 응답](https://github.com/user-attachments/assets/4b6b9690-7d76-4424-a1a3-861be22fe1a9)
-
+      > 검색어와 관련된 판매 상품 리스트를 반환합니다.
 </details>
 
 <details>
@@ -158,17 +158,17 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
   ### 상품 구독
    - 요청
      ![상품구독 요청](https://github.com/user-attachments/assets/6e6d6149-469c-4eb4-b509-4ec374435b21)
-
+      > 사용자가 상품을 구독하기 위한 요청을 보냅니다.
    - 응답
      ![상품구독 응답](https://github.com/user-attachments/assets/9a413c52-ebaf-4579-a862-c5a7996161fe)
-
+      > 구독 요청이 성공적으로 처리되었음을 나타내는 응답입니다.
   ### 장바구니
    - 요청
      ![장바구니 추가 요청](https://github.com/user-attachments/assets/8ca222e0-e464-486f-9128-d8d184dc15b2)
-
+     > 선택한 상품을 장바구니에 추가하는 요청입니다.
    - 응답
      ![장바구니 추가 응답](https://github.com/user-attachments/assets/bcd2f45b-f41d-49a2-bbd7-6286b275ebe7)
-
+      > 상품이 장바구니에 정상적으로 추가되었음을 알리는 응답입니다.
 </details>
 
 <details>
@@ -177,10 +177,10 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
   ### 수리/분실 신청
   - 요청
     ![수리,분실 신청 요청](https://github.com/user-attachments/assets/af568129-acd7-4d20-8151-46103c62d2d3)
-
+     > 제품 수리 또는 분실 신고 요청입니다.
   - 응답
     ![수리,분실 신청 응답](https://github.com/user-attachments/assets/0ce74e75-272d-46a9-a722-83f722ca3e25)
-
+     > 요청이 정상적으로 접수되었음을 나타내는 응답입니다.
 </details>
 
 <details>
@@ -189,39 +189,39 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 ### AI 챗봇 제품 검색
  - 요청
   ![MCP 제품 검색 요청](https://github.com/user-attachments/assets/9c586304-ac8e-4362-aef7-089cd0dbcc6c)
-
+ > AI 챗봇에게 원하는 제품을 자연어로 검색 요청합니다.
  - 응답
   ![MCP 제품 검색 응답](https://github.com/user-attachments/assets/a5347670-af57-4558-999a-2980752e525a)
-
+ > 사용자의 요청을 분석한 결과와 함께 추천 제품 목록을 반환합니다.
 
 ### AI 챗봇 구독흐름 자동 처리
  - 요청
    ![MCP 구독흐름자동처리 요청](https://github.com/user-attachments/assets/285e0c1d-596e-4394-860f-f303b590b37a)
-
+    > 챗봇이 사용자의 선택을 기반으로 구독 과정을 자동화하여 처리합니다.
  - 응답
    ![MCP 구독흐름자동처리 응답](https://github.com/user-attachments/assets/a6a370f6-8faf-45a0-a5f6-dafd8cf37692)
-
+    > 자동 처리된 구독 결과를 반환합니다.
 
 </details>
 
 <details>
-  <summary><strong> 관리자 기능</strong></summary>
+  <summary><strong>👁‍🗨 관리자 기능</strong></summary>
 
 ### 상품 등록
 - 요청
   ![상품등록 요청](https://github.com/user-attachments/assets/f868583c-2572-4240-9e2f-68038a7e55df)
-
+   > 제품의 이름, 코드, 설명 등을 포함하여 새 상품을 등록합니다.
 - 응답
   ![상품등록 응답](https://github.com/user-attachments/assets/39a6e4f0-51fe-4197-80c2-86ac19ded67e)
-
+   > 상품이 성공적으로 등록되었음을 알리는 응답입니다.
   
 ### 판매 상품 등록
 - 요청
    ![판매상품등록 요청](https://github.com/user-attachments/assets/c9ec7fbd-570a-4ca3-b3f1-6bf566b10562)
-      
+   > 기존 상품을 기반으로 판매할 상품을 등록합니다.
 - 응답
    ![판매상품등록요청 응답](https://github.com/user-attachments/assets/df5776ab-3c44-477e-a0b5-5510eb1d9df7)
-
+   > 판매 상품 등록이 완료되었음을 나타내는 응답입니다.
 
 </details>
 
