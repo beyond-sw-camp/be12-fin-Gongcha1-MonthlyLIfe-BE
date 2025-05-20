@@ -120,6 +120,7 @@ CI/CD 파이프라인을 통해 개발자의 실수나 반복적인 배포 절�
 <summary>✅ Jenkins 기반 자동화</summary>
 
 - Webhook 이벤트 감지 → Git clone → 테스트/빌드 → DockerHub push → K8s 배포  
+![MonthlyLife_jenkins_pipeline](https://github.com/user-attachments/assets/e1aac91d-a6ab-47b8-9b66-807bb6a1e69c)
 
 </details>
 
