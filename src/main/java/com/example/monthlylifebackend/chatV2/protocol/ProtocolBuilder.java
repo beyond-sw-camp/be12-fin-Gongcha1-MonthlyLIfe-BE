@@ -105,6 +105,7 @@ public class ProtocolBuilder {
                                 "description", "상품 등급 (예: S급, A급, B급, C급)"
                         )
                 ),
+
                 "required", List.of("item", "period")
         );
     }
