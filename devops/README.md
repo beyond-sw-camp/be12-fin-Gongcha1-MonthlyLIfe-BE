@@ -152,8 +152,7 @@ CI/CD 파이프라인을 통해 개발자의 실수나 반복적인 배포 절�
 
 <details>
 <summary>✅ 자동화 + 무중단 배포 테스트 영상</summary>
-
-![무중단 배포 테스트 영상](https://drive.google.com/file/d/1BSC3BdyDtF_MrZUQtffgR682OGdFT0uh/view?usp=drive_link)
+- [무중단 배포 테스트 영상](https://drive.google.com/file/d/1BSC3BdyDtF_MrZUQtffgR682OGdFT0uh/view?usp=drive_link)
 - 테스트 방법 : 백엔드 서버를 지속적으로 호출하는 동안 main branch에 push하여 자동화 배포 및 중단 여부 확인
 
 </details>
@@ -162,6 +161,7 @@ CI/CD 파이프라인을 통해 개발자의 실수나 반복적인 배포 절�
 <summary>✅ Kubernetes를 이용한 서버 부하에 따른 Pod 개수 증가, 이전 버전으로 롤백</summary>
 - 시나리오 : 고객이 순간적으로 증가하여 백엔드 서버 부담 증가하여 3개로 증설,
              front0.13버전에 치명적 오류가 발생하여 이전 버전으로 롤백
+
 ![k8s_dashboard](https://github.com/user-attachments/assets/a68db7bf-2d8e-463c-a554-fc780d4586ad)
 
 </details>
