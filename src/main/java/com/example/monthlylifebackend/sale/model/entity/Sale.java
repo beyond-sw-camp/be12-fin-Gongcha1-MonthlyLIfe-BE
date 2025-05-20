@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.sale.model;
+package com.example.monthlylifebackend.sale.model.entity;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.product.model.Category;
@@ -39,7 +39,7 @@ public class Sale extends BaseEntity {
     @OneToMany(mappedBy = "sale", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<SalePrice> salePriceList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubscribeDetail> subscribeDetailList = new ArrayList<>();
 
     public void changeCategory(Category newCategory) {

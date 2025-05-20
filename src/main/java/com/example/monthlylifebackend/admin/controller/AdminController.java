@@ -47,17 +47,17 @@ public class AdminController {
 
     //1. 상품 재고 관리
     //1-1) 상품 재고 관리 - 상품 관리
-    @Operation(summary = "관리자 전체 페이징 재고 조회", description = "판매 아이템의 재고 관리페이지를 페이징 처리하여 조회합니다.")
-    @GetMapping("/product-by-page")
-    public BaseResponse<Page<GetProductRes>> getAllItemsByPage(        @RequestParam(defaultValue = "0") int page,
-                                                                       @RequestParam(defaultValue = "10") int size,
-                                                                       @RequestParam(required = false) String productName,
-                                                                       @RequestParam(required = false) String manufacturer,
-                                                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        Page<GetProductRes> dto = adminFacade.findAllItemsByPage(page, size, productName, manufacturer, startDate, endDate);
-        return BaseResponse.onSuccess(dto);
-    }
+//    @Operation(summary = "관리자 전체 페이징 재고 조회", description = "판매 아이템의 재고 관리페이지를 페이징 처리하여 조회합니다.")
+//    @GetMapping("/product-by-page")
+//    public BaseResponse<Page<GetProductRes>> getAllItemsByPage(        @RequestParam(defaultValue = "0") int page,
+//                                                                       @RequestParam(defaultValue = "10") int size,
+//                                                                       @RequestParam(required = false) String productName,
+//                                                                       @RequestParam(required = false) String manufacturer,
+//                                                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+//                                                                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+//        Page<GetProductRes> dto = adminFacade.findAllItemsByPage(page, size, productName, manufacturer, startDate, endDate);
+//        return BaseResponse.onSuccess(dto);
+//    }
 
     @Operation(summary = "관리자 전체 재고 조회", description = "판매 아이템의 재고를 관리페이지를 조회합니다.")
     @GetMapping("/product")

@@ -1,0 +1,4 @@
+FROM mariadb:latest
+COPY dump.sql /docker-entrypoint-initdb.d/
+ENV MARIADB_ROOT_PASSWORD=mldb1234 \
+    MARIADB_DATABASE=monthlylife

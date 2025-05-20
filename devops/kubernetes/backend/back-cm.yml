@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+namespace: ml
+metadata:
+  name: back-cm
+data:
+  JWT_SECRET: ''
+  JWT_EXPIRATION: ''
+  DB_URL: ''
+  DB_USER: ''
+  DB_PASSWORD: ''
+  PORTONE_API_SECRET: ''
+  AES_SECRET: ''
+  EMAIL_HOST: ''
+  EMAIL_PASSWORD: ''
+  EMAIL_PORT: ''
+  EMAIL_USER: ''
+  ES_PASSWORD: ''
+  ES_URI: ''
+  ES_USERNAME: ''
+  API_KEY: ''
