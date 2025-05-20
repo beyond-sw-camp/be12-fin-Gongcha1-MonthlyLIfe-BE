@@ -107,23 +107,49 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 ## 🧠 주요 기능 상세
 <details>
   <summary><strong>👤 회원가입</strong></summary>
-  <ul>
-    <li><strong>회원 가입</strong>:
-      <br><img src="https://github.com/user-attachments/assets/d620d088-e259-4534-b806-4f80ceaf3676" width="400" />
-    </li>
-    
-    <li><strong>로그인</strong>: 이메일과 비밀번호로 JWT 발급
-      <br><img src="./gif/USER002.gif" width="400" />
-    </li>
-  </ul>
+
+  ### 회원가입
+   - 요청
+     ![회원가입 요청](https://github.com/user-attachments/assets/44aab1c2-6fec-4d7d-985e-c076436e8d5a)
+
+   - 응답
+     ![회원가입 응답](https://github.com/user-attachments/assets/3acaaf7a-5321-443a-a864-17bd571e25a0)
+
+  ### 로그인
+   - 요청
+     ![로그인 요청](https://github.com/user-attachments/assets/057999c8-5952-4eff-9fe9-1ccd9ab69f83)
+
+   - 응답
+     ![로그인 응답](https://github.com/user-attachments/assets/0f4cdea6-9138-4c7c-a9b6-5724d68d8fb8)
+
 </details>
 
 
 <details>
   <summary><strong>🛒 상품 조회 기능</strong></summary>
+  
   ### 전체 판매 상품 조회
    - 요청
+     ![판매 상품 목록 조회 요청](https://github.com/user-attachments/assets/49201ca9-4902-41d9-82bb-5fbeaf700b61)
+
    - 응답
+     ![상품조회 응답](https://github.com/user-attachments/assets/010c8749-c1d7-4b28-a28a-f880e743d1a6)
+
+
+  ### 판매 상품 상세 조회
+   - 요청
+      ![상세조회 요청](https://github.com/user-attachments/assets/f61ff0e7-2eaf-4069-8cc4-9d44e40b6d31)
+
+   - 응답
+      ![상세조회 응답](https://github.com/user-attachments/assets/5c7cd83d-a05c-498a-8a2c-90488b9bcb3c)
+
+  ### 판매 상품 전체 검색
+   - 요청
+      ![상품검색 요청](https://github.com/user-attachments/assets/34f7f6f7-c6b2-48c3-b076-bb2cb67bf5d1)
+
+   - 응답
+     ![상품검색 응답](https://github.com/user-attachments/assets/4b6b9690-7d76-4424-a1a3-861be22fe1a9)
+
 </details>
 
 <details>
