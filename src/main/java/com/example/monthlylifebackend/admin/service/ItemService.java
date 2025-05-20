@@ -45,7 +45,7 @@ public class ItemService {
         String manu = manufacturer != null ? "%"+manufacturer+"%" : null;
         LocalDateTime to = endDate != null ? endDate.atTime(23, 59, 59) : null;
 
-        Page<GetProductRes> pagedto = (Page<GetProductRes>) itemRepository.findProductStockSummaryWithConditions(pageable, name, manu, from, to);
+        Page<GetProductRes> pagedto = itemRepository.findProductStockSummaryWithConditions(pageable, name, manu, from, to);
         // pagedto 내부의 summaryDto + 이미지 리스트를 매퍼로 합쳐서 재생성
         pagedto = pagedto.map(summaryDto -> {
             List<ProductImageRes> imgs =
@@ -58,7 +58,7 @@ public class ItemService {
     }
 
     public List<GetProductRes> findAllItems() {
-        List<GetProductRes> dtoList = itemRepository.findProductStockSummary();
+        List<GetProductRes> dtoList = itemRepository.findRecentProducts(null, null, null, null, PageRequest.of(0, 5));
 
         // dtoList 내부의 summaryDto + 이미지 리스트를 매퍼로 합쳐서 재생성
         dtoList = dtoList.stream()

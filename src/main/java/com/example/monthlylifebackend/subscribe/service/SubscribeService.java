@@ -60,7 +60,7 @@ public class SubscribeService {
         return subscribeRepository.findDeliveryListByPage(pageable, searchType, searchQuery, from, to);
     }
     public List<GetDeliveryListRes> findDeliveryList() {
-        return subscribeRepository.findDeliveryList();
+        return subscribeRepository.findDeliveryList(null,null,null,null,  PageRequest.of(0, 5));
     }
 
     //구독 할때
