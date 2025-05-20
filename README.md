@@ -205,7 +205,7 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 </details>
 
 <details>
-  <summary><strong> 관리자 기능</strong></summary>
+  <summary><strong>👁‍🗨 관리자 기능</strong></summary>
 
 ### 상품 등록
 - 요청
