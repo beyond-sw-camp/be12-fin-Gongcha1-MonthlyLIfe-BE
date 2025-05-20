@@ -121,72 +121,82 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 
 <details>
   <summary><strong>🛒 상품 조회 기능</strong></summary>
-  <ul>
-    <li><strong>상품 목록 조회</strong>: 전체 상품 최신순 조회
-      <br><img src="./gif/SALE001.gif" width="400" />
-    </li>
-    <li><strong>상품 검색</strong>: 조건(이름, 가격 등)에 따른 상품 검색
-      <br><img src="./gif/SALE004.gif" width="400" />
-    </li>
-    <li><strong>상품 상세 조회</strong>: 상품 사양 및 렌탈 조건 확인
-      <br><img src="./gif/SALE005.gif" width="400" />
-    </li>
-  </ul>
+  ### 전체 판매 상품 조회
+   - 요청
+   - 응답
 </details>
 
 <details>
   <summary><strong>📦 구독/결제 기능</strong></summary>
-  <ul>
-    <li><strong>상품 구독</strong>: 상품 및 기간 선택 후 결제
-      <br><img src="./gif/SUBSCRIBE001.gif" width="400" />
-    </li>
-    <li><strong>장바구니 추가</strong>: 상품을 장바구니에 담기
-      <br><img src="./gif/SUBSCRIBE002.gif" width="400" />
-    </li>
-    <li><strong>구독 정보 확인</strong>: 현재 구독 내역 확인
-      <br><img src="./gif/SUBSCRIBE008.gif" width="400" />
-    </li>
-  </ul>
+
+  ### 상품 구독
+   - 요청
+     ![상품구독 요청](https://github.com/user-attachments/assets/6e6d6149-469c-4eb4-b509-4ec374435b21)
+
+   - 응답
+     ![상품구독 응답](https://github.com/user-attachments/assets/9a413c52-ebaf-4579-a862-c5a7996161fe)
+
+  ### 장바구니
+   - 요청
+     ![장바구니 추가 요청](https://github.com/user-attachments/assets/8ca222e0-e464-486f-9128-d8d184dc15b2)
+
+   - 응답
+     ![장바구니 추가 응답](https://github.com/user-attachments/assets/bcd2f45b-f41d-49a2-bbd7-6286b275ebe7)
+
 </details>
 
 <details>
   <summary><strong>📞 고객지원 기능</strong></summary>
-  <ul>
-    <li><strong>1:1 채팅 상담</strong>: 유저가 메시지를 보내면 관리자에게 실시간 전달
-      <br><img src="./gif/SUPPORT001.gif" width="400" />
-    </li>
-    <li><strong>수리신청/분실신고</strong>: 사유 입력 후 요청 등록
-      <br><img src="./gif/SUPPORT003.gif" width="400" />
-    </li>
-  </ul>
+
+  ### 수리/분실 신청
+  - 요청
+    ![수리,분실 신청 요청](https://github.com/user-attachments/assets/af568129-acd7-4d20-8151-46103c62d2d3)
+
+  - 응답
+    ![수리,분실 신청 응답](https://github.com/user-attachments/assets/0ce74e75-272d-46a9-a722-83f722ca3e25)
+
 </details>
 
 <details>
   <summary><strong>🤖 AI 챗봇 기능 (MCP 기반)</strong></summary>
-  <ul>
-    <li><strong>GPT 챗봇 기반 구독 추천</strong>: 사용자 자연어 분석 → 조건 파악 → 상품 추천/자동 구독
-      <br><img src="./gif/AI001.gif" width="400" />
-    </li>
-    <li><strong>사용자 조건 수집</strong>: 챗봇이 렌탈 기간, 제품 종류 등 누락된 정보를 순차 질문
-      <br><img src="./gif/AI002.gif" width="400" />
-    </li>
-    <li><strong>AI 챗봇과 결제 연동</strong>: 추천 상품을 바로 구독 연결
-      <br><img src="./gif/AI003.gif" width="400" />
-    </li>
-  </ul>
+
+### AI 챗봇 제품 검색
+ - 요청
+  ![MCP 제품 검색 요청](https://github.com/user-attachments/assets/9c586304-ac8e-4362-aef7-089cd0dbcc6c)
+
+ - 응답
+  ![MCP 제품 검색 응답](https://github.com/user-attachments/assets/a5347670-af57-4558-999a-2980752e525a)
+
+
+### AI 챗봇 구독흐름 자동 처리
+ - 요청
+   ![MCP 구독흐름자동처리 요청](https://github.com/user-attachments/assets/285e0c1d-596e-4394-860f-f303b590b37a)
+
+ - 응답
+   ![MCP 구독흐름자동처리 응답](https://github.com/user-attachments/assets/a6a370f6-8faf-45a0-a5f6-dafd8cf37692)
+
+
 </details>
 
 <details>
   <summary><strong> 관리자 기능</strong></summary>
-  <ul>
-    <li><strong> 판매 상품 등록 </strong>
+
+### 상품 등록
+- 요청
+  ![상품등록 요청](https://github.com/user-attachments/assets/f868583c-2572-4240-9e2f-68038a7e55df)
+
+- 응답
+  ![상품등록 응답](https://github.com/user-attachments/assets/39a6e4f0-51fe-4197-80c2-86ac19ded67e)
+
+  
+### 판매 상품 등록
+- 요청
+   ![판매상품등록 요청](https://github.com/user-attachments/assets/c9ec7fbd-570a-4ca3-b3f1-6bf566b10562)
       
-    </li>
-    <li><strong> 판매 상품 수정 및 삭제</strong>
-    
-    </li>
-    
-  </ul>
+- 응답
+   ![판매상품등록요청 응답](https://github.com/user-attachments/assets/df5776ab-3c44-477e-a0b5-5510eb1d9df7)
+
+
 </details>
 
 
