@@ -1,7 +1,6 @@
 package com.example.monthlylifebackend.product.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +20,7 @@ public class Category extends BaseEntity {
 
     private String name;  // 카테고리 이름
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_idx")
     private Category parent;  // 부모 카테고리
 

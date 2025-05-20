@@ -1,11 +1,17 @@
 package com.example.monthlylifebackend.chatV2.executor;
 
 import com.example.monthlylifebackend.chatV2.api.model.res.GetAiSubscribeDetailRes;
+import com.example.monthlylifebackend.chatV2.core.EsUserContextManager;
 import com.example.monthlylifebackend.chatV2.core.InternalCommand;
 import com.example.monthlylifebackend.chatV2.core.UserContextManager;
+import com.example.monthlylifebackend.chatV2.service.EsChatLogService;
+import com.example.monthlylifebackend.common.BaseResponse;
+import com.example.monthlylifebackend.common.code.status.ErrorStatus;
+import com.example.monthlylifebackend.common.exception.handler.McpHandler;
+
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.repository.ProductRepository;
-import com.example.monthlylifebackend.sale.repository.jpa.SalePriceRepository;
+import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
 import com.example.monthlylifebackend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -18,9 +24,9 @@ import java.util.stream.Collectors;
 public class InternalCommandExecutor {
 
     private final ProductRepository productRepository;
-    private final UserContextManager userContextManager;
-    private final UserRepository userRepository;
-
+    //    private final UserContextManager userContextManager;
+    private final EsUserContextManager userContextManager;
+    private final EsChatLogService esChatLogService;
     private final SalePriceRepository salePriceRepository;
 
 
@@ -43,12 +49,11 @@ public class InternalCommandExecutor {
         if(products==null){
             System.out.println(" 값 비었는디?");
         }
-        // 유저의 검색 결과 저장 (UserContext에 저장)
-        String userId = (String) command.getParameters().get("userId");
+         String userId = (String) command.getParameters().get("userId");
         String productNames = products.stream()
                 .map(Product::getName)
                 .collect(Collectors.joining(", "));
-        userContextManager.addMessageToConversationLog(userId, "AI: " +productNames);
+        esChatLogService.saveUserLogAsync(userId, "AI: " +productNames);
 
 
         List<String> productNameList = products.stream()
@@ -59,13 +64,12 @@ public class InternalCommandExecutor {
         return productNameList;
     }
 
-    // 구독 처리
     private Object  handleRental(InternalCommand command) {
-        //  TOdo 구독을 처리해 주지 않고 구독 하시겠습니까 ? 예 or 아니오로 해서 해당 결제창 이동( 채팅저장 ) , 아니오 시 (채팅만 저장 )
 
         String userId = (String) command.getParameters().get("userId");
         String itemName = (String) command.getParameters().get("item");
-        productRepository.findFirstByNameContaining(itemName).orElseThrow(() -> new RuntimeException("그딴거 없다"));
+        productRepository.findFirstByNameContaining(itemName)
+                .orElseThrow(() -> new McpHandler(ErrorStatus._EMPTY_SEARCH_RESULT));
         Integer period = (Integer) command.getParameters().get("period");
         String condition = (String) command.getParameters().get("condition");
 
@@ -80,12 +84,11 @@ public class InternalCommandExecutor {
 
             msg.append("이 필요해요. 예: A급 3개월");
 
-            userContextManager.addMessageToConversationLog(userId, "AI: " + msg);
+            esChatLogService.saveUserLogAsync(userId, "AI: " + msg);
 
             return msg.toString();
         }
 
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@" + condition);
 
         GetAiSubscribeDetailRes rs = salePriceRepository.findSalePriceInfo(itemName, period, condition).orElseThrow(() -> new RuntimeException("그딴거 없다"));
 
@@ -93,7 +96,7 @@ public class InternalCommandExecutor {
 
         String aiMessage = String.format("이 조건으로 구독하시겠습니까?\n상품: %s\n등급: %s\n기간: %d개월\n예/아니오로 답해주세요.",
                 itemName, condition, period);
-        userContextManager.addMessageToConversationLog(userId, "AI: " + aiMessage);
+        esChatLogService.saveUserLogAsync(userId, "AI: " + aiMessage);
 
 
 

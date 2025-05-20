@@ -6,6 +6,7 @@ import java.util.Map;
 public class ProtocolBuilder {
 
     public static Map<String, Object> buildRequest(String userMessage ,List<String> conversation) {
+        System.out.println(conversation+"@@@@@@@@@@@@@@@@@@");
         return Map.of(
                 "model", "gpt-4-1106-preview",
                 "messages", List.of(
@@ -21,7 +22,10 @@ public class ProtocolBuilder {
                                 이전 대화의 context를 고려해서 'subscribe_item'을 호출해야 해.
                                 
                                 절대로 이미 추천한 제품에 대해서 또 'search_item'을 호출하지 마.
-                                          
+                                
+                                항상 함수 파라미터는 태그 제거된 텍스트만 넣어라.
+                                예: item 값에는 "삼성전자"와 같이 정제된 텍스트만 들어가야 한다.     
+                                     
                                 빈 문자열("\\n"만 있는 경우 포함)을 arguments로 넘기지 말 것.
                                 무조건 하나의 tools는 골라야함
                                 

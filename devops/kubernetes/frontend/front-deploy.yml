@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-v{version}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+        type: frontend 
+        version: "v-latest"
+  template:
+    metadata:
+      labels:
+        type: frontend
+        version: "v-latest"
+    spec:
+      containers:
+        - name: nginx
+          imagePullPolicy: Always
+          image: k6kjun/mlfront:latest
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/
+          ports:
+            - containerPort: 80
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config

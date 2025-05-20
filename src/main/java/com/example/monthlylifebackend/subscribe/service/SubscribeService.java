@@ -165,7 +165,7 @@ public class SubscribeService {
 
     //구독 idx로 구독 반환
     public Subscribe getSubscribeByIdx(Long idx) {
-        Subscribe subscribe = subscribeRepository.findById(idx).orElseThrow();
+        Subscribe subscribe = subscribeRepository.findByIdx(idx).orElseThrow();
 
         return subscribe;
     }

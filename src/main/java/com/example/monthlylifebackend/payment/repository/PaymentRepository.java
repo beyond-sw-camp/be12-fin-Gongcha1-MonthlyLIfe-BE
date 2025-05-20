@@ -5,7 +5,6 @@ import com.example.monthlylifebackend.payment.dto.res.GetAdminRecentPaymentRes;
 import com.example.monthlylifebackend.payment.model.Payment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,7 +16,15 @@ import java.util.Optional;
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     Optional<Payment> findByPaymentId(String paymentId);
 
-    @EntityGraph(attributePaths = "subscribe")
+    @Query("""
+        SELECT DISTINCT p FROM Payment p
+        LEFT JOIN FETCH p.subscribe s
+        LEFT JOIN FETCH s.user u
+        LEFT JOIN FETCH s.subscribeDetailList d
+        LEFT JOIN FETCH d.sale sa
+        LEFT JOIN FETCH sa.category c
+        WHERE p.scheduledAt >= :start AND p.scheduledAt < :end
+    """)
     List<Payment> findAllByScheduledAtGreaterThanEqualAndScheduledAtLessThan(LocalDateTime start, LocalDateTime end);
 
 

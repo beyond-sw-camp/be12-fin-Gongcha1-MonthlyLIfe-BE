@@ -28,6 +28,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    //이메일 설정
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+
 
     //롬복
     compileOnly 'org.projectlombok:lombok'
