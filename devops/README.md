@@ -158,6 +158,14 @@ CI/CD 파이프라인을 통해 개발자의 실수나 반복적인 배포 절�
 
 </details>
 
+<details>
+<summary>✅ Kubernetes를 이용한 서버 부하에 따른 Pod 개수 증가, 이전 버전으로 롤백</summary>
+- 시나리오 : 고객이 순간적으로 증가하여 백엔드 서버 부담 증가하여 3개로 증설,
+             front0.13버전에 치명적 오류가 발생하여 이전 버전으로 롤백
+![k8s_dashboard](https://github.com/user-attachments/assets/a68db7bf-2d8e-463c-a554-fc780d4586ad)
+
+</details>
+
 
 
 <details>
