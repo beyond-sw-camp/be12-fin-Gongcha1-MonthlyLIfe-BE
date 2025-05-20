@@ -121,6 +121,8 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
   - Spring Batch와 Kubernetes CronJob을 연동하여 정기 결제를 자동화하고, 재고 복원 및 트랜잭션 롤백 처리로 데이터 무결성을 확보했습니다.
   - 일괄 처리 기반으로 대량 구독도 안정적으로 운영할 수 있도록 시스템을 설계했습니다.
 
+[자세한 설명 보기](https://github.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-BE/wiki/%EC%84%A4%EA%B3%84-%EA%B2%B0%EC%A0%95-%EB%B0%8F-%EA%B8%B0%EC%88%A0-%EC%84%A0%ED%83%9D-%EC%9D%B4%EC%9C%A0)
+
 ---
 
 ## 📈 프로젝트 설계
