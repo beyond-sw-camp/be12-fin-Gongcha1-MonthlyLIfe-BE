@@ -58,7 +58,7 @@ public class SubscribeDetail extends BaseEntity {
     @Schema(description = "배송 내역")
     private List<RentalDelivery> rentalDeliveryList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "subscribeDetail", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "subscribeDetail", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @Schema(description = "반납 내역")
     private List<ReturnDelivery> returnDeliveryList = new ArrayList<>();
 
