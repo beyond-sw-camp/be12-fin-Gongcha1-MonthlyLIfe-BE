@@ -68,7 +68,8 @@ public class InternalCommandExecutor {
 
         String userId = (String) command.getParameters().get("userId");
         String itemName = (String) command.getParameters().get("item");
-        productRepository.findFirstByNameContaining(itemName).orElseThrow(() -> new RuntimeException("그딴거 없다"));
+        productRepository.findFirstByNameContaining(itemName)
+                .orElseThrow(() -> new McpHandler(ErrorStatus._EMPTY_SEARCH_RESULT));
         Integer period = (Integer) command.getParameters().get("period");
         String condition = (String) command.getParameters().get("condition");
 
