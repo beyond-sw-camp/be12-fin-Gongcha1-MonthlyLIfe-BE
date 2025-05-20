@@ -33,7 +33,11 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
         JOIN i.itemLocation il
         GROUP BY p.code, p.name, p.manufacturer
     """)
-    List<GetProductRes> findProductStockSummary();
+    List<GetProductRes> findRecentProducts(
+            String productName, String manufacturer,
+            LocalDateTime startDate, LocalDateTime endDate,
+            Pageable pageable
+    );
 
 
     // ✅ 전체 상품 재고 요약 조회 + 페이징 (상품 코드 기준)

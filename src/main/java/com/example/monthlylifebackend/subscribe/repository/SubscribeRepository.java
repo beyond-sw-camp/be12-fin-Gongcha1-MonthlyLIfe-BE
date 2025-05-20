@@ -83,7 +83,11 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
                 JOIN s.subscribeDetailList sd
                 JOIN sd.rentalDeliveryList rd
             """)
-    List<GetDeliveryListRes> findDeliveryList();
+    List<GetDeliveryListRes> findDeliveryList(
+            String productName, String manufacturer,
+            LocalDateTime startDate, LocalDateTime endDate,
+            Pageable pageable
+    );
 
 
 
