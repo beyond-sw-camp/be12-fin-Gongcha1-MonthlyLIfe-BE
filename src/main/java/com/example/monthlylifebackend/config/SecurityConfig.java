@@ -41,7 +41,7 @@ public class SecurityConfig {
                                 "/admin/**", "/sale/*/update", "sale/*/delete"
                         ).hasRole("ADMIN")
                         .requestMatchers(
-                                "/user/register", "user/find-account", "/user/checkid"
+                                "/user/register", "user/find-account", "/user/check/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/user/**", "/subscribe/**"
