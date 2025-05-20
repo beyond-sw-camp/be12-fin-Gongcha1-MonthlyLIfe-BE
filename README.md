@@ -117,14 +117,6 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
   </ul>
 </details>
 
-<details>
-  <summary><strong> 로그인 / 로그아웃</strong></summary>
-  <ul>
-    <li><strong>로그인</strong>: 이메일과 비밀번호로 JWT 발급
-      <br><img src="./gif/USER002.gif" width="400" />
-    </li>
-  </ul>
-</details>
 
 <details>
   <summary><strong>🛒 상품 조회 기능</strong></summary>
