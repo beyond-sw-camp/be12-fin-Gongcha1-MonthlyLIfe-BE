@@ -152,7 +152,8 @@ CI/CD 파이프라인을 통해 개발자의 실수나 반복적인 배포 절�
 
 <details>
 <summary>✅ 자동화 + 무중단 배포 테스트 영상</summary>
-- [무중단 배포 테스트 영상](https://drive.google.com/file/d/1BSC3BdyDtF_MrZUQtffgR682OGdFT0uh/view?usp=drive_link)
+  
+- [무중단 배포 테스트 영상](https://drive.google.com/file/d/1BSC3BdyDtF_MrZUQtffgR682OGdFT0uh/view?usp=drive_link)  
 - 테스트 방법 : 백엔드 서버를 지속적으로 호출하는 동안 main branch에 push하여 자동화 배포 및 중단 여부 확인
 
 </details>
