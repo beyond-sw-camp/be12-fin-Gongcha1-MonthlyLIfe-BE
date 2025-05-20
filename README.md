@@ -46,6 +46,18 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 
 ---
 
+### 목차
+- [🛠 기술 스택](#-기술-스택)
+- [📦 주요 도메인 기능](#-주요-도메인-기능)
+- [🧩 시스템 아키텍처](#-시스템-아키텍처)
+- [🏆 백엔드 프로젝트 목표](#-백엔드-프로젝트-목표)
+- [📈 프로젝트 설계](#-프로젝트-설계)
+- [🧠 주요 기능 상세](#-주요-기능-상세)
+- [📑 API 명세서](#-API-명세서)
+- [🔍 핵심 로직 상세 설명](#-핵심-로직-상세-설명)
+
+---
+
 ## 🧰 기술 스택
 
 ### 🖥 Frontend
@@ -96,11 +108,34 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 
 ---
 
-## 🔐 인증 및 보안
+## 🏆 백엔드 프로젝트 목표
+- `퍼사드 패턴 기반 비즈니스 흐름 처리`
+    - Controller는 단일 메서드 호출만으로 간결하게 유지했습니다.
+    - 트랜잭션 범위를 Facade 단위로 명확히 하여 장애 발생 시 복구가 용이하도록 설계했습니다.
+    - 각 Service는 단일 책임 원칙에 집중하게 되어 테스트가 쉬워졌습니다.
+- `DTO 변환 자동화: MapStruct 도입`
+  - Builder 패턴 기반 수동 변환 방식의 반복 문제를 해결하기 위해 MapStruct 도입했습니다.
+  - DTO → Entity 간 필드 매핑을 어노테이션 기반으로 자동 처리하고, 컴파일 타임에 검증하여 성능과 유지보수성을 높였습니다.
+  - DTO 구조 변경에도 유연하게 대응할 수 있어 안정적인 개발 환경을 구축할 수 있었습니다.
+- `챗봇 시스템(Java 기반 MCP) 설계 및 도입`
+  - GPT 기반 MCP(Model-Context-Protocol) 구조를 적용한 자연어 처리 챗봇을 도입하여 사용자 발화(예: "삼성 청소기 3개월만 구독해줘")를 분석하고 구독 또는 조회 기능을 자동 수행하도록 구현했습니다.
+  - MCP는 모델(GPT 파싱), 컨텍스트(유저 상태 저장), 프로토콜(API 호출)로 구성되어 챗봇 요청 흐름을 유연하고 확장 가능하게 설계했습니다. 
+- `Spring Batch`
+  - Spring Batch를 활용해 구독 결제의 일괄 처리와 정기 예약을 자동화하였으며, 실패 시 재고 복원 및 트랜잭션 롤백 처리로 데이터 일관성을 보장했습니다.
 
-1. 로그인 시 Access Token 발급
-2. API 호출 시 Header에 JWT 포함
-3. Spring Security 기반 Role 검증 후 접근 허용
+---
+
+## 📈 프로젝트 설계
+
+### [1. 기획서 바로가기](https://docs.google.com/document/d/1S5pfITLqqDCIop5Io-dq3erEEs1rubz7M1q3DYilqFg/edit?tab=t.0)
+
+### [2. 요구사항 정의서](https://docs.google.com/spreadsheets/d/1EtZBZOIuHVj2c4CbhtKNAfVmMSwQfEDYWAfI29FrQ7o/edit?gid=1790637635#gid=1790637635)
+
+### [3. WBS](https://docs.google.com/spreadsheets/d/1EtZBZOIuHVj2c4CbhtKNAfVmMSwQfEDYWAfI29FrQ7o/edit?gid=1159274132#gid=1159274132)
+
+### [4. 화면설계서 바로가기](https://www.figma.com/design/t1k8zoIFly0Hyxt0dJplNP/Gongcha1?node-id=71-86&p=f)
+
+### [5. ERD ](https://media.discordapp.net/attachments/1354007770218893405/1356832191954550955/erd_2025_04_02.png?ex=6826b073&is=68255ef3&hm=2206536880e9b15ad3911b2f02249afad7022ca60014843505e543ad6b925788&=&format=webp&quality=lossless&width=953&height=704)
 
 ---
 
@@ -233,6 +268,12 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 - Swagger: [https://monthlylife.kro.kr/docs/swagger-ui/index.html](https://monthlylife.kro.kr/docs/swagger-ui/index.html)
 
 ---
+
+## 🔍 핵심 로직 상세 설명
+### [프로젝트 WIki](https://github.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-BE/wiki/%EC%A3%BC%EC%9A%94%EA%B8%B0%EB%8A%A5_%EB%B0%8F_%EC%84%A4%EA%B3%84%ED%9D%90%EB%A6%84)
+
+---
+
 
 ## ⚙ 개발 환경 세팅
 
