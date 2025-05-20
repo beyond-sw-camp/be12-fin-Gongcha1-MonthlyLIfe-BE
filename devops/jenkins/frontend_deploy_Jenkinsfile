@@ -1,0 +1,147 @@
+pipeline {
+    agent any
+
+    environment {
+        GIT_DEPLOYMENT_YAML = 'https://raw.githubusercontent.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-FE/refs/heads/main/k8s/front-deploy.yml'
+        GIT_FRONTEND_SERVICE_YAML = 'https://raw.githubusercontent.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-FE/refs/heads/main/k8s/front-svc.yml'
+        GIT_INGRESS_YAML = 'https://raw.githubusercontent.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-FE/refs/heads/main/k8s/front-ingress.yml'
+        
+        CIRCLECI_PROJECT_SLUG = ''
+        CIRCLECI_DEFINITION_ID = ''
+        CIRCLECI_TOKEN = credentials('CIRCLECI_TOKEN')
+        NAMESPACE = 'ml'
+        FRONT_VERSION_PATH = "${HOME}/front-version"  // Jenkins 홈 디렉토리 내 front-version 파일 경로
+    
+    }
+
+    stages {
+        stage('Get front-version file') {
+            steps {
+                script {
+                    // front-version 파일이 존재하는지 확인
+                    if (!fileExists(FRONT_VERSION_PATH)) {
+                        error "front-version file does not exist at ${FRONT_VERSION_PATH}. Build failed!"
+                    }
+
+                    // front-version 파일 내용 읽기
+                    def version = readFile(FRONT_VERSION_PATH).trim()
+
+                    // 파일이 비어 있으면 실패
+                    if (!version) {
+                        error "front-version file is empty. Build failed!"
+                    }
+
+                    // 버전 1 올리기
+                    env.NEW_VERSION = version
+                }
+            }
+        }
+        
+        stage('Trigger CircleCI Pipeline') {
+            steps {
+                script {
+                    echo "Starting CircleCI Pipeline...."
+
+                    // CircleCI 파이프라인 실행 및 ID 가져오기
+                    def pipeline_id = sh(script: """
+                        curl -X POST 'https://circleci.com/api/v2/project/$CIRCLECI_PROJECT_SLUG/pipeline/run' \
+                        --header 'Circle-Token: $CIRCLECI_TOKEN' \
+                        --header 'Content-Type: application/json' \
+                        --data '{
+                            "definition_id": "$CIRCLECI_DEFINITION_ID",
+                            "config": {
+                                "branch": "main"
+                            },
+                            "checkout": {
+                                "branch": "main"
+                            },
+                            "parameters": {
+                                "tag": "0.$NEW_VERSION"
+                            }
+                        }'  | grep -o '"id":"[^"]*"' | awk -F':' '{print \$2}' | tr -d '"'
+                    """, returnStdout: true).trim()
+
+                    echo "Triggered CircleCI Pipeline ID: ${pipeline_id}"
+                    env.PIPELINE_ID = pipeline_id
+                }
+            }
+        }
+        stage('Wait for CircleCI Completion') {
+            steps {
+                script {
+                    echo "Waiting for CircleCI Pipeline to Complete..."
+
+                    def status = "running"
+                    while (status == "running" || status == "pending") {
+                        sleep(10) // 10초 대기 후 다시 확인
+
+                        status = sh(script: """
+                            curl --silent --location 'https://circleci.com/api/v2/pipeline/${env.PIPELINE_ID}/workflow' \
+                            --header 'Circle-Token: $CIRCLECI_TOKEN' | grep -o '"status" *: *"[^"]*"' | awk -F': ' '{print \$2}' | tr -d '"'
+                        """, returnStdout: true).trim()
+                        echo "CircleCI Pipeline Status: ${status}"
+                    }
+
+                    // 실패 또는 취소된 경우 빌드 중단
+                    if (status != "success") {
+                        error "CircleCI Pipeline Failed or Canceled! Status: ${status}"
+                    }
+
+                    echo "CircleCI Pipeline Completed Successfully!"
+                }
+            }
+        }
+        
+        stage('SSH') {
+			steps{
+				script{
+					sshPublisher(
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'k8s',
+                                verbose: true,
+                                transfers: [
+                                    sshTransfer(
+                                        execCommand: """
+                                        curl -sL ${GIT_DEPLOYMENT_YAML} | \
+                                        sed 's/{version}/0$NEW_VERSION/g'  | \
+                                        sed 's/latest/0.$NEW_VERSION/g'| \
+                                        kubectl apply -n ${NAMESPACE} -f - 
+                                        """
+                                    ),
+                                    sshTransfer(
+                                        execCommand: """
+                                            kubectl rollout status deployment/frontend-v0$NEW_VERSION -n ${NAMESPACE}
+                                            kubectl wait --for=condition=available deployment/frontend-v0$NEW_VERSION --timeout=600s -n ${NAMESPACE}
+                                        """
+                                    ),
+                                    sshTransfer(
+                                        execCommand: """
+                                        curl -sL ${GIT_FRONTEND_SERVICE_YAML} | \
+                                        sed 's/latest/0.$NEW_VERSION/g'  | \
+                                        sed 's/{version}/0$NEW_VERSION/g'  | \
+                                        kubectl apply -n ${NAMESPACE} -f -
+                                        curl -sL ${GIT_INGRESS_YAML} | \
+                                        sed 's/latest/0.$NEW_VERSION/g' | \
+                                        sed 's/{version}/0$NEW_VERSION/g'  | \
+                                        kubectl apply -n ${NAMESPACE} -f -
+                                         """
+                                    ),
+                                ]
+                            )
+                        ]
+                    )
+                }
+            }
+        }
+        stage('save front-version file') {
+            steps {
+                script {
+                    env.NEW_VERSION = (env.NEW_VERSION.toInteger() + 1).toString()
+                    writeFile(file: FRONT_VERSION_PATH, text: env.NEW_VERSION)
+                }
+            }
+        }
+        
+    }
+}
