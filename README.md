@@ -108,10 +108,10 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 <details>
   <summary><strong>👤 회원가입</strong></summary>
   <ul>
-    <li><strong>회원 가입</strong>: 유저가 정보를 입력해 가입
+    <li><strong>회원 가입</strong>:
       <br><img src="https://github.com/user-attachments/assets/d620d088-e259-4534-b806-4f80ceaf3676" width="400" />
-
     </li>
+    
     <li><strong>로그인</strong>: 이메일과 비밀번호로 JWT 발급
       <br><img src="./gif/USER002.gif" width="400" />
     </li>
