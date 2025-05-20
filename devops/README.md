@@ -135,6 +135,22 @@ CI/CD 파이프라인을 통해 개발자의 실수나 반복적인 배포 절�
 </details>
 
 <details>
+<summary>✅ 점진적 배포 (Canary Deployment)</summary>
+
+- 기존 배포를 유지한 채, 새로운 Kubernetes Deployment를 업로드
+- Ingress를 이용하여 임의의 비율의 유저는 새로운 Frontend, 나머지는 기존 Frontend로 연결
+- 처음 사이트에 접속하면 cookie를 이용하여 해당 버전으로 고정
+- `kubectl rollout status`, `kubectl scale` 등을 통한 트래픽 전환 및 제어  
+- 장애 발생 시 빠르게 롤백 가능
+- canary test
+![canary_test](https://github.com/user-attachments/assets/a2f7bda2-5dbd-460d-9d7b-be36ac913e4b)
+
+처음 두 번은 기존 프론트엔드로 연결, 마지막 한 번은 새로운 버전의 프론트엔드를 확인(쿠키를 삭제하여 변경)
+점진적으로 기존 버전과 새로운 버전의 노출 비율을 변경하여 배포포
+
+</details>
+
+<details>
 <summary>✅ 자동화 + 무중단 배포 테스트 영상</summary>
 
 - [무중단 배포 테스트 영상](https://drive.google.com/file/d/1BSC3BdyDtF_MrZUQtffgR682OGdFT0uh/view?usp=drive_link)
