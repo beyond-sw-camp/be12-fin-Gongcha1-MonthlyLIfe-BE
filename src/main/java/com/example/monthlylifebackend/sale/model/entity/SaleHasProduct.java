@@ -1,4 +1,4 @@
-package com.example.monthlylifebackend.sale.model;
+package com.example.monthlylifebackend.sale.model.entity;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.product.model.Condition;

@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    
+    environment {
+        IS_BACKEND_CHANGED = 'false'
+        IS_BATCH_CHANGED = 'false'
+    }
+    
+    stages {
+        stage('git clone') {
+                steps {
+                        git branch: 'main', url: 'https://github.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-BE'
+                }
+        }
+        
+        stage('Check for Backend Changes') {
+            steps {
+                script {
+                    def changedFiles = sh(script: "git diff --name-only HEAD^ HEAD", returnStdout: true).trim().split('\n')
+                    IS_BATCH_CHANGED = changedFiles.any { it.startsWith("batch/") }.toString()
+                    IS_BACKEND_CHANGED = (!changedFiles.every { it.startsWith("batch/") }).toString()
+                    echo "Backend changes: ${IS_BACKEND_CHANGED}"
+                    echo "Batch changes: ${IS_BATCH_CHANGED}"
+                }
+            }
+        }
+        
+        stage('Trigger each build') {
+            steps {
+                script {
+                    if (IS_BACKEND_CHANGED == "true") {
+                        build job: 'ml-back', wait: false
+                    } 
+                    if (IS_BATCH_CHANGED == "true"){
+                        build job: 'ml-batch', wait: false
+                    }
+                }
+            }
+        }
+    }
+}

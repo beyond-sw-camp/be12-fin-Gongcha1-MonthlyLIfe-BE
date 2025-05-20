@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-cm
+data:
+  MARIADB_ROOT_PASSWORD: ''
+  MARIADB_DATABASE: ''

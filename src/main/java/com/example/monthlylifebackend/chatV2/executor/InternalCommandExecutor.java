@@ -1,31 +1,31 @@
 package com.example.monthlylifebackend.chatV2.executor;
 
 import com.example.monthlylifebackend.chatV2.api.model.res.GetAiSubscribeDetailRes;
-import com.example.monthlylifebackend.chatV2.core.EsUserContextManager;
+//import com.example.monthlylifebackend.chatV2.core.EsUserContextManager;
 import com.example.monthlylifebackend.chatV2.core.InternalCommand;
 import com.example.monthlylifebackend.chatV2.core.UserContextManager;
 import com.example.monthlylifebackend.chatV2.service.EsChatLogService;
-import com.example.monthlylifebackend.common.BaseResponse;
 import com.example.monthlylifebackend.common.code.status.ErrorStatus;
 import com.example.monthlylifebackend.common.exception.handler.McpHandler;
 
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.repository.ProductRepository;
-import com.example.monthlylifebackend.sale.repository.SalePriceRepository;
-import com.example.monthlylifebackend.user.repository.UserRepository;
+import com.example.monthlylifebackend.sale.repository.jpa.SalePriceRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class InternalCommandExecutor {
 
     private final ProductRepository productRepository;
-    //    private final UserContextManager userContextManager;
-    private final EsUserContextManager userContextManager;
+        private final UserContextManager userContextManager;
+//    private final EsUserContextManager userContextManager;
     private final EsChatLogService esChatLogService;
     private final SalePriceRepository salePriceRepository;
 
@@ -60,6 +60,7 @@ public class InternalCommandExecutor {
                 .map(Product::getName)
                 .collect(Collectors.toList());
 
+        userContextManager.addMessageToConversationLog(userId , "Ai :"+productNameList);
 
         return productNameList;
     }
@@ -88,9 +89,10 @@ public class InternalCommandExecutor {
 
             return msg.toString();
         }
+        log.info("GPT 요청 파라미터: item={}, period={}, condition={}", itemName, period, condition);
 
 
-        GetAiSubscribeDetailRes rs = salePriceRepository.findSalePriceInfo(itemName, period, condition).orElseThrow(() -> new RuntimeException("그딴거 없다"));
+        GetAiSubscribeDetailRes rs = salePriceRepository.findSalePriceInfo(itemName, period, condition).orElseThrow(() -> new McpHandler(ErrorStatus._EMPTY_SEARCH_RESULT));
 
 
 

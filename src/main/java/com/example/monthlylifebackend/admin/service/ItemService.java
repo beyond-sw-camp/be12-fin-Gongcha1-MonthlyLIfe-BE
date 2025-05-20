@@ -12,7 +12,7 @@ import com.example.monthlylifebackend.product.dto.res.ProductImageRes;
 import com.example.monthlylifebackend.product.model.Condition;
 import com.example.monthlylifebackend.product.model.Product;
 import com.example.monthlylifebackend.product.repository.ItemLocationRepository;
-import com.example.monthlylifebackend.sale.model.SaleHasProduct;
+import com.example.monthlylifebackend.sale.model.entity.SaleHasProduct;
 import com.example.monthlylifebackend.subscribe.model.Subscribe;
 import com.example.monthlylifebackend.subscribe.model.SubscribeDetail;
 import lombok.RequiredArgsConstructor;

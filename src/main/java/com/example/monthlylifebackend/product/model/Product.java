@@ -2,7 +2,7 @@ package com.example.monthlylifebackend.product.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
 import com.example.monthlylifebackend.item.model.Item;
-import com.example.monthlylifebackend.sale.model.SaleHasProduct;
+import com.example.monthlylifebackend.sale.model.entity.SaleHasProduct;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,8 +28,10 @@ public class Product extends BaseEntity {
     private List<ProductImage> productImageList = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
+    @Builder.Default
     private List<Item> itemList = new ArrayList<>();
 
     @OneToMany(mappedBy = "product")
+    @Builder.Default
     private List<SaleHasProduct> saleHasProductList = new ArrayList<>();
 }
