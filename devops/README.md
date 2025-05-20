@@ -151,6 +151,8 @@ CI/CD 파이프라인을 통해 개발자의 실수나 반복적인 배포 절�
 - Prometheus 상태 확인: http://192.0.20.140/  
 - Elasticsearch 보안 연결: quickstart-es-http.elk.svc  
 
+![grafana_dashboard](https://github.com/user-attachments/assets/964f0bb2-ea60-42b4-bcc8-514173eebdb8)
+
 </details>
 
 <details>
