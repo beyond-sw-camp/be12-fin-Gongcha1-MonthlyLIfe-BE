@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  labels:
+    type: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      type: db
+  template: 
+    metadata:
+      labels:
+        type: db
+    spec:
+      containers:
+        - name: master-db-container
+          image: k6kjun/mldb:test
+          envFrom:
+          - configMapRef:
+              name: db-cm
+          ports:
+          - containerPort: 3306
