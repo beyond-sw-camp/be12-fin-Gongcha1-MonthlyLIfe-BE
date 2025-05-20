@@ -30,8 +30,8 @@ public class GptMcpServer {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final ProductRepository productRepository;
-//    private final UserContextManager userContextManager;
-    private final EsUserContextManager userContextManager;
+    private final UserContextManager userContextManager;
+//    private final EsUserContextManager userContextManager;
     private final CommandDispatcher commandDispatcher;
     private final InternalCommandExecutor internalCommandExecutor;
     private final EsChatLogService esChatLogService;
@@ -42,7 +42,7 @@ public class GptMcpServer {
     @Transactional
     public Object handleMcp(String userId, UserRequest userRequest) {
         try {
-//            userContextManager.addMessageToConversationLog(userId, "사용자: " + userRequest.message());
+            userContextManager.addMessageToConversationLog(userId, "사용자: " + userRequest.message());
 
             esChatLogService.saveUserLogAsync(userId, "user : "+ userRequest.message());
             List<String> conversation = userContextManager.getConversationLog(userId);
