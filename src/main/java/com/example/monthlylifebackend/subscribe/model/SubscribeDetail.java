@@ -1,7 +1,7 @@
 package com.example.monthlylifebackend.subscribe.model;
 
 import com.example.monthlylifebackend.common.BaseEntity;
-import com.example.monthlylifebackend.sale.model.Sale;
+import com.example.monthlylifebackend.sale.model.entity.Sale;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;

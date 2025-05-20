@@ -5,7 +5,6 @@ import com.example.monthlylifebackend.cart.dto.res.GetCartListRes;
 import com.example.monthlylifebackend.cart.facade.CartFacade;
 
 import com.example.monthlylifebackend.common.BaseResponse;
-import com.example.monthlylifebackend.sale.model.SalePrice;
 
 
 import com.example.monthlylifebackend.user.model.User;
