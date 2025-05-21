@@ -13,7 +13,7 @@
     </td>
     <td align="center">
       <a href="https://github.com/Shin-JiHyun">
-        <img src="https://i.namu.wiki/i/8wUNYOFiU0KQem2XbLBTkTmgGg4knQ1_xAxhTh2Yl6E0OUbwJKCNXuO32wS48LTPfXT1U3hzEmclYUhu0kOg3GBu7VFfhN-larrInwpPz2Bc6OIplUQSvQy2sMz4gMUmPxcxCsZZ_XFaOLpXsp363Q.webp"
+        <img src="https://i.namu.wiki/i/kq2UHJ5flXHoMj2lDp1xJCUgfKj3dHRJdFJi5L5tCKFY8g4q7zquvfLMwksklZnm8qB_1mw19WiNas00FfoTllnlfeIn-9xLtQ41fZY_mBRK6stVbtpvsnSkA8kq9Cak9t7yzHdUkUqSuCiaK-8a4g.webp"
              width="120" height="150" style="object-fit: cover; border-radius: 8px;" />
         <br /><sub><b>신지현</b></sub>
       </a>
