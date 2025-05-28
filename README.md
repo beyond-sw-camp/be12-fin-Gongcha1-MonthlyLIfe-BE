@@ -270,7 +270,7 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
 
 ## 📑 API 명세서
 
-- Swagger: [https://monthlylife.kro.kr/docs/swagger-ui/index.html](https://monthlylife-demo.kro.kr/docs/swagger-ui/index.html)
+- Swagger: [http://monthlylife-demo.kro.kr/docs/swagger-ui/index.html](http://monthlylife-demo.kro.kr/docs/swagger-ui/index.html)
 
 ---
 
