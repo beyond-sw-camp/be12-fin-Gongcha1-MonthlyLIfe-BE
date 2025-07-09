@@ -25,7 +25,7 @@ Spring Boot 기반 REST API 서버로, **구독, 결제, 장바구니, 상품 �
     </td>
     <td align="center">
       <a href="https://github.com/Shin-JiHyun">
-        <img src="[![image](https://github.com/user-attachments/assets/f943e1f6-72d9-4414-a346-3df06d6562c4)](https://i.namu.wiki/i/9xvwtwt2VrG7KxbUDmZf_XJs6yBAyo6zb0u09oXrBmU7QcyoDLsVhOL2JxI8fnSVDjdiNuR1PUw9orrlpesAVqsz6DwOdxHiFFIlpc0umx4e-IoV08Wy-F3qjnksV8FklsqLW-MCS8gyPHpAHRpsOA.webp)" width="120" height="150" style="object-fit: cover; border-radius: 8px;" />
+        <img src="https://i.namu.wiki/i/9xvwtwt2VrG7KxbUDmZf_XJs6yBAyo6zb0u09oXrBmU7QcyoDLsVhOL2JxI8fnSVDjdiNuR1PUw9orrlpesAVqsz6DwOdxHiFFIlpc0umx4e-IoV08Wy-F3qjnksV8FklsqLW-MCS8gyPHpAHRpsOA.webp" width="120" height="150" style="object-fit: cover; border-radius: 8px;" />
         <br /><sub><b>신지현</b></sub>
       </a>
     </td>
