@@ -196,5 +196,3 @@ CI/CD 파이프라인을 통해 개발자의 실수나 반복적인 배포 절�
 - [📁 Backend Repository](https://github.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-BE)
 - [📁 Infra/DevOps YAML](https://github.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-BE/tree/develop/devops)
 - [📁 Frontend Repository](https://github.com/beyond-sw-camp/be12-fin-Gongcha1-MonthlyLIfe-FE) 
-
-❗ 미완성 정보는 확인 후 보완 바랍니다.
